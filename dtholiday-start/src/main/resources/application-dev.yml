@@ -1,0 +1,28 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /dtholiday
+
+mybatis-plus:
+  # 指定MyBatis-Plus的全局配置文件
+  global-config:
+    db-config:
+      id-type: auto # 主键策略
+      field-strategy: not_null # 字段策略
+      db-column-underline: true # 数据库字段下划线命名
+      capital-mode: true # 是否开启大写命名
+  # 配置mapper.xml文件位置
+  mapper-locations: classpath:/mappers/*.xml
+  # 配置实体类包路径
+  type-aliases-package: com.eva.dtholiday.commons.dao.entity
+  # 配置MyBatis-Plus的日志
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource #数据源为druid
+    driver-class-name: com.mysql.jdbc.Driver #数据库驱动
+    url: jdbc:mysql://localhost:3306/dtholiday?useSSL=false&useUnicode=true&characterEncoding=utf-8&servetTimeZone=Asia/Shanghai
+    username: root
+    password: evangelion
