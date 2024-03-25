@@ -1,7 +1,6 @@
 package com.eva.dtholiday.commons.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -25,6 +24,8 @@ import java.util.Date;
 @TableName("sys_user")
 public class User extends Model<User> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * ID
      */
@@ -37,32 +38,54 @@ public class User extends Model<User> {
     private String userName;
 
     /**
+     * 用户编码（UUID，用于绑定）
+     */
+    private String userCode;
+
+    /**
      * 密码
      */
     private String password;
 
     /**
-     * 角色集合
+     * 真实姓名
      */
-    @TableField(exist = false)
-    private Integer[] roles;
+    private String nickName;
 
     /**
-     * 角色集合字符
+     * 邮箱地址
      */
-    @TableField(exist = false)
-    private String[] roleList;
-    /**
-     * 权限标识集合
-     */
-    @TableField(exist = false)
-    private String[] permissions;
+    private String emailAddr;
 
     /**
-     * 前端路由集合
+     * 手机号
      */
-    @TableField(exist = false)
-    private String[] menuRoutes;
+    private String phoneNum;
+
+    /**
+     * 性别 0女 1男
+     */
+    private Integer gender;
+
+    /**
+     * 部门领导姓名
+     */
+    private String deptLeaderName;
+
+    /**
+     * 状态（0禁用 1启用）
+     */
+    private Integer status;
+
+    /**
+     * 公司名
+     */
+    private String belongCompany;
+
+    /**
+     * 公司名
+     */
+    private String belongCompanyPhone;
 
     /**
      * 创建时间
