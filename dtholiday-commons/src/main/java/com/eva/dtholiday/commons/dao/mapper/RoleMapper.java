@@ -1,8 +1,11 @@
 package com.eva.dtholiday.commons.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.eva.dtholiday.commons.dao.entity.User;
+import com.eva.dtholiday.commons.dao.entity.Role;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @describtion
@@ -15,5 +18,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @modify by reason :{原因}
  **/
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface RoleMapper extends BaseMapper<Role> {
+    List<Role> selectRoleByUserCode(@Param("userCode") String userCode);
 }

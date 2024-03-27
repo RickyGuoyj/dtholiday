@@ -7,7 +7,7 @@ import com.eva.dtholiday.commons.exception.BusinessException;
 import com.eva.dtholiday.security.service.LoginService;
 import com.eva.dtholiday.security.entity.DtHolidayUser;
 import com.eva.dtholiday.security.utils.JwtUtil;
-import com.eva.dtholiday.security.utils.LocalCache;
+import com.eva.dtholiday.security.utils.TokenCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,7 +47,7 @@ public class LoginServiceImpl implements LoginService {
             DtHolidayUser tUser = (DtHolidayUser) authentication.getPrincipal();
             if (tUser != null) {
                 String token = jwtUtil.createToken(tUser);
-                LocalCache.putTokenUserIdCache(token, tUser);
+                TokenCache.putTokenUserIdCache(token, tUser);
                 return ResponseApi.ok(token);
             } else {
                 throw new BusinessException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXSIT.getMessageCN(), BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXSIT.getCode());

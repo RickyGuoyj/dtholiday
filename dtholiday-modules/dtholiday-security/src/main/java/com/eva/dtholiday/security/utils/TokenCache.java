@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @modify by reason :{原因}
  **/
 
-public class LocalCache {
+public class TokenCache {
 
     /**
      * token-userId cache

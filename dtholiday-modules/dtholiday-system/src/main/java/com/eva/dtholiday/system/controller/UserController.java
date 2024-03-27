@@ -30,14 +30,14 @@ public class UserController {
     private UserService userService;
 
 
-    @PreAuthorize("hasAuthority('add_user')")
+//    @PreAuthorize("hasAuthority('add_user')")
     @PostMapping("/addUser")
     public ResponseApi<UserAddResp> addUser(@RequestBody UserAddReq userAddReq) {
         UserAddResp userAddResp = userService.addUser(userAddReq);
         return ResponseApi.ok(userAddResp);
     }
 
-    @PreAuthorize("hasAuthority('update_user')")
+//    @PreAuthorize("hasAuthority('update_user')")
     @PostMapping("/updateUser")
     public ResponseApi<UserAddResp> updateUser(@RequestBody UserAddReq userAddReq) {
         UserAddResp userAddResp = userService.addUser(userAddReq);

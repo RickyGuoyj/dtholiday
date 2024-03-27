@@ -4,7 +4,7 @@ package com.eva.dtholiday.security.filter;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
 import com.eva.dtholiday.commons.exception.BusinessException;
 import com.eva.dtholiday.security.entity.DtHolidayUser;
-import com.eva.dtholiday.security.utils.LocalCache;
+import com.eva.dtholiday.security.utils.TokenCache;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,9 +59,9 @@ public class AuthFilter extends OncePerRequestFilter {
                 // 如果携带token，则校验token的合法性
                 if (StringUtils.hasText(token)) {
                     // 从缓存中获取token和userId的键值对，如果有的话说明token有效
-                    if (LocalCache.getUserIdByToken(token) != null) {
+                    if (TokenCache.getUserIdByToken(token) != null) {
                         try {
-                            DtHolidayUser tUser = LocalCache.getUserIdByToken(token);
+                            DtHolidayUser tUser = TokenCache.getUserIdByToken(token);
                             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(tUser, null, tUser.getAuthorities());
                             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         } catch (Exception e) {
