@@ -10,7 +10,7 @@ package com.eva.dtholiday.commons.utils;
  * @modify by user :{修改人} :{修改时间}
  * @modify by reason :{原因}
  **/
-public class StringUtils {
+public class MyStringUtils {
 
     /**
      * 获取UUID

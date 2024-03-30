@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS sys_menu (
     );
 insert into sys_menu(menu_name,menu_code,parent_code,type,url,perms)
 VALUES
+    ('应用菜单','root',null,'C','/erp',null),
     ('数据仪表盘','100000','root','C','/erp/dashboard',null),
     ('前台管理','200000','root','C','/erp/portalManagement',null),
     ('产品管理','300000','root','C','/erp/productManagement',null),
@@ -138,7 +139,7 @@ VALUES
 
     ('币种管理','701000','700000','C','/erp/configManagement/currencyManagement',null),
     ('餐饮管理','702000','700000','C','/erp/configManagement/mealManagement',null),
-    ('交通管理','702000','700000','C','/erp/configManagement/transportManagement',null)
+    ('交通管理','703000','700000','C','/erp/configManagement/transportManagement',null)
 ;
 
 
@@ -154,6 +155,39 @@ CREATE TABLE IF NOT EXISTS sys_role_menu (
     role_code VARCHAR(64),
     menu_code VARCHAR(64)
     );
+
+insert into sys_role_menu(role_code, menu_code)
+VALUES
+    ('d8a647352fe74cdbbb43090ea5e45f9d','root'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','100000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','200000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','300000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','400000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','500000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','600000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','700000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','201000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','202000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','203000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','204000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','205000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','301000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','302000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','303000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','304000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','401000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','402000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','403000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','404000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','501000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','502000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','503000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','601000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','701000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','702000'),
+    ('d8a647352fe74cdbbb43090ea5e45f9d','703000')
+;
+
 
 
 

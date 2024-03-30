@@ -69,7 +69,7 @@ public class DtHolidayUserDetailService implements UserDetailsService {
             DtHolidayUser dtUser = new DtHolidayUser(user.getId(), user.getUserName(), user.getPassword(), userAuths);
             return dtUser;
         } else {
-            throw new UsernameNotFoundException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXSIT.getMessageCN());
+            throw new UsernameNotFoundException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXIST.getMessageCN());
         }
     }
 }

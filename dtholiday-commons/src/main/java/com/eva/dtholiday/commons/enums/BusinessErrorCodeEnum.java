@@ -24,9 +24,19 @@ public enum BusinessErrorCodeEnum {
 
     UNAUTHORIZED("401", "invalid token", "Token无效或过期,请重新登录."),
 
-    LOGIN_ACCOUNT_NO_EXSIT("0xdcb00100", "login account no exsit", "用户不存在"),
+    LOGIN_ACCOUNT_NO_EXIST("0xdcb00100", "login account no exsit", "用户不存在"),
 
-    LOGIN_ACCOUNT_LOGIN_FAILURE("0xdcb00101", "login failure", "登录失败"),
+    LOGIN_ACCOUNT_OR_PASSWORD_ERROR("0xdcb00101", "check username or password", "用户名或密码错误"),
+
+    LOAD_MENU_ERROR("0xdcb00102", "load menu error", "加载菜单失败"),
+
+    PARAMETER_CHECK_ERROR("0xdcb00103", "verify parameter error", "参数校验失败"),
+
+    ROLE_NAME_EXIST("0xdcb00104", "role name has already existed", "角色名已存在"),
+
+    ROLE_NOT_EXIST("0xdcb00105", "role does not exist", "角色不存在"),
+
+    ROLE_BINDING_WITH_USER("0xdcb00106", "role is binding with user", "该角色下存在用户，无法删除"),
 
     ;
 

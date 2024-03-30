@@ -51,4 +51,8 @@ public class Role extends Model<Role> {
      * 更新时间
      */
     private Date updateTime;
+
+    public static final String ROLE_CODE = "role_code";
+
+    public static final String ROLE_NAME = "role_name";
 }

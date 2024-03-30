@@ -3,6 +3,9 @@ package com.eva.dtholiday.commons.dao.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eva.dtholiday.commons.dao.entity.RoleMenu;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @describtion
@@ -16,4 +19,6 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
+    void bulkInsert(@Param("roleMenus") List<RoleMenu> roleMenuList);
+
 }

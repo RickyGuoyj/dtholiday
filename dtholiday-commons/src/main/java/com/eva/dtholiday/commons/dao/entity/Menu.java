@@ -73,4 +73,5 @@ public class Menu extends Model<Menu> {
     private Date updateTime;
 
 
+    public static final String TYPE = "type";
 }

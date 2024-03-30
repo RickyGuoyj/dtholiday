@@ -24,12 +24,12 @@ public class RoleMenu extends Model<RoleMenu> {
     /**
      * 角色编码
      */
-    private Integer roleCode;
+    private String roleCode;
 
     /**
      * 菜单编码
      */
-    private Integer menuCode;
+    private String menuCode;
 
 
     public static final String ROLE_CODE = "role_code";
