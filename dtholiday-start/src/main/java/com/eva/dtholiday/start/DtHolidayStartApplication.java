@@ -11,10 +11,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan(basePackages = {"com.eva.dtholiday.**.mapper"})
 @EnableAsync
 @EnableScheduling
-public class DtholidayStartApplication {
+public class DtHolidayStartApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext run = SpringApplication.run(DtholidayStartApplication.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(DtHolidayStartApplication.class, args);
 
         String[] names = run.getBeanDefinitionNames();
 

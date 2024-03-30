@@ -80,7 +80,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.eva.dtholiday.start.DtholidayStartApplication</mainClass>
+                    <mainClass>com.eva.dtholiday.start.DtHolidayStartApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>
