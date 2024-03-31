@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS dt_island_quotation(
     );
 
 
-CREATE TABLE IF NOT EXISTS dt_recommendation(
+CREATE TABLE IF NOT EXISTS dt_island_recommendation(
     id INT AUTO_INCREMENT PRIMARY KEY,
     island_cn_name  VARCHAR(64),
     island_en_name VARCHAR(64),
