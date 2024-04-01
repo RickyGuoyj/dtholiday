@@ -50,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
                 TokenCache.putTokenUserIdCache(token, tUser);
                 return ResponseApi.ok(token);
             } else {
-                throw new BusinessException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXIST.getMessageCN(), BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXIST.getCode());
+                throw new BusinessException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN(), BusinessErrorCodeEnum.USER_NOT_EXIST.getCode());
             }
         } else {
             throw new BusinessException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getMessageCN(), BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getCode());

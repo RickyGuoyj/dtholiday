@@ -4,13 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eva.dtholiday.commons.dao.entity.Menu;
 import com.eva.dtholiday.commons.dao.entity.Role;
 import com.eva.dtholiday.commons.dao.entity.User;
-import com.eva.dtholiday.commons.dao.entity.UserRole;
 import com.eva.dtholiday.commons.dao.mapper.MenuMapper;
 import com.eva.dtholiday.commons.dao.mapper.RoleMapper;
 import com.eva.dtholiday.commons.dao.mapper.UserMapper;
-import com.eva.dtholiday.commons.dao.mapper.UserRoleMapper;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
-import com.eva.dtholiday.commons.exception.BusinessException;
 import com.eva.dtholiday.security.entity.DtHolidayUser;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -69,7 +66,7 @@ public class DtHolidayUserDetailService implements UserDetailsService {
             DtHolidayUser dtUser = new DtHolidayUser(user.getId(), user.getUserName(), user.getPassword(), userAuths);
             return dtUser;
         } else {
-            throw new UsernameNotFoundException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_NO_EXIST.getMessageCN());
+            throw new UsernameNotFoundException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN());
         }
     }
 }

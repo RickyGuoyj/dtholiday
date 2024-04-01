@@ -67,10 +67,15 @@ public class MenuServiceImpl implements MenuService {
     private void convertMenuListToMenuTree(List<Menu> menuList, String node, MenuAsyncTree menuAsyncTree) {
         //说明是根节点
         if (!StringUtils.hasText(menuAsyncTree.getCode())) {
-            Menu rootMenu = menuList.stream().filter(menu -> node.equals(menu.getMenuCode())).collect(Collectors.toList()).get(0);
-            menuAsyncTree.setCode(rootMenu.getMenuCode());
-            menuAsyncTree.setName(rootMenu.getMenuName());
-            menuAsyncTree.setUrl(rootMenu.getUrl());
+           try {
+               Menu rootMenu = menuList.stream().filter(menu -> node.equals(menu.getMenuCode())).collect(Collectors.toList()).get(0);
+               menuAsyncTree.setCode(rootMenu.getMenuCode());
+               menuAsyncTree.setName(rootMenu.getMenuName());
+               menuAsyncTree.setUrl(rootMenu.getUrl());
+           }catch (Exception e){
+               log.error("无法找到根节点，{}",JSON.toJSON(menuList));
+               return;
+           }
         }
 
         //todo 每次遍历list会比遍历hashmap慢很多，可以把入参调整为map<code,menu>

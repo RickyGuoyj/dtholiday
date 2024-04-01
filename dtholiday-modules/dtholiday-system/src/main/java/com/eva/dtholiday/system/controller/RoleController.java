@@ -34,7 +34,7 @@ public class RoleController {
     }
 
     @GetMapping("/getAllMenuList")
-    public ResponseApi getAllMenuList(){
+    public ResponseApi getAllMenuList() {
         return menuService.getAllMenuList();
     }
 
@@ -50,7 +50,7 @@ public class RoleController {
 
     @PostMapping("/getRoleInfo")
     public ResponseApi getRoleInfo(@RequestBody RoleReq roleReq) {
-        return roleService.getRoleInfo(roleReq);
+        return ResponseApi.ok(roleService.getRoleInfo(roleReq));
     }
 
     @PostMapping("/deleteRole")

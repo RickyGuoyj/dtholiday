@@ -13,7 +13,7 @@ import lombok.Getter;
  * @modify by reason :{原因}
  **/
 @Getter
-public class UserAddReq {
+public class UserUpdateReq {
 
     /**
      * 用户名
@@ -21,14 +21,9 @@ public class UserAddReq {
     private String userName;
 
     /**
-     * 密码
+     * 用户编码
      */
-    private String password;
-
-    /**
-     * 密码
-     */
-    private String confirmPwd;
+    private String userCode;
 
     /**
      * 真实姓名

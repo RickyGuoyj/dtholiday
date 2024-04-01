@@ -2,15 +2,13 @@ package com.eva.dtholiday.system.controller;
 
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.PasswordReq;
 import com.eva.dtholiday.commons.dao.req.UserAddReq;
-import com.eva.dtholiday.commons.dao.resp.UserAddResp;
+import com.eva.dtholiday.commons.dao.req.UserReq;
+import com.eva.dtholiday.commons.dao.req.UserUpdateReq;
 import com.eva.dtholiday.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @describtion
@@ -29,19 +27,41 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-//    @PreAuthorize("hasAuthority('add_user')")
-    @PostMapping("/addUser")
-    public ResponseApi<UserAddResp> addUser(@RequestBody UserAddReq userAddReq) {
-        UserAddResp userAddResp = userService.addUser(userAddReq);
-        return ResponseApi.ok(userAddResp);
+    @GetMapping("/getUserList")
+    public ResponseApi getUserList() {
+        return userService.getUserList();
     }
 
-//    @PreAuthorize("hasAuthority('update_user')")
+    @PostMapping("/getUserInfo")
+    public ResponseApi getUserInfo(@RequestBody UserReq userReq) {
+        return userService.getUserInfo(userReq.getUserName());
+    }
+
+    @GetMapping("/getCurrentUserInfo")
+    public ResponseApi getCurrentUserInfo() {
+        return userService.getCurrentUserInfo();
+    }
+
+    //    @PreAuthorize("hasAuthority('add_user')")
+    @PostMapping("/addUser")
+    public ResponseApi addUser(@RequestBody UserAddReq userAddReq) {
+        return userService.addUser(userAddReq);
+    }
+
+    //    @PreAuthorize("hasAuthority('update_user')")
     @PostMapping("/updateUser")
-    public ResponseApi<UserAddResp> updateUser(@RequestBody UserAddReq userAddReq) {
-        UserAddResp userAddResp = userService.addUser(userAddReq);
-        return ResponseApi.ok(userAddResp);
+    public ResponseApi updateUser(@RequestBody UserUpdateReq userUpdateReq) {
+        return userService.updateUser(userUpdateReq);
+    }
+
+    @PostMapping("/deleteUser")
+    public ResponseApi deleteUser(@RequestBody UserReq userReq) {
+        return userService.deleteUser(userReq);
+    }
+
+    @PostMapping("/resetPwd")
+    public ResponseApi resetPwd(@RequestBody PasswordReq passwordReq) {
+        return userService.resetPwd(passwordReq);
     }
 
 }

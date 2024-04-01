@@ -1,19 +1,19 @@
-package com.eva.dtholiday.commons.dao.req;
+package com.eva.dtholiday.commons.dao.resp;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
  * @creator guoyongjie
- * @create-time 2024/3/19 14:49
+ * @create-time 2024/3/19 14:50
  * @department evangelion
  * @modificationHistory=========================逻辑或功能性重大变更记录
  * @modify by user :{修改人} :{修改时间}
  * @modify by reason :{原因}
  **/
-@Getter
-public class UserAddReq {
+@Data
+public class UserResp {
 
     /**
      * 用户名
@@ -21,14 +21,9 @@ public class UserAddReq {
     private String userName;
 
     /**
-     * 密码
+     * 用户编码
      */
-    private String password;
-
-    /**
-     * 密码
-     */
-    private String confirmPwd;
+    private String userCode;
 
     /**
      * 真实姓名
@@ -51,9 +46,9 @@ public class UserAddReq {
     private Integer gender;
 
     /**
-     * 角色编码
+     * 角色
      */
-    private String roleCode;
+    private RoleResp roleInfo;
 
     /**
      * 部门领导姓名
@@ -74,5 +69,8 @@ public class UserAddReq {
      * 公司名
      */
     private String belongCompanyPhone;
+
+
+
 
 }

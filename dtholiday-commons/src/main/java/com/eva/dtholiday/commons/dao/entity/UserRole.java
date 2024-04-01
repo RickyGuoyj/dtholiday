@@ -23,12 +23,12 @@ public class UserRole extends Model<UserRole> {
     /**
      * 用户编码
      */
-    private Integer userCode;
+    private String userCode;
 
     /**
      * 角色编码
      */
-    private Integer roleCode;
+    private String roleCode;
 
     public static final String USER_CODE = "user_code";
 

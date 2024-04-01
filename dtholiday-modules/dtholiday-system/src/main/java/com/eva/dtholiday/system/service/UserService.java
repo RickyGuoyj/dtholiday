@@ -1,7 +1,10 @@
 package com.eva.dtholiday.system.service;
 
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.PasswordReq;
 import com.eva.dtholiday.commons.dao.req.UserAddReq;
-import com.eva.dtholiday.commons.dao.resp.UserAddResp;
+import com.eva.dtholiday.commons.dao.req.UserReq;
+import com.eva.dtholiday.commons.dao.req.UserUpdateReq;
 
 /**
  *
@@ -16,5 +19,17 @@ import com.eva.dtholiday.commons.dao.resp.UserAddResp;
  **/
 public interface UserService {
 
-    UserAddResp addUser(UserAddReq userAddReq);
+    ResponseApi addUser(UserAddReq userAddReq);
+
+    ResponseApi getUserList();
+
+    ResponseApi getUserInfo(String username);
+
+    ResponseApi getCurrentUserInfo();
+
+    ResponseApi updateUser(UserUpdateReq userUpdateReq);
+
+    ResponseApi deleteUser(UserReq userReq);
+
+    ResponseApi resetPwd(PasswordReq passwordReq);
 }

@@ -24,7 +24,7 @@ public enum BusinessErrorCodeEnum {
 
     UNAUTHORIZED("401", "invalid token", "Token无效或过期,请重新登录."),
 
-    LOGIN_ACCOUNT_NO_EXIST("0xdcb00100", "login account no exsit", "用户不存在"),
+    USER_NOT_EXIST("0xdcb00100", "user does not exist", "用户不存在"),
 
     LOGIN_ACCOUNT_OR_PASSWORD_ERROR("0xdcb00101", "check username or password", "用户名或密码错误"),
 
@@ -34,9 +34,17 @@ public enum BusinessErrorCodeEnum {
 
     ROLE_NAME_EXIST("0xdcb00104", "role name has already existed", "角色名已存在"),
 
-    ROLE_NOT_EXIST("0xdcb00105", "role does not exist", "角色不存在"),
+    USER_NAME_EXIST("0xdcb00105", "user name has already existed", "用户名已存在"),
 
-    ROLE_BINDING_WITH_USER("0xdcb00106", "role is binding with user", "该角色下存在用户，无法删除"),
+    ROLE_NOT_EXIST("0xdcb00106", "role does not exist", "角色不存在"),
+
+    ROLE_BINDING_WITH_USER("0xdcb00107", "role is binding with user", "该角色下存在用户，无法删除"),
+
+    PASSWORD_CHECK_ERROR("0xdcb00108", "check password error", "两次密码不一致"),
+
+    OLD_PASSWORD_CHECK_ERROR("0xdcb00109", "check old password error", "旧密码错误"),
+
+    USER_IS_ALIVE("0xdcb00110", "use is alive", "用户正在登录中，无法对其操作"),
 
     ;
 

@@ -78,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
             throw new BusinessException(BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getMessageCN(), BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getCode());
         }
         //角色同名校验
-        Role oldRole = roleMapper.selectOne(new QueryWrapper<Role>().eq("role_name", roleReq.getName()));
+        Role oldRole = roleMapper.selectOne(new QueryWrapper<Role>().eq(Role.ROLE_NAME, roleReq.getName()));
         if (Objects.nonNull(oldRole)) {
             throw new BusinessException(BusinessErrorCodeEnum.ROLE_NAME_EXIST.getMessageCN(), BusinessErrorCodeEnum.ROLE_NAME_EXIST.getCode());
         }
@@ -110,14 +110,20 @@ public class RoleServiceImpl implements RoleService {
         if (!StringUtils.hasText(roleReq.getName()) || CollectionUtils.isEmpty(roleReq.getMenuCodes())) {
             throw new BusinessException(BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getMessageCN(), BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getCode());
         }
-        //角色同名校验
-        Role oldRole = roleMapper.selectOne(new QueryWrapper<Role>().eq(Role.ROLE_NAME, roleReq.getName()));
-        if (Objects.nonNull(oldRole) && !oldRole.getRoleCode().equals(roleReq.getCode())) {
-            throw new BusinessException(BusinessErrorCodeEnum.ROLE_NAME_EXIST.getMessageCN(), BusinessErrorCodeEnum.ROLE_NAME_EXIST.getCode());
+        //角色存在性校验
+        Role oldRole = roleMapper.selectOne(new QueryWrapper<Role>().eq(Role.ROLE_CODE, roleReq.getCode()));
+        if (Objects.isNull(oldRole)) {
+            throw new BusinessException(BusinessErrorCodeEnum.ROLE_NOT_EXIST.getMessageCN(), BusinessErrorCodeEnum.ROLE_NOT_EXIST.getCode());
         }
-
+        if (!oldRole.getRoleName().equals(roleReq.getName())) {
+            //角色同名校验
+            Role nameRole = roleMapper.selectOne(new QueryWrapper<Role>().eq(Role.ROLE_NAME, roleReq.getName()));
+            if (Objects.nonNull(nameRole) && !nameRole.getRoleCode().equals(roleReq.getCode())) {
+                throw new BusinessException(BusinessErrorCodeEnum.ROLE_NAME_EXIST.getMessageCN(), BusinessErrorCodeEnum.ROLE_NAME_EXIST.getCode());
+            }
+            oldRole.setRoleName(roleReq.getName());
+        }
         //更新角色
-        oldRole.setRoleName(roleReq.getName());
         oldRole.setUpdateTime(new Date());
         roleMapper.updateById(oldRole);
 
@@ -139,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResponseApi getRoleInfo(RoleReq roleReq) {
+    public RoleResp getRoleInfo(RoleReq roleReq) {
         if (!StringUtils.hasText(roleReq.getCode())) {
             throw new BusinessException(BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getMessageCN(), BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getCode());
         }
@@ -151,7 +157,7 @@ public class RoleServiceImpl implements RoleService {
         roleResp.setCode(role.getRoleCode());
         roleResp.setName(role.getRoleName());
         roleResp.setMenuAsyncTree(menuService.getMenuListByRoleCode(role.getRoleCode()));
-        return ResponseApi.ok(roleResp);
+        return roleResp;
     }
 
     @Override

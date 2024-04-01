@@ -4,7 +4,10 @@ import com.eva.dtholiday.security.entity.DtHolidayUser;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @describtion
@@ -34,5 +37,9 @@ public class TokenCache {
 
     public static void putTokenUserIdCache(String token, DtHolidayUser tUser) {
         tokenUserIdCache.put(token, tUser);
+    }
+
+    public static List<DtHolidayUser> getAllAliveUser() {
+        return new ArrayList<>(tokenUserIdCache.asMap().values());
     }
 }

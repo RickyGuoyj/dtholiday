@@ -2,6 +2,7 @@ package com.eva.dtholiday.system.service;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.RoleReq;
+import com.eva.dtholiday.commons.dao.resp.RoleResp;
 
 /**
  * @describtion
@@ -20,7 +21,7 @@ public interface RoleService {
 
     ResponseApi updateRole(RoleReq roleReq);
 
-    ResponseApi getRoleInfo(RoleReq roleReq);
+    RoleResp getRoleInfo(RoleReq roleReq);
 
     ResponseApi deleteRole(RoleReq roleReq);
 }
