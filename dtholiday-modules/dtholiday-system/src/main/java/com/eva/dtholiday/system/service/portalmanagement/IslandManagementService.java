@@ -12,28 +12,28 @@ public interface IslandManagementService {
      *
      * @param IslandManagementReq
      */
-    void addIslandManagement(IslandManagementReq IslandManagementReq);
+    void islandManagementAdd(IslandManagementReq IslandManagementReq);
 
     /**
      * 更新
      *
      * @param IslandManagementReq
      */
-    void updateIslandManagement(IslandManagementReq IslandManagementReq);
+    void islandManagementUpdate(IslandManagementReq IslandManagementReq);
 
     /**
      * 删除
      *
      * @param islandIndexCode
      */
-    void deleteIslandManagement(String islandIndexCode);
+    void islandManagementDelete(String islandIndexCode);
 
     /**
      * 查询列表
      *
      * @return 响应
      */
-    ResponseApi queryIslandManagementList();
+    ResponseApi islandManagementQueryList();
 
     /**
      * 查询详情
@@ -41,6 +41,6 @@ public interface IslandManagementService {
      * @param islandIndexCode
      * @return 响应
      */
-    ResponseApi queryIslandManagementDetail(String islandIndexCode);
+    ResponseApi islandManagementQueryDetail(String islandIndexCode);
 
 }

@@ -8,6 +8,10 @@ import java.util.List;
 @Data
 public class IslandManagementReq {
     /**
+     * 主键
+     */
+    private String islandIndexCode;
+    /**
      * 岛屿中文名
      */
     private String islandCnName;

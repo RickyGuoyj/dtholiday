@@ -8,28 +8,29 @@ import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService
 
 @Service
 public class IslandManagementServiceImpl implements IslandManagementService {
+
     @Override
-    public void addIslandManagement(IslandManagementReq islandManagementReq) {
+    public void islandManagementAdd(IslandManagementReq IslandManagementReq) {
 
     }
 
     @Override
-    public void updateIslandManagement(IslandManagementReq islandManagementReq) {
+    public void islandManagementUpdate(IslandManagementReq IslandManagementReq) {
 
     }
 
     @Override
-    public void deleteIslandManagement(String islandIndexCode) {
+    public void islandManagementDelete(String islandIndexCode) {
 
     }
 
     @Override
-    public ResponseApi queryIslandManagementList() {
+    public ResponseApi islandManagementQueryList() {
         return null;
     }
 
     @Override
-    public ResponseApi queryIslandManagementDetail(String islandIndexCode) {
+    public ResponseApi islandManagementQueryDetail(String islandIndexCode) {
         return null;
     }
 }
