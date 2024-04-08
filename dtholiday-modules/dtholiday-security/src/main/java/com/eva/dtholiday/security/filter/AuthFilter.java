@@ -79,7 +79,7 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     private boolean isIgnoreHttpUrls(HttpServletRequest request) {
-        return request.getServletPath().contains("portal");
+        return request.getServletPath().contains("/portal/");
     }
 
     private boolean isLoginRequest(HttpServletRequest request) {

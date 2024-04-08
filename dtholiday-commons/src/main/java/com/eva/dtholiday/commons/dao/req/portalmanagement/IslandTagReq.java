@@ -9,7 +9,7 @@ public class IslandTagReq {
     /**
      * 主键
      */
-    private String tagIndexCode;
+    private int tagIndexCode;
     /**
      * 标签名称
      */
@@ -17,7 +17,7 @@ public class IslandTagReq {
     /**
      * 标签图片
      */
-    private String tagUrl;
+    private String tagImage;
 
     /**
      * 创建时间
@@ -27,4 +27,13 @@ public class IslandTagReq {
      * 更新时间
      */
     private Timestamp updateTime;
+
+    /**
+     * 当前页
+     */
+    private int page;
+    /**
+     * 每页条数
+     */
+    private int pageSize;
 }

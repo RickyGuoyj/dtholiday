@@ -10,49 +10,37 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * @author fengsuohua
- */
 @Data
-@TableName("dt_island_recommendation")
+@TableName("dt_island_tag_relation")
 @EqualsAndHashCode(callSuper = true)
-
-public class IslandRecommendation extends Model<IslandRecommendation> {
+public class IslandTagRelation extends Model<IslandTagRelation> {
     private static final long serialVersionUID = 1L;
-
     /**
      * 主键
      */
-    @TableId(value = "recommendation_index_code", type = IdType.AUTO)
-    private Integer recommendationIndexCode;
+    @TableId(value = "relation_index_code", type = IdType.AUTO)
+    private Integer relationIndexCode;
 
     /**
-     * 岛屿中文名
-     */
-    private String islandCnName;
-
-    /**
-     * 岛屿英文名
-     */
-    private String islandEnName;
-
-    /**
-     * 岛屿唯一标识码
+     * 岛屿管理主键
      */
     private int islandIndexCode;
 
     /**
-     * 推荐文件路径或相关文件信息
+     * 标签主键
      */
-    private String recommendationImage;
+    private int tagIndexCode;
 
     /**
-     * 创建时间戳，默认为当前时间
+     * 创建时间
      */
     private Timestamp createTime;
 
     /**
-     * 更新时间戳，默认为当前时间
+     * 更新时间
      */
     private Timestamp updateTime;
+
+    public static final String ISLAND_INDEX_CODE = "island_index_code";
+    public static final String TAG_INDEX_CODE = "tag_index_code";
 }

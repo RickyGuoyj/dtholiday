@@ -14,45 +14,43 @@ import lombok.EqualsAndHashCode;
  * @author fengsuohua
  */
 @Data
-@TableName("dt_island_recommendation")
 @EqualsAndHashCode(callSuper = true)
-
-public class IslandRecommendation extends Model<IslandRecommendation> {
+@TableName("dt_island_article")
+public class IslandArticle extends Model<IslandArticle> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 主键
      */
-    @TableId(value = "recommendation_index_code", type = IdType.AUTO)
-    private Integer recommendationIndexCode;
+    @TableId(value = "article_index_code", type = IdType.AUTO)
+    private Integer articleIndexCode;
 
     /**
-     * 岛屿中文名
+     * 标题
      */
-    private String islandCnName;
-
+    private String title;
     /**
-     * 岛屿英文名
+     * 内容
      */
-    private String islandEnName;
-
+    private String content;
     /**
-     * 岛屿唯一标识码
+     * 是否显示
      */
-    private int islandIndexCode;
-
+    private String isDisplay;
     /**
-     * 推荐文件路径或相关文件信息
+     * 关联图片
      */
-    private String recommendationImage;
-
+    private String articleImages;
+   /**
+     * 岛屿管理主键
+     */
+    private String islandIndexCode;
     /**
-     * 创建时间戳，默认为当前时间
+     * 创建时间
      */
     private Timestamp createTime;
-
     /**
-     * 更新时间戳，默认为当前时间
+     * 更新时间
      */
     private Timestamp updateTime;
 }

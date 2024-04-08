@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandManagementMapper">
+
+
+    <select id="queryIslandManagementList" resultType="com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagementTag" parameterType="Map">
+        select island.island_index_code,
+        island.island_en_name,
+        island.island_cn_name,
+        island.island_desc,
+        tag.tag_name,
+        tag.tag_index_code
+        from dt_island as island
+        left join dt_island_tag_relation as relation on relation.island_index_code = island.island_index_code
+        left join dt_island_tag as tag on tag.tag_index_code = relation.tag_index_code
+        <where>
+            <if test="islandEnName != null and islandEnName != ''">
+                and island.island_en_name like concat('%',#{islandEnName},'%')
+            </if>
+            <if test="islandCnName != null and islandCnName != ''">
+                and island.island_cn_name like concat('%',#{islandCnName},'%')
+            </if>
+            <if test="tagIndexCodeList != null and tagIndexCodeList.size() >0 ">
+                and tag.tag_index_code in
+                <foreach collection="tagIndexCodeList" item="tagIndexCode" open="(" separator="," close=")">
+                    #{tagIndexCode}
+                </foreach>
+            </if>
+        </where>
+        LIMIT #{page},#{pageSize}
+    </select>
+</mapper>

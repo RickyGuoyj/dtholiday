@@ -5,50 +5,74 @@ CREATE DATABASE IF NOT EXISTS dtholiday;
 USE dtholiday;
 
 -- 创建表（缺少注释）
-CREATE TABLE IF NOT EXISTS dt_island(
-    island_index_code  VARCHAR(64) NOT NULL PRIMARY KEY,
-    island_cn_name VARCHAR(64),
-    island_en_name VARCHAR(64),
-    island_tags VARCHAR(255),
-    island_desc text,
-    island_intro text,
-    island_pic VARCHAR(255),
-    island_file VARCHAR(255),
-    island_quotation_pdf_index_codes VARCHAR(255),
-    island_quotation_pic_index_codes VARCHAR(255),
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+-- 岛屿管理表
+CREATE TABLE IF NOT EXISTS `dt_island` (
+                             `island_index_code` int NOT NULL,
+                             `island_cn_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+                             `island_en_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+                             `island_desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                             `island_intro` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                             `island_image` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+                             `island_file` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+                             `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                             `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                             PRIMARY KEY (`island_index_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- 岛屿标签表
+CREATE TABLE `dt_island_tag` (
+                                 `tag_index_code` int NOT NULL AUTO_INCREMENT,
+                                 `tag_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                                 `tag_image` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                 `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                 `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                 PRIMARY KEY (`tag_index_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS dt_island_tag(
-    tag_index_code VARCHAR(64) NOT NULL PRIMARY KEY,
-    tag_name  VARCHAR(64) NOT NULL,
-    tag_url VARCHAR(255),
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+-- 岛屿管理-=便签关联表
+CREATE TABLE IF NOT EXISTS `dt_island_tag_relation` (
+                                          `relation_index_code` int NOT NULL AUTO_INCREMENT,
+                                          `island_index_code` int NOT NULL,
+                                          `tag_index_code` int NOT NULL,
+                                          `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                          `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                          PRIMARY KEY (`relation_index_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- 岛屿报价单表
+CREATE TABLE `dt_island_quotation` (
+                                       `quotation_index_code` int NOT NULL AUTO_INCREMENT,
+                                       `island_index_code` int NOT NULL,
+                                       `quotation_file` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                       `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                       `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                       PRIMARY KEY (`quotation_index_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS dt_island_quotation(
-    quotation_index_code VARCHAR(64) NOT NULL PRIMARY KEY,
-    island_index_code  VARCHAR(64) NOT NULL,
-    quotation_file VARCHAR(255),
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+-- 岛屿推荐表
+CREATE TABLE IF NOT EXISTS `dt_island_recommendation` (
+                                            `recommendation_index_code` int NOT NULL AUTO_INCREMENT,
+                                            `island_cn_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                            `island_en_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                            `island_index_code` int DEFAULT NULL,
+                                            `recommendation_image` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                            `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                            `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                            PRIMARY KEY (`recommendation_index_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-CREATE TABLE IF NOT EXISTS dt_island_recommendation(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    island_cn_name  VARCHAR(64),
-    island_en_name VARCHAR(64),
-    island_index_code VARCHAR(64),
-    recommendation_file VARCHAR(255),
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-
+-- 岛屿文章表
+CREATE TABLE IF NOT EXISTS `dt_island_article` (
+                                     `article_index_code` int NOT NULL AUTO_INCREMENT,
+                                     `title` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                     `content` text COLLATE utf8mb4_general_ci,
+                                     `is_display` int DEFAULT NULL,
+                                     `article_images` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                                     `island_index_code` int DEFAULT NULL,
+                                     `create_time` timestamp  NULL DEFAULT CURRENT_TIMESTAMP,
+                                     `update_time` timestamp  NULL DEFAULT CURRENT_TIMESTAMP,
+                                     PRIMARY KEY (`article_index_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS sys_user (
     id INT AUTO_INCREMENT PRIMARY KEY,

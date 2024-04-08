@@ -1,11 +1,14 @@
 package com.eva.dtholiday.commons.dao.mapper.portalmanagement;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagement;
-
-import java.util.List;
+import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagementTag;
 
 /**
  * @author fengsuohua
@@ -13,28 +16,9 @@ import java.util.List;
 @Mapper
 public interface IslandManagementMapper extends BaseMapper<IslandManagement> {
     /**
-     * 查询列表
+     * 获取所有海岛信息
+     *
+     * @return
      */
-    List<IslandManagement> queryIslandManagementList();
-
-    /**
-     * 查询详情
-     */
-    IslandManagement queryIslandManagementDetail(String islandIndexCode);
-
-    /**
-     * 添加
-     */
-    int addIslandManagement(IslandManagement islandManagement);
-
-    /**
-     * 修改
-     */
-    int updateIslandManagement(IslandManagement islandManagement);
-
-    /**
-     * 删除
-     */
-    int deleteIslandManagement(String islandIndexCode);
-
+    List<IslandManagementTag> queryIslandManagementList(@Param("map") Map<String, Object> map);
 }

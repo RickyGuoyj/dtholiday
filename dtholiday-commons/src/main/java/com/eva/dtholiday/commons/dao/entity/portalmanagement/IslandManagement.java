@@ -1,8 +1,9 @@
 package com.eva.dtholiday.commons.dao.entity.portalmanagement;
 
 import java.sql.Timestamp;
-import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
@@ -21,7 +22,8 @@ public class IslandManagement extends Model<IslandManagement> {
     /**
      * 主键
      */
-    private String islandIndexCode;
+    @TableId(value = "island_index_code", type = IdType.AUTO)
+    private Integer islandIndexCode;
 
     /**
      * 岛屿中文名
@@ -31,10 +33,6 @@ public class IslandManagement extends Model<IslandManagement> {
      * 岛屿英文名
      */
     private String islandEnName;
-    /**
-     * 岛屿标签
-     */
-    private String islandTags;
     /**
      * 岛屿描述
      */
@@ -46,19 +44,11 @@ public class IslandManagement extends Model<IslandManagement> {
     /**
      * 岛屿图片
      */
-    private String islandPic;
+    private String islandImage;
     /**
      * 岛屿文件
      */
     private String islandFile;
-    /**
-     * 岛屿关联的报价单pdf
-     */
-    private List<String> islandQuotationPdfIndexCodes;
-    /**
-     * 岛屿关联的报价单图片
-     */
-    private List<String> islandQuotationPicIndexCodes;
     /**
      * 创建时间
      */

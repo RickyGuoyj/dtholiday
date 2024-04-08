@@ -22,7 +22,7 @@ mybatis-plus:
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource #数据源为druid
-    driver-class-name: com.mysql.jdbc.Driver #数据库驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver #数据库驱动
     url: jdbc:mysql://47.116.36.30:3306/dtholiday?useSSL=false&useUnicode=true&characterEncoding=utf-8&servetTimeZone=Asia/Shanghai
     username: root
     password: DFfsh83374861+

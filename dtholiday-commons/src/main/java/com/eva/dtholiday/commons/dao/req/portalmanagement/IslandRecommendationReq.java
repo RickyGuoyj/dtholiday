@@ -12,7 +12,7 @@ public class IslandRecommendationReq {
     /**
      * 主键id
      */
-    private Integer id;
+    private Integer recommendationIndexCode;
 
     /**
      * 岛屿中文名
@@ -27,12 +27,12 @@ public class IslandRecommendationReq {
     /**
      * 岛屿唯一标识码
      */
-    private String islandIndexCode;
+    private int islandIndexCode;
 
     /**
      * 推荐文件路径或相关文件信息
      */
-    private String recommendationFile;
+    private String recommendationImage;
 
     /**
      * 创建时间戳，默认为当前时间
@@ -43,4 +43,7 @@ public class IslandRecommendationReq {
      * 更新时间戳，默认为当前时间
      */
     private Timestamp updateTime;
+
+    private int page;
+    private int pageSize;
 }
