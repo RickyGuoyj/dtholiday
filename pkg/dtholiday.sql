@@ -7,7 +7,7 @@ USE dtholiday;
 -- 创建表（缺少注释）
 -- 岛屿管理表
 CREATE TABLE IF NOT EXISTS `dt_island` (
-                             `island_index_code` int NOT NULL,
+                             `island_index_code` int NOT NULL AUTO_INCREMENT,
                              `island_cn_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
                              `island_en_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
                              `island_desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,

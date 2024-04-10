@@ -21,4 +21,6 @@ public interface IslandManagementMapper extends BaseMapper<IslandManagement> {
      * @return
      */
     List<IslandManagementTag> queryIslandManagementList(@Param("map") Map<String, Object> map);
+
+    int  queryIslandManagementListCount(@Param("map") Map<String, Object> map);
 }

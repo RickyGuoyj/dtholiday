@@ -43,21 +43,17 @@ public class IslandManagementServiceImpl implements IslandManagementService {
     public ResponseApi islandManagementAdd(IslandManagementReq islandManagementReq) {
         ResponseApi response = ResponseApi.ok();
         IslandManagement islandManagement = new IslandManagement();
-        try {
-            // 插入主表
-            convertManagementEntity(islandManagementReq, islandManagement);
-            int insert = islandManagementMapper.insert(islandManagement);
-            // 插入关联表
-            List<IslandTagRelation> islandTagRelationList = convertTagRelationEntityList(islandManagementReq, islandManagement);
-            islandTagRelationMapper.insertBatch(islandTagRelationList);
-            // 插入pdf报价单
-            List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq, islandManagement);
-            islandQuotationMapper.insertBatch(islandQuotationList);
-            response.setData(insert);
-        } catch (Exception e) {
-            response = ResponseApi.error(null, BusinessErrorCodeEnum.ISLAND_MANAGEMENT_ADD_FAIL.getCode(),
-                BusinessErrorCodeEnum.ISLAND_MANAGEMENT_ADD_FAIL.getMessageCN());
-        }
+        // 插入主表
+        convertManagementEntity(islandManagementReq, islandManagement);
+        int insert = islandManagementMapper.insert(islandManagement);
+        // 插入关联表
+        List<IslandTagRelation> islandTagRelationList =
+            convertTagRelationEntityList(islandManagementReq, islandManagement);
+        islandTagRelationMapper.insertBatch(islandTagRelationList);
+        // 插入pdf报价单
+        List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq, islandManagement);
+        islandQuotationMapper.insertBatch(islandQuotationList);
+        response.setData(insert);
         return response;
     }
 
@@ -140,22 +136,27 @@ public class IslandManagementServiceImpl implements IslandManagementService {
         islandManagementQueryList(IslandManagementReq islandManagementReq) {
         if (islandManagementReq.getPage() > 0 && islandManagementReq.getPageSize() > 0) {
             HashMap<String, Object> map = new HashMap<>();
-            map.put("page", islandManagementReq.getPage());
-            map.put("pageSize", islandManagementReq.getPageSize());
+
             map.put("islandCnName", islandManagementReq.getIslandCnName());
             map.put("islandEnName", islandManagementReq.getIslandEnName());
-            map.put("tagIndexCodeList",islandManagementReq.getIslandIndexCode());
-            List<IslandManagementTag> islandManagementTagInfos =
-                islandManagementMapper.queryIslandManagementList(map);
+            map.put("tagIndexCodeList", islandManagementReq.getIslandTagList());
+            int count = islandManagementMapper.queryIslandManagementListCount(map);
+            // 计算分页
+            int page = count / islandManagementReq.getPageSize() == 0 ? count / islandManagementReq.getPageSize()
+                : count / islandManagementReq.getPageSize() + 1;
+            map.put("page", (islandManagementReq.getPage() - 1) * islandManagementReq.getPageSize());
+            map.put("pageSize", islandManagementReq.getPageSize());
+            List<IslandManagementTag> islandManagementTagInfos = islandManagementMapper.queryIslandManagementList(map);
             // 按照islandIndexCode分组,其中的islandCnName进行拼接
-            List<IslandManagementTagInfo> islandManagementTagInfoList =
-               new ArrayList<>();
-            Map<Integer,IslandManagementTagInfo> islandManagementTagInfoMap = new HashMap<>();
+            List<IslandManagementTagInfo> islandManagementTagInfoList = new ArrayList<>();
+            Map<Integer, IslandManagementTagInfo> islandManagementTagInfoMap = new HashMap<>();
             islandManagementTagInfos.forEach(item -> {
-                if(islandManagementTagInfoMap.containsKey(item.getIslandIndexCode())){
-                    IslandManagementTagInfo islandManagementTagInfo = islandManagementTagInfoMap.get(item.getIslandIndexCode());
-                    islandManagementTagInfo.setIslandCnName(islandManagementTagInfo.getIslandCnName()+","+item.getIslandCnName());
-                }else{
+                if (islandManagementTagInfoMap.containsKey(item.getIslandIndexCode())) {
+                    IslandManagementTagInfo islandManagementTagInfo =
+                        islandManagementTagInfoMap.get(item.getIslandIndexCode());
+                    islandManagementTagInfo
+                        .setIslandCnName(islandManagementTagInfo.getIslandCnName() + "," + item.getIslandCnName());
+                } else {
                     IslandManagementTagInfo info = new IslandManagementTagInfo();
                     info.setIslandFile(item.getIslandFile());
                     info.setIslandCnName(item.getIslandCnName());
@@ -163,11 +164,11 @@ public class IslandManagementServiceImpl implements IslandManagementService {
                     info.setIslandEnName(item.getIslandEnName());
                     info.setTagName(item.getTagName());
                     info.setIslandIndexCode(item.getIslandIndexCode());
-                    islandManagementTagInfoMap.put(item.getIslandIndexCode(),info);
+                    islandManagementTagInfoMap.put(item.getIslandIndexCode(), info);
                 }
             });
-            //map转list
-            islandManagementTagInfoMap.forEach((k,v)->{
+            // map转list
+            islandManagementTagInfoMap.forEach((k, v) -> {
                 islandManagementTagInfoList.add(v);
             });
 

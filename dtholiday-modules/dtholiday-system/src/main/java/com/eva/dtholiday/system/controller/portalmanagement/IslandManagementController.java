@@ -35,7 +35,7 @@ public class IslandManagementController {
     }
 
     @PostMapping("/querylist")
-    public ResponseApi<List<IslandManagement>> islandManagementQueryList(IslandManagementReq islandManagementReq) {
+    public ResponseApi<List<IslandManagement>> islandManagementQueryList(@RequestBody  IslandManagementReq islandManagementReq) {
         return islandManagementService.islandManagementQueryList(islandManagementReq);
     }
 
