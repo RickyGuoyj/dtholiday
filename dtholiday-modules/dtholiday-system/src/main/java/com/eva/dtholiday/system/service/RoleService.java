@@ -15,7 +15,7 @@ import com.eva.dtholiday.commons.dao.resp.RoleResp;
  * @modify by reason :{原因}
  **/
 public interface RoleService {
-    ResponseApi getRoleList();
+    ResponseApi getRoleList(RoleReq roleReq);
 
     ResponseApi addRole(RoleReq roleReq);
 

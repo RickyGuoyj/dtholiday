@@ -27,9 +27,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/getUserList")
-    public ResponseApi getUserList() {
-        return userService.getUserList();
+    @PostMapping("/getUserList")
+    public ResponseApi getUserList(@RequestBody UserReq userReq) {
+        return userService.getUserList(userReq);
     }
 
     @PostMapping("/getUserInfo")
@@ -62,6 +62,11 @@ public class UserController {
     @PostMapping("/resetPwd")
     public ResponseApi resetPwd(@RequestBody PasswordReq passwordReq) {
         return userService.resetPwd(passwordReq);
+    }
+
+    @PostMapping("/changeStatus")
+    public ResponseApi changeStatus(@RequestBody UserReq userReq) {
+        return userService.changeStatus(userReq);
     }
 
 }

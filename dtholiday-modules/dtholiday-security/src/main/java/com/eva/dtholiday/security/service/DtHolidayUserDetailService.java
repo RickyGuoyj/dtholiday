@@ -1,6 +1,7 @@
 package com.eva.dtholiday.security.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.eva.dtholiday.commons.constant.DtHolidayConstants;
 import com.eva.dtholiday.commons.dao.entity.Menu;
 import com.eva.dtholiday.commons.dao.entity.Role;
 import com.eva.dtholiday.commons.dao.entity.User;
@@ -8,6 +9,7 @@ import com.eva.dtholiday.commons.dao.mapper.MenuMapper;
 import com.eva.dtholiday.commons.dao.mapper.RoleMapper;
 import com.eva.dtholiday.commons.dao.mapper.UserMapper;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
+import com.eva.dtholiday.commons.exception.BusinessException;
 import com.eva.dtholiday.security.entity.DtHolidayUser;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +55,10 @@ public class DtHolidayUserDetailService implements UserDetailsService {
         //根据用户名获取用户
         User user = userMapper.selectOne(new QueryWrapper<User>().eq(User.USER_NAME, username));
         if (user != null) {
+            if (Objects.equals(user.getStatus(), DtHolidayConstants.USER_STATUS_DISABLE)){
+//                throw new UsernameNotFoundException(BusinessErrorCodeEnum.USER_IS_DISABLED.getMessageCN());
+                throw new BusinessException(BusinessErrorCodeEnum.USER_IS_DISABLED.getMessageCN(), BusinessErrorCodeEnum.USER_IS_DISABLED.getCode());
+            }
             // 根据用户获取角色（目前只允许一个用户对应一个角色）
             List<Role> roleList = roleMapper.selectRoleByUserCode(user.getUserCode());
             // 根据角色获取权限(type F 是接口，C是菜单)
@@ -66,7 +73,8 @@ public class DtHolidayUserDetailService implements UserDetailsService {
             DtHolidayUser dtUser = new DtHolidayUser(user.getId(), user.getUserName(), user.getPassword(), userAuths);
             return dtUser;
         } else {
-            throw new UsernameNotFoundException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN());
+//            throw new UsernameNotFoundException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN());
+            throw new BusinessException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN(), BusinessErrorCodeEnum.USER_NOT_EXIST.getCode());
         }
     }
 }

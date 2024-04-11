@@ -32,6 +32,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,8 +72,32 @@ public class UserServiceImpl implements UserService {
     private HttpServletRequest httpServletRequest;
 
     @Override
-    public ResponseApi getUserList() {
-        List<User> userList = userMapper.selectList(null);
+    public ResponseApi getUserList(UserReq userReq) {
+        List<User> userList = new ArrayList<>();
+        // 如果用户名不为空，则根据用户名模糊匹配用户
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(userReq.getUserName())) {
+            userQueryWrapper.like(User.USER_NAME, userReq.getUserName());
+        }
+        if (StringUtils.hasText(userReq.getNickname())) {
+            userQueryWrapper.like(User.NICK_NAME, userReq.getNickname());
+        }
+        if (StringUtils.hasText(userReq.getUserName())) {
+            userQueryWrapper.like(User.BELONG_COMPANY, userReq.getBelongCompany());
+        }
+
+        userList = userMapper.selectList(userQueryWrapper);
+        // 如果角色不为空，则根据角色找用户编码
+        if (!CollectionUtils.isEmpty(userReq.getRoleCode())) {
+            QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+            userRoleQueryWrapper.in(UserRole.ROLE_CODE, userReq.getRoleCode());
+            List<UserRole> userRoleList = userRoleMapper.selectList(userRoleQueryWrapper);
+            // 获取用户编码
+            List<String> inRoleUserList = userRoleList.stream().map(UserRole::getUserCode).collect(Collectors.toList());
+            // 筛出用户编码对应的用户
+            userList = userList.stream().filter(user -> inRoleUserList.contains(user.getUserCode())).collect(Collectors.toList());
+        }
+
         if (CollectionUtils.isEmpty(userList)) {
             return ResponseApi.ok();
         }
@@ -222,8 +247,10 @@ public class UserServiceImpl implements UserService {
     public ResponseApi deleteUser(UserReq userReq) {
         // 校验用户是否正在登录，如果登录则不让删
         List<DtHolidayUser> aliveUser = TokenCache.getAllAliveUser();
-        if (aliveUser.stream().anyMatch(user -> user.getUsername().equals(userReq.getUserName()))) {
-            throw new BusinessException(BusinessErrorCodeEnum.USER_IS_ALIVE.getMessageCN(), BusinessErrorCodeEnum.USER_IS_ALIVE.getCode());
+        if (!CollectionUtils.isEmpty(userReq.getUserNames())) {
+            if (aliveUser.stream().anyMatch(user -> userReq.getUserNames().contains(user.getUsername()))) {
+                throw new BusinessException(BusinessErrorCodeEnum.USER_IS_ALIVE.getMessageCN(), BusinessErrorCodeEnum.USER_IS_ALIVE.getCode());
+            }
         }
         User user = userMapper.selectOne(new QueryWrapper<User>().eq(User.USER_NAME, userReq.getUserName()));
         if (Objects.nonNull(user)) {
@@ -259,5 +286,18 @@ public class UserServiceImpl implements UserService {
         oldUser.setPassword(passwordEncoder.encode(passwordReq.getNewPwd()));
         userMapper.updateById(oldUser);
         return ResponseApi.ok("密码修改成功");
+    }
+
+    @Override
+    public ResponseApi changeStatus(UserReq userReq) {
+        if (StringUtils.hasText(userReq.getUserName()) && userReq.getStatus() != null) {
+            User user = userMapper.selectOne(new QueryWrapper<User>().eq(User.USER_NAME, userReq.getUserName()));
+            if (Objects.nonNull(user)) {
+                user.setStatus(userReq.getStatus());
+                userMapper.updateById(user);
+                return ResponseApi.ok("状态修改成功");
+            }
+        }
+        return ResponseApi.error("状态修改失败");
     }
 }

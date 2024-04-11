@@ -2,6 +2,8 @@ package com.eva.dtholiday.commons.dao.req;
 
 import lombok.Getter;
 
+import java.util.List;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -19,5 +21,30 @@ public class UserReq {
      * 用户名
      */
     private String userName;
+
+    /**
+     * 姓名
+     */
+    private String nickname;
+
+    /**
+     * 角色编码
+     */
+    private List<String> roleCode;
+
+    /**
+     * 所属公司
+     */
+    private String belongCompany;
+
+    /**
+     * 用户名
+     */
+    private List<String> userNames;
+
+    /**
+     * 用户名
+     */
+    private Integer status;
 
 }

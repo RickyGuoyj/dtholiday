@@ -21,7 +21,7 @@ public interface UserService {
 
     ResponseApi addUser(UserAddReq userAddReq);
 
-    ResponseApi getUserList();
+    ResponseApi getUserList(UserReq userReq);
 
     ResponseApi getUserInfo(String username);
 
@@ -32,4 +32,6 @@ public interface UserService {
     ResponseApi deleteUser(UserReq userReq);
 
     ResponseApi resetPwd(PasswordReq passwordReq);
+
+    ResponseApi changeStatus(UserReq userReq);
 }

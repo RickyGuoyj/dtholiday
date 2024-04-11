@@ -17,6 +17,11 @@ public enum BusinessErrorCodeEnum {
     /**
      * 错误码说明 例子：0x32104444 分割：0x 321 0 4444 0x :16进制标识 321 :组件标识 0xd50 04444 :组件错误码
      */
+    SUCCESS("0", "SUCCESS", "成功"),
+
+    FAIL("1", "FAIL", "系统异常"),
+
+    /***************************************************** 用户模块 ：0xdcb001XX ****************************************/
 
     UNAUTHORIZED("401", "invalid token", "Token无效或过期,请重新登录."),
 
@@ -42,11 +47,17 @@ public enum BusinessErrorCodeEnum {
 
     USER_IS_ALIVE("0xdcb00110", "use is alive", "用户正在登录中，无法对其操作"),
 
-    ISLAND_MANAGEMENT_ADD_FAIL("0xdcb00111", "island management add fail", "岛屿管理添加失败"),
+    USER_IS_DISABLED("0xdcb00111", "use is disabled", "用户已被禁用"),
 
-    ISLAND_MANAGEMENT_UPDATE_FAIL("0xdcb00112", "island management update fail", "岛屿管理更新失败"),
 
-    ISLAND_MANAGEMENT_DELETE_FAIL("0xdcb00113", "island management delete fail", "岛屿管理删除失败"),
+    /***************************************************** 前台模块 ：0xdcb002XX ****************************************/
+
+    ISLAND_MANAGEMENT_ADD_FAIL("0xdcb00201", "island management add fail", "岛屿管理添加失败"),
+
+    ISLAND_MANAGEMENT_UPDATE_FAIL("0xdcb00202", "island management update fail", "岛屿管理更新失败"),
+
+    ISLAND_MANAGEMENT_DELETE_FAIL("0xdcb00203", "island management delete fail", "岛屿管理删除失败"),
+
 
     ;
 

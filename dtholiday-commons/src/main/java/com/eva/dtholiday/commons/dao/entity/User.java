@@ -102,5 +102,9 @@ public class User extends Model<User> {
 
     public static final String USER_NAME = "user_name";
 
+    public static final String NICK_NAME = "nick_name";
+
     public static final String USER_CODE = "user_code";
+
+    public static final String BELONG_COMPANY = "belong_company";
 }

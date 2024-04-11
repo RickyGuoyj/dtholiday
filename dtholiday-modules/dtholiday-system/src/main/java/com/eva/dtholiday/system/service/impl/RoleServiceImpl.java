@@ -56,9 +56,13 @@ public class RoleServiceImpl implements RoleService {
     private MenuService menuService;
 
     @Override
-    public ResponseApi getRoleList() {
+    public ResponseApi getRoleList(RoleReq roleReq) {
+        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(roleReq.getName())) {
+            queryWrapper.like(Role.ROLE_NAME, roleReq.getName());
+        }
         List<RoleResp> roleRespList = new ArrayList<>();
-        List<Role> roleList = roleMapper.selectList(null);
+        List<Role> roleList = roleMapper.selectList(queryWrapper);
         if (!CollectionUtils.isEmpty(roleList)) {
             roleList.forEach(role -> {
                 RoleResp roleResp = new RoleResp();
@@ -163,18 +167,19 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi deleteRole(RoleReq roleReq) {
-        if (!StringUtils.hasText(roleReq.getCode())) {
+        if (CollectionUtils.isEmpty(roleReq.getCodes())) {
             throw new BusinessException(BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getMessageCN(), BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getCode());
         }
         //如果有用户与该角色绑定，则提示无法删除
-        List<UserRole> userRoleList = userRoleMapper.selectList(new QueryWrapper<UserRole>().eq(UserRole.ROLE_CODE, roleReq.getCode()));
+        List<UserRole> userRoleList = userRoleMapper.selectList(new QueryWrapper<UserRole>().in(UserRole.ROLE_CODE, roleReq.getCodes()));
         if (!CollectionUtils.isEmpty(userRoleList)) {
+            log.error("binding userCodes are : {}", userRoleList.stream().map(UserRole::getUserCode).collect(Collectors.toList()));
             throw new BusinessException(BusinessErrorCodeEnum.ROLE_BINDING_WITH_USER.getMessageCN(), BusinessErrorCodeEnum.ROLE_BINDING_WITH_USER.getCode());
         }
         //删除角色
-        roleMapper.delete(new QueryWrapper<Role>().eq(Role.ROLE_CODE, roleReq.getCode()));
+        roleMapper.delete(new QueryWrapper<Role>().in(Role.ROLE_CODE, roleReq.getCodes()));
         //删除角色与菜单的绑定关系
-        roleMenuMapper.delete(new QueryWrapper<RoleMenu>().eq(RoleMenu.ROLE_CODE, roleReq.getCode()));
+        roleMenuMapper.delete(new QueryWrapper<RoleMenu>().in(RoleMenu.ROLE_CODE, roleReq.getCodes()));
         RoleResp roleResp = new RoleResp();
         BeanUtils.copyProperties(roleReq, roleResp);
         return ResponseApi.ok(roleResp);

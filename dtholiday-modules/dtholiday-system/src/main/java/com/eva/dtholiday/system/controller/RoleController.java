@@ -28,9 +28,9 @@ public class RoleController {
     @Resource
     private MenuService menuService;
 
-    @GetMapping("/getRoleList")
-    public ResponseApi getRoleList() {
-        return roleService.getRoleList();
+    @PostMapping ("/getRoleList")
+    public ResponseApi getRoleList(@RequestBody RoleReq roleReq) {
+        return roleService.getRoleList(roleReq);
     }
 
     @GetMapping("/getAllMenuList")

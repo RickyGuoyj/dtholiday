@@ -40,19 +40,23 @@ public class LoginServiceImpl implements LoginService {
     public ResponseApi login(LoginUserReq loginUser) {
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser.getUserName(), loginUser.getPassword(), null);
-        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        //认证成功
-        if (authentication != null) {
-            //生成token
-            DtHolidayUser tUser = (DtHolidayUser) authentication.getPrincipal();
-            if (tUser != null) {
-                String token = jwtUtil.createToken(tUser);
-                TokenCache.putTokenUserIdCache(token, tUser);
-                return ResponseApi.ok(token);
+        try {
+            Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            //认证成功
+            if (authentication != null) {
+                //生成token
+                DtHolidayUser tUser = (DtHolidayUser) authentication.getPrincipal();
+                if (tUser != null) {
+                    String token = jwtUtil.createToken(tUser);
+                    TokenCache.putTokenUserIdCache(token, tUser);
+                    return ResponseApi.ok(token);
+                } else {
+                    throw new BusinessException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN(), BusinessErrorCodeEnum.USER_NOT_EXIST.getCode());
+                }
             } else {
-                throw new BusinessException(BusinessErrorCodeEnum.USER_NOT_EXIST.getMessageCN(), BusinessErrorCodeEnum.USER_NOT_EXIST.getCode());
+                throw new BusinessException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getMessageCN(), BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getCode());
             }
-        } else {
+        }catch (Exception e){
             throw new BusinessException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getMessageCN(), BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getCode());
         }
     }
