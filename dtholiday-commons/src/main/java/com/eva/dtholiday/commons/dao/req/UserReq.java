@@ -25,7 +25,7 @@ public class UserReq {
     /**
      * 姓名
      */
-    private String nickname;
+    private String nickName;
 
     /**
      * 角色编码

@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.hasText(userReq.getUserName())) {
             userQueryWrapper.like(User.USER_NAME, userReq.getUserName());
         }
-        if (StringUtils.hasText(userReq.getNickname())) {
-            userQueryWrapper.like(User.NICK_NAME, userReq.getNickname());
+        if (StringUtils.hasText(userReq.getNickName())) {
+            userQueryWrapper.like(User.NICK_NAME, userReq.getNickName());
         }
-        if (StringUtils.hasText(userReq.getUserName())) {
+        if (StringUtils.hasText(userReq.getBelongCompany())) {
             userQueryWrapper.like(User.BELONG_COMPANY, userReq.getBelongCompany());
         }
 
