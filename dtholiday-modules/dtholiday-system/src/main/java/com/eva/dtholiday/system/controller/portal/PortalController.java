@@ -2,9 +2,10 @@ package com.eva.dtholiday.system.controller.portal;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.eva.dtholiday.commons.dao.req.portal.IslandDetailReq;
+import com.eva.dtholiday.commons.dao.req.portal.IslandQueryReq;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.resp.portal.RecommendIslandResp;
@@ -23,6 +24,8 @@ import com.eva.dtholiday.system.service.portal.PortalService;
 @RestController
 @RequestMapping("/portal/island")
 public class PortalController {
+
+    @Autowired
     private PortalService portalService;
 
     /**
@@ -38,5 +41,15 @@ public class PortalController {
     @GetMapping("/get_tags")
     public ResponseApi getTags() {
         return portalService.getTags();
+    }
+
+    @PostMapping("/getIslandDetail")
+    public ResponseApi getIslandDetail(@RequestBody IslandDetailReq islandDetailReq){
+        return portalService.getIslandDetail(islandDetailReq.getIslandIndexCode());
+    }
+
+    @PostMapping("/get_all_islands")
+    public ResponseApi getAllIslands(@RequestBody IslandQueryReq islandQueryReq){
+        return portalService.getAllIslands(islandQueryReq);
     }
 }

@@ -4,4 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandTagMapper">
 
+    <select id="selectTagsByIslandIndexCode"
+            resultType="com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandTag">
+        select distinct t.tag_index_code, t.tag_name, t.tag_image
+        from dt_island_tag t
+        left join dt_island_tag_relation tr on t.tag_index_code = tr.tag_index_code
+        where tr.island_index_code = #{islandIndexCode}
+    </select>
 </mapper>

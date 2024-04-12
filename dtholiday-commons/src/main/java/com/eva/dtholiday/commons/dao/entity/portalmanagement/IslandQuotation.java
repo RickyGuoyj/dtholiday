@@ -16,7 +16,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @TableName("dt_island_quotation")
 @EqualsAndHashCode(callSuper = true)
-
 public class IslandQuotation extends Model<IslandQuotation> {
     private static final long serialVersionUID = 1L;
 
@@ -32,7 +31,17 @@ public class IslandQuotation extends Model<IslandQuotation> {
     private int islandIndexCode;
 
     /**
-     * 报价文件路径或相关文件信息
+     * 报价单类型 0-图片 1-pdf
+     */
+    private int quotationType;
+
+    /**
+     * 报价单名称
+     */
+    private String quotationName;
+
+    /**
+     * 报价文件路径或相关文件信息(url)
      */
     private String quotationFile;
 

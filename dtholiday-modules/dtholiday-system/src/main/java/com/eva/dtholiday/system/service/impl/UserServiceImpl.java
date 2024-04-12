@@ -258,7 +258,9 @@ public class UserServiceImpl implements UserService {
             userRoleMapper.delete(new QueryWrapper<UserRole>().eq(UserRole.USER_CODE, user.getUserCode()));
         }
         UserResp userResp = new UserResp();
-        userResp.setUserName(user.getUserName());
+        if (Objects.nonNull(user)){
+            userResp.setUserName(user.getUserName());
+        }
         return ResponseApi.ok(userResp);
     }
 

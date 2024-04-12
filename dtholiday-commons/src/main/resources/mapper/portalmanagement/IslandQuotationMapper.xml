@@ -11,4 +11,11 @@
             (#{item.islandIndexCode}, #{item.quotationFile}, #{item.createTime}, #{item.updateTime})
         </foreach>
     </insert>
+    <select id="selectIslandQuotationByIslandIndexCode"
+            resultType="com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation">
+        select distinct q.quotation_index_code, q.quotation_file, q.island_index_code, q.quotation_type, q.quotation_name
+        from dt_island_quotation q
+        left join dt_island_quotation_relation tr on t.tag_index_code = tr.tag_index_code
+        where tr.island_index_code = #{islandIndexCode}
+    </select>
 </mapper>

@@ -12,4 +12,5 @@ import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation;
 public interface IslandQuotationMapper extends BaseMapper<IslandQuotation> {
     int  insertBatch(@Param("list") List<IslandQuotation> list );
 
+    List<IslandQuotation> selectIslandQuotationByIslandIndexCode(@Param("islandIndexCode") Integer islandIndexCode);
 }

@@ -12,4 +12,5 @@ import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandTag;
 @Mapper
 public interface IslandTagMapper extends BaseMapper<IslandTag> {
 
+    List<IslandTag> selectTagsByIslandIndexCode(@Param("islandIndexCode")Integer islandIndexCode);
 }
