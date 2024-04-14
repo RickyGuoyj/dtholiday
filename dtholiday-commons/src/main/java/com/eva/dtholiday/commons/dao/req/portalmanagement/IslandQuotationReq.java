@@ -15,7 +15,7 @@ public class IslandQuotationReq {
     /**
      * 关联岛屿唯一标识码（外键，关联岛屿表的island_index_code）
      */
-    private int  islandIndexCode;
+    private int islandIndexCode;
 
     /**
      * 报价文件路径或相关文件信息

@@ -5,17 +5,30 @@
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandQuotationMapper">
 
     <insert id="insertBatch">
-        INSERT INTO dt_island_quotation (island_index_code, quotation_file, create_time, update_time)
+        INSERT INTO dt_island_quotation (island_index_code, quotation_file,quotation_name, create_time, update_time)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.islandIndexCode}, #{item.quotationFile}, #{item.createTime}, #{item.updateTime})
+            (#{item.islandIndexCode}, #{item.quotationFile}, #{item.quotationName},#{item.createTime},
+            #{item.updateTime})
         </foreach>
     </insert>
     <select id="selectIslandQuotationByIslandIndexCode"
             resultType="com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation">
-        select distinct q.quotation_index_code, q.quotation_file, q.island_index_code, q.quotation_type, q.quotation_name
-        from dt_island_quotation q
-        left join dt_island_quotation_relation tr on t.tag_index_code = tr.tag_index_code
-        where tr.island_index_code = #{islandIndexCode}
+        select distinct quotation_index_code, quotation_file, island_index_code, quotation_type, quotation_name
+        from dt_island_quotation
+        where island_index_code = #{islandIndexCode}
+    </select>
+    <select id="selectIslandManagementQuotationList"
+            resultType="com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagementQuotation">
+        select quo.quotation_index_code,
+               quo.island_index_code,
+               quo.quotation_name,
+               quo.quotation_file,
+               quo.update_time,
+               m.island_cn_name
+        from dt_island_quotation quo
+                 left join dt_island m on quo.island_index_code = m.island_index_code
+        order by quo.update_time desc
+            limit #{map.from}, #{map.to}
     </select>
 </mapper>

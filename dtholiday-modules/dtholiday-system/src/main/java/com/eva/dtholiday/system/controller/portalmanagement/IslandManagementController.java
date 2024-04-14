@@ -1,7 +1,5 @@
 package com.eva.dtholiday.system.controller.portalmanagement;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagement;
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementDeleteReq;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementReq;
+import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryDetailResp;
+import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryListResp;
 import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 
 @RestController
@@ -25,8 +25,8 @@ public class IslandManagementController {
     }
 
     @PostMapping("/delete")
-    public ResponseApi islandManagementDelete(@RequestBody IslandManagementReq req) {
-        return islandManagementService.islandManagementDelete(req.getIslandIndexCode());
+    public ResponseApi islandManagementDelete(@RequestBody IslandManagementDeleteReq req) {
+        return islandManagementService.islandManagementDelete(req.getIslandIndexCodeList());
     }
 
     @PostMapping("/update")
@@ -35,12 +35,12 @@ public class IslandManagementController {
     }
 
     @PostMapping("/querylist")
-    public ResponseApi<List<IslandManagement>> islandManagementQueryList(@RequestBody  IslandManagementReq islandManagementReq) {
+    public ResponseApi<IslandManagementQueryListResp> islandManagementQueryList(@RequestBody  IslandManagementReq islandManagementReq) {
         return islandManagementService.islandManagementQueryList(islandManagementReq);
     }
 
     @PostMapping("/querydetail")
-    public ResponseApi<IslandManagement> islandManagementQueryDetail(@RequestBody IslandManagementReq req) {
+    public ResponseApi<IslandManagementQueryDetailResp> islandManagementQueryDetail(@RequestBody IslandManagementReq req) {
         return islandManagementService.islandManagementQueryDetail(req.getIslandIndexCode());
     }
 

@@ -1,5 +1,7 @@
 package com.eva.dtholiday.system.service.portalmanagement;
 
+import java.util.List;
+
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandTagReq;
 
@@ -41,5 +43,5 @@ public interface IslandTagService {
      * @param tagIndexCode
      * @return
      */
-    ResponseApi islandTagDelete(int tagIndexCode);
+    ResponseApi islandTagDelete(List<Integer> tagIndexCodeList);
 }

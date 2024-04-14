@@ -21,4 +21,9 @@ public class IslandManagementQueryListResp {
     private int pageSize;
 
     private List<IslandManagementTagInfo> islandManagementTagInfoList;
+
+    /**
+     * 总数
+     */
+    private int total;
 }

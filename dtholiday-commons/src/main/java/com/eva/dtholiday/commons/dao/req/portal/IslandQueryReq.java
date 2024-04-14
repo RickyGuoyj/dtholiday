@@ -2,8 +2,6 @@ package com.eva.dtholiday.commons.dao.req.portal;
 
 import lombok.Getter;
 
-import java.util.List;
-
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -17,5 +15,5 @@ import java.util.List;
 @Getter
 public class IslandQueryReq {
 
-    private List<Integer> tagIndexCodes;
+    private Integer tagIndexCode;
 }

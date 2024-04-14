@@ -1,12 +1,12 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandRecommendation;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandRecommendationMapper;
@@ -57,19 +57,12 @@ public class IslandRecommendationServiceImpl implements IslandRecommendationServ
     }
 
     @Override
-    public ResponseApi<IslandRecommendationQueryListResp>
-        islandRecommendationQueryList(IslandRecommendationReq islandRecommendationReq) {
-        Page<IslandRecommendation> page =
-            new Page<>(islandRecommendationReq.getPage(), islandRecommendationReq.getPageSize());
-        Page<IslandRecommendation> islandRecommendationPage = islandRecommendationMapper.selectPage(page, null);
-        if (islandRecommendationPage != null) {
-            IslandRecommendationQueryListResp islandRecommendationQueryListResp =
-                new IslandRecommendationQueryListResp();
-            islandRecommendationQueryListResp.setPage(islandRecommendationReq.getPage());
-            islandRecommendationQueryListResp.setPageSize(islandRecommendationReq.getPageSize());
-            islandRecommendationQueryListResp.setIslandRecommendationList(islandRecommendationPage.getRecords());
-            return ResponseApi.ok(islandRecommendationQueryListResp);
-        }
-        return ResponseApi.ok();
+    public ResponseApi<IslandRecommendationQueryListResp> islandRecommendationQueryList() {
+        // Page<IslandRecommendation> islandRecommendationPage = islandRecommendationMapper.selectPage(page, null);
+        List<IslandRecommendation> islandRecommendations = islandRecommendationMapper.selectList(null);
+        IslandRecommendationQueryListResp islandRecommendationQueryListResp = new IslandRecommendationQueryListResp();
+        islandRecommendationQueryListResp.setIslandRecommendationList(islandRecommendations);
+        return ResponseApi.ok(islandRecommendationQueryListResp);
+
     }
 }

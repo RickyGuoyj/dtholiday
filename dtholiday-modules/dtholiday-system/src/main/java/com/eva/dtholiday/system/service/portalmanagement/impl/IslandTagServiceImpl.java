@@ -1,6 +1,7 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,7 +12,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandTag;
-import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandTagRelation;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandTagMapper;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandTagRelationMapper;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandTagReq;
@@ -37,12 +37,14 @@ public class IslandTagServiceImpl implements IslandTagService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi islandTagQueryList(IslandTagReq islandTagReq) {
+        Long count = islandTagMapper.selectCount(null);
         Page<IslandTag> page = new Page<>(islandTagReq.getPage(), islandTagReq.getPageSize());
         Page<IslandTag> result = islandTagMapper.selectPage(page, null);
         IslandTagQueryListResp islandTagQueryListResp = new IslandTagQueryListResp();
         islandTagQueryListResp.setIslandTagList(result.getRecords());
         islandTagQueryListResp.setPage(islandTagReq.getPage());
         islandTagQueryListResp.setPageSize(islandTagReq.getPageSize());
+        islandTagQueryListResp.setTotal(count);
         return ResponseApi.ok(islandTagQueryListResp);
     }
 
@@ -81,12 +83,11 @@ public class IslandTagServiceImpl implements IslandTagService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseApi islandTagDelete(int tagIndexCode) {
+    public ResponseApi islandTagDelete(List<Integer> tagIndexCodeList) {
         // 删除主表
-        int i = islandTagMapper.deleteById(tagIndexCode);
+        int i = islandTagMapper.deleteBatchIds(tagIndexCodeList);
         // 删除关联表
-        islandTagRelationMapper
-            .delete(new QueryWrapper<IslandTagRelation>().eq(IslandTagRelation.TAG_INDEX_CODE, tagIndexCode));
+        islandTagRelationMapper.deleteBatchByTagIndexCode(tagIndexCodeList);
         return ResponseApi.ok(i);
     }
 }

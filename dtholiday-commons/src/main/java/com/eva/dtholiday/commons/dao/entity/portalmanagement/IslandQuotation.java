@@ -54,4 +54,6 @@ public class IslandQuotation extends Model<IslandQuotation> {
      * 更新时间戳，默认为当前时间
      */
     private Timestamp updateTime;
+
+    public static final String ISLAND_INDEX_CODE = "island_index_code";
 }

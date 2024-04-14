@@ -2,7 +2,7 @@ package com.eva.dtholiday.commons.dao.resp.portalmanagement;
 
 import java.util.List;
 
-import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation;
+import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagementQuotation;
 
 import lombok.Data;
 
@@ -10,5 +10,5 @@ import lombok.Data;
 public class IslandQuotationQueryListResp {
     private int page;
     private int pageSize;
-    private List<IslandQuotation> islandQuotationList;
+    private List<IslandManagementQuotation> islandQuotationList;
 }

@@ -1,5 +1,14 @@
 package com.eva.dtholiday.system.service.portal.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.*;
@@ -10,14 +19,6 @@ import com.eva.dtholiday.commons.dao.resp.portal.IslandListResp;
 import com.eva.dtholiday.commons.dao.resp.portal.RecommendIslandResp;
 import com.eva.dtholiday.commons.dao.resp.portal.TagResp;
 import com.eva.dtholiday.system.service.portal.PortalService;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PortalServiceImpl implements PortalService {
@@ -78,20 +79,21 @@ public class PortalServiceImpl implements PortalService {
             islandDetailResp.setBanner(islandManagement.getIslandImage());
             islandDetailResp.setDatum_link(islandManagement.getIslandFile());
             islandDetailResp.setDesc(islandManagement.getIslandDesc());
-            islandDetailResp.setIntro(islandDetailResp.getIntro());
+            islandDetailResp.setIntro(islandManagement.getIslandIntro());
             islandDetailResp.setName(islandManagement.getIslandCnName());
             islandDetailResp.setNameEn(islandManagement.getIslandEnName());
 
-            //根据岛屿编码查询岛屿价格
-            List<IslandQuotation> islandQuotations = islandQuotationMapper.selectIslandQuotationByIslandIndexCode(islandIndexCode);
+            // 根据岛屿编码查询岛屿价格
+            List<IslandQuotation> islandQuotations =
+                islandQuotationMapper.selectIslandQuotationByIslandIndexCode(islandIndexCode);
             if (!CollectionUtils.isEmpty(islandQuotations)) {
-                List<String> pdfPrices = islandQuotations.stream().filter(islandQuotation -> islandQuotation.getQuotationType() == 1).map(IslandQuotation::getQuotationName).collect(Collectors.toList());
-                List<String> imagePrices = islandQuotations.stream().filter(islandQuotation -> islandQuotation.getQuotationType() == 0).map(IslandQuotation::getQuotationName).collect(Collectors.toList());
+                List<String> pdfPrices =
+                    islandQuotations.stream().map(IslandQuotation::getQuotationName).collect(Collectors.toList());
                 islandDetailResp.setPdf_price(pdfPrices);
-                islandDetailResp.setImage_price(imagePrices);
+                // islandDetailResp.setImage_price(imagePrices);
             }
 
-            //根据岛屿编码查询岛屿标签
+            // 根据岛屿编码查询岛屿标签
             List<IslandTag> islandTags = islandTagMapper.selectTagsByIslandIndexCode(islandIndexCode);
             if (!CollectionUtils.isEmpty(islandTags)) {
                 List<String> tagNames = islandTags.stream().map(IslandTag::getTagName).collect(Collectors.toList());
@@ -106,19 +108,22 @@ public class PortalServiceImpl implements PortalService {
     public ResponseApi getAllIslands(IslandQueryReq islandQueryReq) {
         // 这个是共性的必须要的
         QueryWrapper<IslandTagRelation> allIslandTagRelationQueryWrapper = new QueryWrapper<>();
-        List<IslandTagRelation> allIslandTagRelations = islandTagRelationMapper.selectList(allIslandTagRelationQueryWrapper);
+        List<IslandTagRelation> allIslandTagRelations =
+            islandTagRelationMapper.selectList(allIslandTagRelationQueryWrapper);
         // 默认查所有岛屿
-        if (CollectionUtils.isEmpty(islandQueryReq.getTagIndexCodes())) {
+        if (islandQueryReq.getTagIndexCode() == -1) {
             // 查询所有的岛屿信息
             List<IslandManagement> islandManagements = islandManagementMapper.selectList(null);
             return getIslandListInfo(islandManagements, allIslandTagRelations);
         } else {
             // 按需查询
             QueryWrapper<IslandTagRelation> islandTagRelationQueryWrapper = new QueryWrapper<>();
-            islandTagRelationQueryWrapper.in(IslandTagRelation.TAG_INDEX_CODE, islandQueryReq.getTagIndexCodes());
-            List<IslandTagRelation> islandTagRelations = islandTagRelationMapper.selectList(islandTagRelationQueryWrapper);
+            islandTagRelationQueryWrapper.in(IslandTagRelation.TAG_INDEX_CODE, islandQueryReq.getTagIndexCode());
+            List<IslandTagRelation> islandTagRelations =
+                islandTagRelationMapper.selectList(islandTagRelationQueryWrapper);
             // 洗出岛屿编码
-            List<Integer> islandIndexCodes = islandTagRelations.stream().map(IslandTagRelation::getIslandIndexCode).distinct().collect(Collectors.toList());
+            List<Integer> islandIndexCodes = islandTagRelations.stream().map(IslandTagRelation::getIslandIndexCode)
+                .distinct().collect(Collectors.toList());
             // 去查
             QueryWrapper<IslandManagement> islandManagementQueryWrapper = new QueryWrapper<>();
             if (!CollectionUtils.isEmpty(islandIndexCodes)) {
@@ -129,7 +134,8 @@ public class PortalServiceImpl implements PortalService {
         }
     }
 
-    private ResponseApi getIslandListInfo(List<IslandManagement> islandManagements, List<IslandTagRelation> allIslandTagRelations) {
+    private ResponseApi getIslandListInfo(List<IslandManagement> islandManagements,
+        List<IslandTagRelation> allIslandTagRelations) {
         if (!CollectionUtils.isEmpty(islandManagements)) {
             List<IslandListResp> islandManagementListResp = islandManagements.stream().map(islandManagement -> {
                 IslandListResp islandListResp = new IslandListResp();
@@ -138,8 +144,10 @@ public class PortalServiceImpl implements PortalService {
                 islandListResp.setIsland_image(islandManagement.getIslandImage());
                 islandListResp.setIsland_id(islandManagement.getIslandIndexCode());
                 islandListResp.setIsland_intro(islandManagement.getIslandIntro());
-                List<Integer> tagIndexCodeList = allIslandTagRelations.stream().filter(islandTagRelation -> islandTagRelation.getIslandIndexCode() == islandListResp.getIsland_id())
-                        .map(IslandTagRelation::getTagIndexCode).collect(Collectors.toList());
+                List<Integer> tagIndexCodeList = allIslandTagRelations.stream()
+                    .filter(
+                        islandTagRelation -> islandTagRelation.getIslandIndexCode() == islandListResp.getIsland_id())
+                    .map(IslandTagRelation::getTagIndexCode).collect(Collectors.toList());
                 islandListResp.setIsland_tags(tagIndexCodeList);
                 return islandListResp;
             }).collect(Collectors.toList());

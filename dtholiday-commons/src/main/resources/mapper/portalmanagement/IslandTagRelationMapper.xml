@@ -10,4 +10,22 @@
             (#{item.islandIndexCode},#{item.tagIndexCode},#{item.createTime},#{item.updateTime})
         </foreach>
     </insert>
+    <delete id="deleteBatchByIslandIndexCode">
+        delete from dt_island_tag_relation
+        <where>
+            island_index_code in
+            <foreach collection="list" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+    <delete id="deleteBatchByTagIndexCode">
+        delete from dt_island_tag_relation
+        <where>
+            tag_index_code in
+            <foreach collection="list" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
 </mapper>

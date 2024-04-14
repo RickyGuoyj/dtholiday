@@ -46,9 +46,8 @@ public class IslandRecommendationController {
      * 查询列表
      */
     @PostMapping("/querylist")
-    public ResponseApi<IslandRecommendationQueryListResp>
-        islandRecommendationQueryList(@RequestBody IslandRecommendationReq req) {
-        return islandRecommendationService.islandRecommendationQueryList(req);
+    public ResponseApi<IslandRecommendationQueryListResp> islandRecommendationQueryList() {
+        return islandRecommendationService.islandRecommendationQueryList();
     }
 
     /**

@@ -51,6 +51,7 @@ CREATE TABLE `dt_island_quotation` (
                                        PRIMARY KEY (`quotation_index_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- 岛屿报价单关联表
 CREATE TABLE IF NOT EXISTS `dt_island_quotation_relation` (
                                                               `relation_index_code` int NOT NULL AUTO_INCREMENT,
                                                               `island_index_code` int NOT NULL,

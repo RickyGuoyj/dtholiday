@@ -20,4 +20,9 @@ public class IslandTagQueryListResp {
      * 数据
      */
     private List<IslandTag> islandTagList;
+
+    /**
+     * 总数
+     */
+    private Long total;
 }

@@ -1,18 +1,15 @@
-package com.eva.dtholiday.commons.dao.req.portalmanagement;
+package com.eva.dtholiday.commons.dao.resp.portalmanagement;
 
 import java.util.List;
 
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation;
+import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandTag;
 
 import lombok.Data;
 
 @Data
-public class IslandManagementReq {
-    /**
-     * 岛屿管理主键
-     */
-    private int islandIndexCode;
+public class IslandManagementQueryDetailResp {
     /**
      * 岛屿中文名
      */
@@ -21,37 +18,30 @@ public class IslandManagementReq {
      * 岛屿英文名
      */
     private String islandEnName;
-    /**
-     * 岛屿标签
-     */
-    private List<Integer> islandTagList;
+
+    private int islandIndexCode;
     /**
      * 岛屿描述
      */
     private String islandDesc;
     /**
-     * 岛屿简介
+     * 岛屿资料连接
      */
-    private String islandIntro;
+    private String islandFile;
     /**
      * 岛屿图片
      */
     private FileInfo islandImage;
     /**
-     * 岛屿文件
+     * 岛屿介绍
      */
-    private String islandFile;
-
+    private String islandIntro;
     /**
      * 岛屿pdf报价单
      */
     private List<IslandQuotation> islandQuotationPdfList;
     /**
-     * 第几页
+     * 岛屿标签
      */
-    private int page;
-    /**
-     * 每页多少条
-     */
-    private int pageSize;
+    private List<IslandTag> islandTagList;
 }

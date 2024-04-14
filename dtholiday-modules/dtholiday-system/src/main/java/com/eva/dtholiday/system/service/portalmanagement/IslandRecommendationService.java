@@ -14,6 +14,5 @@ public interface IslandRecommendationService {
 
     public ResponseApi<IslandRecommendation> islandRecommendationQueryDetail(int recommendationIndexCode);
 
-    public ResponseApi<IslandRecommendationQueryListResp>
-        islandRecommendationQueryList(IslandRecommendationReq islandRecommendationReq);
+    public ResponseApi<IslandRecommendationQueryListResp> islandRecommendationQueryList();
 }

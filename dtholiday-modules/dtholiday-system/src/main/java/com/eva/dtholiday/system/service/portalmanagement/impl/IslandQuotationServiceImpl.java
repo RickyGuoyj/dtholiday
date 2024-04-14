@@ -1,16 +1,21 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagementQuotation;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandQuotationMapper;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandQuotationReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandQuotationQueryListResp;
 import com.eva.dtholiday.system.service.portalmanagement.IslandQuotationService;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class IslandQuotationServiceImpl implements IslandQuotationService {
@@ -32,10 +37,15 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
 
     @Override
     public ResponseApi islandQuotationQueryList(IslandQuotationReq islandQuotationReq) {
-        Page<IslandQuotation> page = new Page<>(islandQuotationReq.getPage(), islandQuotationReq.getPageSize());
-        Page<IslandQuotation> islandQuotationPage = islandQuotationMapper.selectPage(page, null);
+        // Page<IslandQuotation> page = new Page<>(islandQuotationReq.getPage(), islandQuotationReq.getPageSize());
+        // Page<IslandQuotation> islandQuotationPage = islandQuotationMapper.selectPage(page, null);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("from", (islandQuotationReq.getPage() - 1) * islandQuotationReq.getPageSize());
+        map.put("to", islandQuotationReq.getPageSize());
+        List<IslandManagementQuotation> islandManagementQuotationEntities =
+            islandQuotationMapper.selectIslandManagementQuotationList(map);
         IslandQuotationQueryListResp resp = new IslandQuotationQueryListResp();
-        resp.setIslandQuotationList(islandQuotationPage.getRecords());
+        resp.setIslandQuotationList(islandManagementQuotationEntities);
         resp.setPage(islandQuotationReq.getPage());
         resp.setPageSize(islandQuotationReq.getPageSize());
         return ResponseApi.ok(resp);

@@ -8,7 +8,5 @@ import lombok.Data;
 
 @Data
 public class IslandRecommendationQueryListResp {
-    private int page;
-    private int pageSize;
     private List<IslandRecommendation> islandRecommendationList;
 }
