@@ -11,4 +11,5 @@ public class IslandQuotationQueryListResp {
     private int page;
     private int pageSize;
     private List<IslandManagementQuotation> islandQuotationList;
+    private int total;
 }

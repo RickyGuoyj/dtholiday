@@ -1,6 +1,7 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -230,6 +231,12 @@ public class IslandManagementServiceImpl implements IslandManagementService {
         IslandManagement islandManagement = islandManagementMapper.selectById(islandIndexCode);
         // 根据岛屿主键查询关联的岛屿标签
         List<IslandTag> islandTags = islandTagMapper.selectTagsByIslandIndexCode(islandIndexCode);
+        List<Integer> tagIndexCodeList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(islandTags)) {
+            List<Integer> collect =
+                islandTags.stream().map(item -> item.getTagIndexCode()).collect(Collectors.toList());
+            tagIndexCodeList.addAll(collect);
+        }
         // 补齐数据
         IslandManagementQueryDetailResp resp = new IslandManagementQueryDetailResp();
         resp.setIslandIndexCode(islandManagement.getIslandIndexCode());
@@ -237,7 +244,7 @@ public class IslandManagementServiceImpl implements IslandManagementService {
         resp.setIslandCnName(islandManagement.getIslandCnName());
         resp.setIslandEnName(islandManagement.getIslandEnName());
         resp.setIslandDesc(islandManagement.getIslandDesc());
-        resp.setIslandTagList(islandTags);
+        resp.setIslandTagList(tagIndexCodeList);
         resp.setIslandFile(islandManagement.getIslandFile());
         if (StringUtils.isNotBlank(islandManagement.getIslandImage())) {
             FileInfo fileInfo = JSONObject.parseObject(islandManagement.getIslandImage(), FileInfo.class);

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandQuotation;
-import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandTag;
 
 import lombok.Data;
 
@@ -43,5 +42,5 @@ public class IslandManagementQueryDetailResp {
     /**
      * 岛屿标签
      */
-    private List<IslandTag> islandTagList;
+    private List<Integer> islandTagList;
 }

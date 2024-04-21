@@ -31,4 +31,9 @@
         order by quo.update_time desc
             limit #{map.from}, #{map.to}
     </select>
+    <select id="selectIslandManagementQuotationCount" resultType="java.lang.Integer">
+        select count(*)
+        from dt_island_quotation quo
+                 left join dt_island m on quo.island_index_code = m.island_index_code
+    </select>
 </mapper>

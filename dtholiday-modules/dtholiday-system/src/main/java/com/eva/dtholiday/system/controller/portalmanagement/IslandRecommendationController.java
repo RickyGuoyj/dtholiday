@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandRecommendation;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandRecommendationReq;
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandRecommendtationDeleteReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandRecommendationQueryListResp;
 import com.eva.dtholiday.system.service.portalmanagement.IslandRecommendationService;
 
@@ -30,8 +31,8 @@ public class IslandRecommendationController {
      * 删除
      */
     @PostMapping("/delete")
-    public ResponseApi islandRecommendationDelete(@RequestBody IslandRecommendationReq req) {
-        return islandRecommendationService.islandRecommendationDelete(req.getRecommendationIndexCode());
+    public ResponseApi islandRecommendationDelete(@RequestBody IslandRecommendtationDeleteReq req) {
+        return islandRecommendationService.islandRecommendationDelete(req.getRecommendationIndexCodeList());
     }
 
     /**

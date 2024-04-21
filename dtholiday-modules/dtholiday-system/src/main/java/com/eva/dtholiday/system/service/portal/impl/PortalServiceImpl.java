@@ -9,8 +9,11 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.*;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.*;
 import com.eva.dtholiday.commons.dao.req.portal.IslandQueryReq;
@@ -76,7 +79,11 @@ public class PortalServiceImpl implements PortalService {
         if (islandManagement != null) {
             IslandDetailResp islandDetailResp = new IslandDetailResp();
             islandDetailResp.setIsland_id(islandManagement.getIslandIndexCode());
-            islandDetailResp.setBanner(islandManagement.getIslandImage());
+            if (StringUtils.isNotBlank(islandManagement.getIslandImage())) {
+                FileInfo fileInfo = JSONObject.parseObject(islandManagement.getIslandImage(), FileInfo.class);
+                islandDetailResp.setBanner(fileInfo.getFilePath());
+            }
+            // islandDetailResp.setBanner(islandManagement.getIslandImage());
             islandDetailResp.setDatum_link(islandManagement.getIslandFile());
             islandDetailResp.setDesc(islandManagement.getIslandDesc());
             islandDetailResp.setIntro(islandManagement.getIslandIntro());

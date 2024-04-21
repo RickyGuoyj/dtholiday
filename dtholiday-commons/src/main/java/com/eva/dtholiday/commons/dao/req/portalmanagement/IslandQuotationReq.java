@@ -18,6 +18,10 @@ public class IslandQuotationReq {
     private int islandIndexCode;
 
     /**
+     * 报价单名称
+     */
+    private String quotationName;
+    /**
      * 报价文件路径或相关文件信息
      */
     private String quotationFile;

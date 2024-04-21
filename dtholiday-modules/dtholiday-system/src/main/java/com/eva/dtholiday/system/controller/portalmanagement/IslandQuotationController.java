@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.controller.portalmanagement;
 
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandQuotationDeleteReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +31,8 @@ public class IslandQuotationController {
      * 删除
      */
     @PostMapping("/delete")
-    public ResponseApi islandQuotationDelete(@RequestBody IslandQuotationReq islandQuotationReq) {
-        return islandQuotationService.islandQuotationDelete(islandQuotationReq.getQuotationIndexCode());
+    public ResponseApi islandQuotationDelete(@RequestBody IslandQuotationDeleteReq req) {
+        return islandQuotationService.islandQuotationDelete(req.getQuotationIndexCodeList());
     }
 
     /**

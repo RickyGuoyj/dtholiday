@@ -30,6 +30,7 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
 
     private IslandQuotation convertQuotationEntity(IslandQuotationReq islandQuotationReq) {
         IslandQuotation islandQuotation = new IslandQuotation();
+        islandQuotation.setQuotationName(islandQuotationReq.getQuotationName());
         islandQuotation.setIslandIndexCode(islandQuotationReq.getIslandIndexCode());
         islandQuotation.setQuotationFile(islandQuotationReq.getQuotationFile());
         return islandQuotation;
@@ -39,6 +40,7 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
     public ResponseApi islandQuotationQueryList(IslandQuotationReq islandQuotationReq) {
         // Page<IslandQuotation> page = new Page<>(islandQuotationReq.getPage(), islandQuotationReq.getPageSize());
         // Page<IslandQuotation> islandQuotationPage = islandQuotationMapper.selectPage(page, null);
+        int total = islandQuotationMapper.selectIslandManagementQuotationCount();
         Map<String, Integer> map = new HashMap<>();
         map.put("from", (islandQuotationReq.getPage() - 1) * islandQuotationReq.getPageSize());
         map.put("to", islandQuotationReq.getPageSize());
@@ -48,6 +50,7 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
         resp.setIslandQuotationList(islandManagementQuotationEntities);
         resp.setPage(islandQuotationReq.getPage());
         resp.setPageSize(islandQuotationReq.getPageSize());
+        resp.setTotal(total);
         return ResponseApi.ok(resp);
     }
 
@@ -73,8 +76,8 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
     }
 
     @Override
-    public ResponseApi islandQuotationDelete(int quotationIndexCode) {
-        int i = islandQuotationMapper.deleteById(quotationIndexCode);
+    public ResponseApi islandQuotationDelete(List<Integer> quotationIndexCodeList) {
+        int i = islandQuotationMapper.deleteBatchIds(quotationIndexCodeList);
         return ResponseApi.ok(i);
     }
 }

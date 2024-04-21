@@ -17,4 +17,6 @@ public interface IslandQuotationMapper extends BaseMapper<IslandQuotation> {
     List<IslandQuotation> selectIslandQuotationByIslandIndexCode(@Param("islandIndexCode") Integer islandIndexCode);
 
     List<IslandManagementQuotation> selectIslandManagementQuotationList(@Param("map") Map<String, Integer> map);
+
+    int selectIslandManagementQuotationCount();
 }

@@ -35,8 +35,8 @@ public class IslandRecommendationServiceImpl implements IslandRecommendationServ
     }
 
     @Override
-    public ResponseApi islandRecommendationDelete(int recommendationIndexCode) {
-        int delete = islandRecommendationMapper.deleteById(recommendationIndexCode);
+    public ResponseApi islandRecommendationDelete(List<Integer> recommendationIndexCodeList) {
+        int delete = islandRecommendationMapper.deleteBatchIds(recommendationIndexCodeList);
         return ResponseApi.ok(delete);
     }
 
