@@ -133,12 +133,33 @@ CREATE TABLE IF NOT EXISTS sys_role_menu (
     menu_code VARCHAR(64)
     );
 
-CREATE TABLE `dt_currency` (
-                               `currency_index_code` int unsigned NOT NULL COMMENT '主键',
-                               `country_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '国家名',
-                               `currenc_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '币种名称',
-                               `currency_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '币种代码',
-                               PRIMARY KEY (`currency_index_code`)
+-- 币种管理
+CREATE TABLE `dt_currency_management` (
+                                          `currency_index_code` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                          `country_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '国家名',
+                                          `currency_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '币种名称',
+                                          `currency_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '币种代码',
+                                          `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                          `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                          PRIMARY KEY (`currency_index_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 餐型管理
+CREATE TABLE `dt_meal_management` (
+                                      `meal_index_code` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                      `meal_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '餐型名称 ',
+                                      `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                      `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                      PRIMARY KEY (`meal_index_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 交通工具管理
+CREATE TABLE `dt_traffic_management` (
+                                         `traffic_index_code` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                         `traffic_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '交通工具名称',
+                                         `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                         `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                         PRIMARY KEY (`traffic_index_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
