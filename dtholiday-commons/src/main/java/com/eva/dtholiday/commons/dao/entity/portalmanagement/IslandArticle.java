@@ -1,8 +1,10 @@
 package com.eva.dtholiday.commons.dao.entity.portalmanagement;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,7 +46,7 @@ public class IslandArticle extends Model<IslandArticle> {
     /**
      * 0-探索马代 1-岛屿文章（最新消息） 2-灯塔游记
      */
-    private String type;
+    private Integer type;
 
     /**
      * 内容
@@ -58,8 +61,7 @@ public class IslandArticle extends Model<IslandArticle> {
     /**
      * 关联图片
      */
-    @TableField(typeHandler = FastjsonTypeHandler.class)
-    private JSONObject articleImages;
+    private String articleImages;
 
     /**
      * 岛屿管理主键

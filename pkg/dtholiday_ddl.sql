@@ -74,17 +74,22 @@ CREATE TABLE IF NOT EXISTS `dt_island_recommendation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 岛屿文章表
-CREATE TABLE IF NOT EXISTS `dt_island_article` (
-                                     `article_index_code` int NOT NULL AUTO_INCREMENT,
-                                     `title` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL,
-                                     `content` text COLLATE utf8mb4_general_ci,
-                                     `is_display` int DEFAULT NULL,
-                                     `article_images` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                                     `island_index_code` int DEFAULT NULL,
-                                     `create_time` timestamp  NULL DEFAULT CURRENT_TIMESTAMP,
-                                     `update_time` timestamp  NULL DEFAULT CURRENT_TIMESTAMP,
-                                     PRIMARY KEY (`article_index_code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS dt_island_article (
+    article_index_code INT NOT NULL AUTO_INCREMENT,
+    title VARCHAR ( 255 ),
+    subtitle VARCHAR ( 255 ),
+    type INT,
+    content text,
+    is_display VARCHAR ( 8 ),
+    article_images text,
+    island_index_code INT,
+    island_cn_name VARCHAR ( 64 ),
+    links VARCHAR ( 255 ),
+    create_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY ( `article_index_code` ) USING BTREE
+    ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS sys_user (
     id INT AUTO_INCREMENT PRIMARY KEY,

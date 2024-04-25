@@ -33,7 +33,7 @@ public class IslandArticleReq {
     /**
      * 0-探索马代 1-岛屿文章（最新消息） 2-灯塔游记
      */
-    private String type;
+    private Integer type;
 
     /**
      * 内容

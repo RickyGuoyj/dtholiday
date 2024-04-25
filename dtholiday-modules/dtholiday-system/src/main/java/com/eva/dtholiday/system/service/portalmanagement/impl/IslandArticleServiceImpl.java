@@ -1,5 +1,7 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eva.dtholiday.commons.api.ResponseApi;
@@ -9,6 +11,8 @@ import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandArticleMapper
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandArticleResp;
+import com.eva.dtholiday.commons.utils.DateUtils;
+import com.eva.dtholiday.commons.utils.MyStringUtils;
 import com.eva.dtholiday.system.service.portalmanagement.IslandArticleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -44,18 +48,18 @@ public class IslandArticleServiceImpl implements IslandArticleService {
         IslandArticle islandArticle = new IslandArticle();
         BeanUtils.copyProperties(req, islandArticle);
         if (!CollectionUtils.isEmpty(req.getPictures())) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("pictures", req.getPictures());
-            islandArticle.setArticleImages(jsonObject);
+            islandArticle.setArticleImages(JSONObject.toJSONString(req.getPictures()));
         }
-        int insert = islandArticleMapper.insert(islandArticle);
-        // 查出这条数据
-        islandArticle = islandArticleMapper.selectById(insert);
+        // 根据岛屿编码获取岛屿名称
+//        islandArticle.setIslandCnName(islandArticleMapper.selectById(req.getIslandIndexCode()).getIslandCnName());
+        islandArticleMapper.insert(islandArticle);
         //返回业务对象
         IslandArticleResp islandArticleResp = new IslandArticleResp();
         BeanUtils.copyProperties(islandArticle, islandArticleResp);
-        List<FileInfo> fileInfos = JSONObject.parseArray(JSONObject.toJSONString(islandArticle.getArticleImages()), FileInfo.class);
+        List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
         islandArticleResp.setPictures(fileInfos);
+        islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
+        islandArticleResp.setUpdateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getUpdateTime()));
         return ResponseApi.ok(islandArticleResp);
     }
 
@@ -80,9 +84,7 @@ public class IslandArticleServiceImpl implements IslandArticleService {
         if (Objects.nonNull(islandArticle)) {
             BeanUtils.copyProperties(req, islandArticle);
             if (!CollectionUtils.isEmpty(req.getPictures())) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("pictures", req.getPictures());
-                islandArticle.setArticleImages(jsonObject);
+                islandArticle.setArticleImages(JSONObject.toJSONString(req.getPictures()));
             }
             islandArticleMapper.updateById(islandArticle);
         }
@@ -100,8 +102,10 @@ public class IslandArticleServiceImpl implements IslandArticleService {
         if (!Objects.isNull(islandArticle)) {
             //返回业务对象
             BeanUtils.copyProperties(islandArticle, islandArticleResp);
-            List<FileInfo> fileInfos = JSONObject.parseArray(JSONObject.toJSONString(islandArticle.getArticleImages()), FileInfo.class);
+            List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
             islandArticleResp.setPictures(fileInfos);
+            islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
+            islandArticleResp.setUpdateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getUpdateTime()));
         }
         return ResponseApi.ok(islandArticleResp);
     }
@@ -122,8 +126,10 @@ public class IslandArticleServiceImpl implements IslandArticleService {
             islandArticleRespList = islandArticles.stream().map(islandArticle -> {
                 IslandArticleResp islandArticleResp = new IslandArticleResp();
                 BeanUtils.copyProperties(islandArticle, islandArticleResp);
-                List<FileInfo> fileInfos = JSONObject.parseArray(JSONObject.toJSONString(islandArticle.getArticleImages()), FileInfo.class);
+                List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
                 islandArticleResp.setPictures(fileInfos);
+                islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
+                islandArticleResp.setUpdateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getUpdateTime()));
                 return islandArticleResp;
             }).collect(Collectors.toList());
         }

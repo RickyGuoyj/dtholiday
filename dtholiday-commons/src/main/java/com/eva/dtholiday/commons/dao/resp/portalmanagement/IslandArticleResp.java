@@ -3,6 +3,7 @@ package com.eva.dtholiday.commons.dao.resp.portalmanagement;
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class IslandArticleResp {
     /**
      * 0-探索马代 1-岛屿文章（最新消息） 2-灯塔游记
      */
-    private String type;
+    private Integer type;
 
     /**
      * 内容
@@ -69,11 +70,11 @@ public class IslandArticleResp {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
 }
