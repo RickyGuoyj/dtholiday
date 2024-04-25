@@ -1,12 +1,16 @@
 package com.eva.dtholiday.commons.dao.entity.portalmanagement;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,28 +33,56 @@ public class IslandArticle extends Model<IslandArticle> {
      * 标题
      */
     private String title;
+
+    /**
+     * 副标题
+     */
+    private String subtitle;
+
+
+    /**
+     * 0-探索马代 1-岛屿文章（最新消息） 2-灯塔游记
+     */
+    private String type;
+
     /**
      * 内容
      */
     private String content;
+
     /**
      * 是否显示
      */
     private String isDisplay;
+
     /**
      * 关联图片
      */
-    private String articleImages;
-   /**
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+    private JSONObject articleImages;
+
+    /**
      * 岛屿管理主键
      */
-    private String islandIndexCode;
+    private Integer islandIndexCode;
+
+    /**
+     * 岛屿管理名称
+     */
+    private String islandCnName;
+
+    /**
+     * 链接
+     */
+    private String links;
+
     /**
      * 创建时间
      */
-    private Timestamp createTime;
+    private Date createTime;
+
     /**
      * 更新时间
      */
-    private Timestamp updateTime;
+    private Date updateTime;
 }

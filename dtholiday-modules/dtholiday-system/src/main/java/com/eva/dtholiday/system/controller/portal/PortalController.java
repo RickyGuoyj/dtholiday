@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.eva.dtholiday.commons.dao.req.portal.IslandDetailReq;
 import com.eva.dtholiday.commons.dao.req.portal.IslandQueryReq;
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,5 +52,15 @@ public class PortalController {
     @PostMapping("/get_all_islands")
     public ResponseApi getAllIslands(@RequestBody IslandQueryReq islandQueryReq){
         return portalService.getAllIslands(islandQueryReq);
+    }
+
+    @PostMapping("/getArticle")
+    public ResponseApi getArticle(@RequestBody IslandArticleQueryDto islandArticleQueryDto){
+        return portalService.getArticles(islandArticleQueryDto);
+    }
+
+    @GetMapping("/getAllIslandNames")
+    public ResponseApi getAllIslandNames(){
+        return portalService.getAllIslandNames();
     }
 }

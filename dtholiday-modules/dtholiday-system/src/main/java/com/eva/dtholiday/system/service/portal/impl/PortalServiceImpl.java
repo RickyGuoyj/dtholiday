@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
+import com.eva.dtholiday.commons.dao.resp.portal.*;
+import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandArticleResp;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -17,10 +21,6 @@ import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.*;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.*;
 import com.eva.dtholiday.commons.dao.req.portal.IslandQueryReq;
-import com.eva.dtholiday.commons.dao.resp.portal.IslandDetailResp;
-import com.eva.dtholiday.commons.dao.resp.portal.IslandListResp;
-import com.eva.dtholiday.commons.dao.resp.portal.RecommendIslandResp;
-import com.eva.dtholiday.commons.dao.resp.portal.TagResp;
 import com.eva.dtholiday.system.service.portal.PortalService;
 
 @Service
@@ -39,6 +39,9 @@ public class PortalServiceImpl implements PortalService {
 
     @Resource
     private IslandTagRelationMapper islandTagRelationMapper;
+
+    @Resource
+    private IslandArticleMapper islandArticleMapper;
 
     @Override
     public ResponseApi<List<RecommendIslandResp>> getRecommendIsland() {
@@ -92,10 +95,10 @@ public class PortalServiceImpl implements PortalService {
 
             // 根据岛屿编码查询岛屿价格
             List<IslandQuotation> islandQuotations =
-                islandQuotationMapper.selectIslandQuotationByIslandIndexCode(islandIndexCode);
+                    islandQuotationMapper.selectIslandQuotationByIslandIndexCode(islandIndexCode);
             if (!CollectionUtils.isEmpty(islandQuotations)) {
                 List<String> pdfPrices =
-                    islandQuotations.stream().map(IslandQuotation::getQuotationName).collect(Collectors.toList());
+                        islandQuotations.stream().map(IslandQuotation::getQuotationName).collect(Collectors.toList());
                 islandDetailResp.setPdf_price(pdfPrices);
                 // islandDetailResp.setImage_price(imagePrices);
             }
@@ -116,7 +119,7 @@ public class PortalServiceImpl implements PortalService {
         // 这个是共性的必须要的
         QueryWrapper<IslandTagRelation> allIslandTagRelationQueryWrapper = new QueryWrapper<>();
         List<IslandTagRelation> allIslandTagRelations =
-            islandTagRelationMapper.selectList(allIslandTagRelationQueryWrapper);
+                islandTagRelationMapper.selectList(allIslandTagRelationQueryWrapper);
         // 默认查所有岛屿
         if (islandQueryReq.getTagIndexCode() == -1) {
             // 查询所有的岛屿信息
@@ -127,10 +130,10 @@ public class PortalServiceImpl implements PortalService {
             QueryWrapper<IslandTagRelation> islandTagRelationQueryWrapper = new QueryWrapper<>();
             islandTagRelationQueryWrapper.in(IslandTagRelation.TAG_INDEX_CODE, islandQueryReq.getTagIndexCode());
             List<IslandTagRelation> islandTagRelations =
-                islandTagRelationMapper.selectList(islandTagRelationQueryWrapper);
+                    islandTagRelationMapper.selectList(islandTagRelationQueryWrapper);
             // 洗出岛屿编码
             List<Integer> islandIndexCodes = islandTagRelations.stream().map(IslandTagRelation::getIslandIndexCode)
-                .distinct().collect(Collectors.toList());
+                    .distinct().collect(Collectors.toList());
             // 去查
             QueryWrapper<IslandManagement> islandManagementQueryWrapper = new QueryWrapper<>();
             if (!CollectionUtils.isEmpty(islandIndexCodes)) {
@@ -141,8 +144,47 @@ public class PortalServiceImpl implements PortalService {
         }
     }
 
+    @Override
+    public ResponseApi getArticles(IslandArticleQueryDto req) {
+        List<IslandArticleResp> islandArticleRespList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(req.getType())) {
+            return ResponseApi.error("文章类型不能为空");
+        }
+        QueryWrapper<IslandArticle> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("type", req.getType());
+        if (org.springframework.util.StringUtils.hasText(req.getTitle())) {
+            queryWrapper.like("title", req.getTitle());
+        }
+        List<IslandArticle> islandArticles = islandArticleMapper.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(islandArticles)) {
+            islandArticleRespList = islandArticles.stream().map(islandArticle -> {
+                IslandArticleResp islandArticleResp = new IslandArticleResp();
+                BeanUtils.copyProperties(islandArticle, islandArticleResp);
+                List<FileInfo> fileInfos = JSONObject.parseArray(JSONObject.toJSONString(islandArticle.getArticleImages()), FileInfo.class);
+                islandArticleResp.setPictures(fileInfos);
+                return islandArticleResp;
+            }).collect(Collectors.toList());
+        }
+        return ResponseApi.ok(islandArticleRespList);
+    }
+
+    @Override
+    public ResponseApi getAllIslandNames() {
+        List<IslandNameResp> islandNameRespList = new ArrayList<>();
+        List<IslandManagement> islandManagements = islandManagementMapper.selectList(null);
+        if (!CollectionUtils.isEmpty(islandManagements)) {
+            islandNameRespList = islandManagements.stream().map(islandManagement -> {
+                IslandNameResp islandNameResp = new IslandNameResp();
+                islandNameResp.setIslandCnName(islandManagement.getIslandCnName());
+                islandNameResp.setIslandIndexCode(islandManagement.getIslandIndexCode());
+                return islandNameResp;
+            }).collect(Collectors.toList());
+        }
+        return ResponseApi.ok(islandNameRespList);
+    }
+
     private ResponseApi getIslandListInfo(List<IslandManagement> islandManagements,
-        List<IslandTagRelation> allIslandTagRelations) {
+                                          List<IslandTagRelation> allIslandTagRelations) {
         if (!CollectionUtils.isEmpty(islandManagements)) {
             List<IslandListResp> islandManagementListResp = islandManagements.stream().map(islandManagement -> {
                 IslandListResp islandListResp = new IslandListResp();
@@ -152,9 +194,9 @@ public class PortalServiceImpl implements PortalService {
                 islandListResp.setIsland_id(islandManagement.getIslandIndexCode());
                 islandListResp.setIsland_intro(islandManagement.getIslandIntro());
                 List<Integer> tagIndexCodeList = allIslandTagRelations.stream()
-                    .filter(
-                        islandTagRelation -> islandTagRelation.getIslandIndexCode() == islandListResp.getIsland_id())
-                    .map(IslandTagRelation::getTagIndexCode).collect(Collectors.toList());
+                        .filter(
+                                islandTagRelation -> islandTagRelation.getIslandIndexCode() == islandListResp.getIsland_id())
+                        .map(IslandTagRelation::getTagIndexCode).collect(Collectors.toList());
                 islandListResp.setIsland_tags(tagIndexCodeList);
                 return islandListResp;
             }).collect(Collectors.toList());

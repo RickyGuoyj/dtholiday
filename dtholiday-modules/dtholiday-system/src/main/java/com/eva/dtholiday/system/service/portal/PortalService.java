@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.portal.IslandQueryReq;
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
 import com.eva.dtholiday.commons.dao.resp.portal.RecommendIslandResp;
 import com.eva.dtholiday.commons.dao.resp.portal.TagResp;
 
@@ -25,4 +26,8 @@ public interface PortalService {
     ResponseApi getIslandDetail(Integer islandIndexCode);
 
     ResponseApi getAllIslands(IslandQueryReq islandQueryReq);
+
+    ResponseApi getArticles(IslandArticleQueryDto islandArticleQueryDto);
+
+    ResponseApi getAllIslandNames();
 }

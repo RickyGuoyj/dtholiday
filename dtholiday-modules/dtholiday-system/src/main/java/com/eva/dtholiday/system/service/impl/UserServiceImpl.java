@@ -252,16 +252,14 @@ public class UserServiceImpl implements UserService {
                 throw new BusinessException(BusinessErrorCodeEnum.USER_IS_ALIVE.getMessageCN(), BusinessErrorCodeEnum.USER_IS_ALIVE.getCode());
             }
         }
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq(User.USER_NAME, userReq.getUserName()));
-        if (Objects.nonNull(user)) {
-            userMapper.delete(new QueryWrapper<User>().eq(User.USER_NAME, userReq.getUserName()));
-            userRoleMapper.delete(new QueryWrapper<UserRole>().eq(UserRole.USER_CODE, user.getUserCode()));
+        List<User> userList = userMapper.selectList(new QueryWrapper<User>().in(User.USER_NAME, userReq.getUserNames()));
+        List<String> userCodeList = userList.stream().map(User::getUserCode).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(userList)) {
+            userMapper.delete(new QueryWrapper<User>().in(User.USER_NAME, userReq.getUserNames()));
+            userRoleMapper.delete(new QueryWrapper<UserRole>().eq(UserRole.USER_CODE, userCodeList));
         }
-        UserResp userResp = new UserResp();
-        if (Objects.nonNull(user)){
-            userResp.setUserName(user.getUserName());
-        }
-        return ResponseApi.ok(userResp);
+
+        return ResponseApi.ok("已删除");
     }
 
     @Override
