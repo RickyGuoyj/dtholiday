@@ -2,6 +2,7 @@ package com.eva.dtholiday.system.service.portal.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -9,6 +10,7 @@ import javax.annotation.Resource;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
 import com.eva.dtholiday.commons.dao.resp.portal.*;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandArticleResp;
+import com.eva.dtholiday.commons.utils.DateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -145,7 +147,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public ResponseApi getArticles(IslandArticleQueryDto req) {
+    public ResponseApi getArticleList(IslandArticleQueryDto req) {
         List<IslandArticleResp> islandArticleRespList = new ArrayList<>();
         if (CollectionUtils.isEmpty(req.getType())) {
             return ResponseApi.error("文章类型不能为空");
@@ -160,8 +162,10 @@ public class PortalServiceImpl implements PortalService {
             islandArticleRespList = islandArticles.stream().map(islandArticle -> {
                 IslandArticleResp islandArticleResp = new IslandArticleResp();
                 BeanUtils.copyProperties(islandArticle, islandArticleResp);
-                List<FileInfo> fileInfos = JSONObject.parseArray(JSONObject.toJSONString(islandArticle.getArticleImages()), FileInfo.class);
+                List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
                 islandArticleResp.setPictures(fileInfos);
+                islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
+                islandArticleResp.setUpdateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getUpdateTime()));
                 return islandArticleResp;
             }).collect(Collectors.toList());
         }
@@ -181,6 +185,22 @@ public class PortalServiceImpl implements PortalService {
             }).collect(Collectors.toList());
         }
         return ResponseApi.ok(islandNameRespList);
+    }
+
+    @Override
+    public ResponseApi getArticleDetail(IslandArticleQueryDto islandArticleQueryDto) {
+        IslandArticleResp islandArticleResp = new IslandArticleResp();
+        // 查出这条数据
+        IslandArticle islandArticle = islandArticleMapper.selectById(islandArticleQueryDto.getArticleIndexCode());
+        if (!Objects.isNull(islandArticle)) {
+            //返回业务对象
+            BeanUtils.copyProperties(islandArticle, islandArticleResp);
+            List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
+            islandArticleResp.setPictures(fileInfos);
+            islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
+            islandArticleResp.setUpdateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getUpdateTime()));
+        }
+        return ResponseApi.ok(islandArticleResp);
     }
 
     private ResponseApi getIslandListInfo(List<IslandManagement> islandManagements,

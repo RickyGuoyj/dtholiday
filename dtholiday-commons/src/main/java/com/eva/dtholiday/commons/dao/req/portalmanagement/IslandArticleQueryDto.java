@@ -22,4 +22,6 @@ public class IslandArticleQueryDto {
     private List<Integer> type;
 
     private String title;
+
+    private Integer articleIndexCode;
 }

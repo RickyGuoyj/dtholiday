@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandArticle;
+import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagement;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandArticleMapper;
+import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandManagementMapper;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandArticleResp;
@@ -42,6 +44,9 @@ public class IslandArticleServiceImpl implements IslandArticleService {
     @Resource
     private IslandArticleMapper islandArticleMapper;
 
+    @Resource
+    private IslandManagementMapper islandManagementMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi islandArticleAdd(IslandArticleReq req) {
@@ -51,7 +56,10 @@ public class IslandArticleServiceImpl implements IslandArticleService {
             islandArticle.setArticleImages(JSONObject.toJSONString(req.getPictures()));
         }
         // 根据岛屿编码获取岛屿名称
-//        islandArticle.setIslandCnName(islandArticleMapper.selectById(req.getIslandIndexCode()).getIslandCnName());
+        IslandManagement island = islandManagementMapper.selectOne(new QueryWrapper<IslandManagement>().eq(IslandManagement.ISLAND_INDEX_CODE, req.getIslandIndexCode()));
+        if (Objects.nonNull(island)) {
+            islandArticle.setIslandCnName(island.getIslandCnName());
+        }
         islandArticleMapper.insert(islandArticle);
         //返回业务对象
         IslandArticleResp islandArticleResp = new IslandArticleResp();
@@ -85,6 +93,11 @@ public class IslandArticleServiceImpl implements IslandArticleService {
             BeanUtils.copyProperties(req, islandArticle);
             if (!CollectionUtils.isEmpty(req.getPictures())) {
                 islandArticle.setArticleImages(JSONObject.toJSONString(req.getPictures()));
+            }
+            // 根据岛屿编码获取岛屿名称
+            IslandManagement island = islandManagementMapper.selectOne(new QueryWrapper<IslandManagement>().eq(IslandManagement.ISLAND_INDEX_CODE, req.getIslandIndexCode()));
+            if (Objects.nonNull(island)) {
+                islandArticle.setIslandCnName(island.getIslandCnName());
             }
             islandArticleMapper.updateById(islandArticle);
         }

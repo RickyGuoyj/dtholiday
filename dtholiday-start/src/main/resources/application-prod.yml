@@ -12,7 +12,7 @@ mybatis-plus:
       db-column-underline: true # 数据库字段下划线命名
       capital-mode: true # 是否开启大写命名
   # 配置mapper.xml文件位置
-  mapper-locations: classpath:/mapper/**/*.xml
+  mapper-locations: classpath:/mapper/*.xml
   # 配置实体类包路径
   type-aliases-package: com.eva.dtholiday.commons.dao.entity
   # 配置MyBatis-Plus的日志
@@ -22,18 +22,14 @@ mybatis-plus:
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource #数据源为druid
-    driver-class-name: com.mysql.cj.jdbc.Driver #数据库驱动
-    url: jdbc:mysql://localhost:3306/dtholiday?useSSL=false&useUnicode=true&characterEncoding=utf-8&servetTimeZone=Asia/Shanghai
+    driver-class-name: com.mysql.jdbc.Driver #数据库驱动
+    url: jdbc:mysql://47.116.36.30:3306/dtholiday?useSSL=false&useUnicode=true&characterEncoding=utf-8&servetTimeZone=Asia/Shanghai
     username: root
-    password: evangelion
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
-
+    password: DFfsh83374861+
 
 minio:
   endpoint: http://47.116.36.30:6900
   accessKey: minioadmin
   secretKey: minioadmin
   bucketName: dtholiday
+

@@ -54,9 +54,14 @@ public class PortalController {
         return portalService.getAllIslands(islandQueryReq);
     }
 
-    @PostMapping("/getArticle")
-    public ResponseApi getArticle(@RequestBody IslandArticleQueryDto islandArticleQueryDto){
-        return portalService.getArticles(islandArticleQueryDto);
+    @PostMapping("/getArticleList")
+    public ResponseApi getArticleList(@RequestBody IslandArticleQueryDto islandArticleQueryDto){
+        return portalService.getArticleList(islandArticleQueryDto);
+    }
+
+    @PostMapping("/getArticleDetail")
+    public ResponseApi getArticleDetail(@RequestBody IslandArticleQueryDto islandArticleQueryDto){
+        return portalService.getArticleDetail(islandArticleQueryDto);
     }
 
     @GetMapping("/getAllIslandNames")

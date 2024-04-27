@@ -27,7 +27,9 @@ public interface PortalService {
 
     ResponseApi getAllIslands(IslandQueryReq islandQueryReq);
 
-    ResponseApi getArticles(IslandArticleQueryDto islandArticleQueryDto);
+    ResponseApi getArticleList(IslandArticleQueryDto islandArticleQueryDto);
 
     ResponseApi getAllIslandNames();
+
+    ResponseApi getArticleDetail(IslandArticleQueryDto islandArticleQueryDto);
 }
