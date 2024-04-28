@@ -47,12 +47,12 @@ public class IslandArticleController {
         return islandArticleService.islandArticleUpdate(req);
     }
 
-    @PostMapping("/querylist")
+    @PostMapping("/queryList")
     public ResponseApi islandManagementQueryList(@RequestBody  IslandArticleQueryDto req) {
         return islandArticleService.islandArticleQueryList(req);
     }
 
-    @PostMapping("/querydetail")
+    @PostMapping("/queryDetail")
     public ResponseApi islandManagementQueryDetail(@RequestBody IslandArticleReq req) {
         return islandArticleService.islandArticleQueryDetail(req.getArticleIndexCode());
     }

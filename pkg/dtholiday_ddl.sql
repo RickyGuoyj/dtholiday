@@ -167,6 +167,64 @@ CREATE TABLE `dt_traffic_management` (
                                          PRIMARY KEY (`traffic_index_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `dt_transition_hotel`
+(
+    `transition_hotel_id`   INT(8) NOT NULL AUTO_INCREMENT,
+    `transition_hotel_name` VARCHAR(255),
+    `transition_hotel_type` VARCHAR(255),
+    `effective_date`        DATE,
+    `expiry_date`           DATE,
+    `total_num`             INT(8) NOT NULL DEFAULT 0,
+    `remain_num`            INT(8) NOT NULL DEFAULT 0,
+    `remark`                TEXT,
+    `create_time`           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `update_time`           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`transition_hotel_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `dt_plane_ticket`
+(
+    `plane_ticket_id`      INT(8) NOT NULL AUTO_INCREMENT,
+    `airline_company_name` VARCHAR(255),
+    `departure_date`       DATE,
+    `return_date`          DATE,
+    `days`                 VARCHAR(50),
+    `departure_flight`     VARCHAR(20),
+    `return_flight`        VARCHAR(20),
+    `departure_place`      VARCHAR(255),
+    `arrival_place`        VARCHAR(255),
+    `price`                DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    `total_num`            INT(8) NOT NULL DEFAULT 0,
+    `remain_num`           INT(8) NOT NULL DEFAULT 0,
+    `currency_type`        TINYINT(4),
+    `create_time`          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `update_time`          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`plane_ticket_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `dt_extra_child_expense`
+(
+    `extra_child_expense_id`          INT(8) NOT NULL AUTO_INCREMENT COMMENT '额外儿童费用ID',
+    `start_age`                       VARCHAR(32) COMMENT '开始年龄',
+    `end_age`                         VARCHAR(32) COMMENT '结束年龄',
+    `price`                           DOUBLE    NOT NULL DEFAULT 0 COMMENT '费用价格',
+    `currency_type`                   TINYINT(4) COMMENT '货币类型',
+    `extra_child_delay_hotel_price`   DOUBLE    NOT NULL DEFAULT 0 COMMENT '额外儿童延迟酒店价格',
+    `extra_child_delay_currency_type` TINYINT(4) COMMENT '额外儿童延迟货币类型',
+    `extra_child_hotel_price`         DOUBLE    NOT NULL DEFAULT 0 COMMENT '额外儿童酒店价格',
+    `extra_child_traffic_price`       DOUBLE    NOT NULL DEFAULT 0 COMMENT '额外儿童交通价格',
+    `extra_child_meal_price`          DOUBLE    NOT NULL DEFAULT 0 COMMENT '额外儿童餐饮价格',
+    `extra_child_env_tax`             DOUBLE    NOT NULL DEFAULT 0 COMMENT '额外儿童环保税',
+    `extra_child_charge`              DOUBLE    NOT NULL DEFAULT 0 COMMENT '额外儿童收费',
+    `island_index_code`               INT(8) COMMENT '岛屿索引代码',
+    `island_cn_name`                  VARCHAR(255) COMMENT '岛屿中文名称',
+    `remark`                          TEXT COMMENT '备注信息',
+    `create_time`                     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`                     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`extra_child_expense_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='额外儿童费用表';
+
+
 
 
 
