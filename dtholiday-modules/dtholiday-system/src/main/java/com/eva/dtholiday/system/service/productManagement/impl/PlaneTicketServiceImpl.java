@@ -44,6 +44,7 @@ public class PlaneTicketServiceImpl implements PlaneTicketService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi add(PlaneTicketReq req) {
         PlaneTicket planeTicket = new PlaneTicket();
+        planeTicket.setRemainNum(req.getTotalNum());
         BeanUtils.copyProperties(req, planeTicket);
         planeTicketMapper.insert(planeTicket);
         PlaneTicketResp resp = new PlaneTicketResp();
@@ -96,10 +97,10 @@ public class PlaneTicketServiceImpl implements PlaneTicketService {
             queryWrapper.like(PlaneTicket.ARRIVAL_PLACE, req.getArrivalPlace());
         }
         if (Objects.nonNull(req.getDepartureDate())) {
-            queryWrapper.eq(PlaneTicket.DEPARTURE_DATE, req.getDepartureDate());
+            queryWrapper.ge(PlaneTicket.DEPARTURE_DATE, req.getDepartureDate());
         }
         if (Objects.nonNull(req.getReturnDate())) {
-            queryWrapper.eq(PlaneTicket.RETURN_DATE, req.getReturnDate());
+            queryWrapper.le(PlaneTicket.RETURN_DATE, req.getReturnDate());
         }
         if (StringUtils.hasText(req.getReturnFlight())){
             queryWrapper.eq(PlaneTicket.RETURN_FLIGHT, req.getReturnFlight());
