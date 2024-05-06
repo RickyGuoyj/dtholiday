@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandRecommendation;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandRecommendationMapper;
@@ -21,6 +22,12 @@ public class IslandRecommendationServiceImpl implements IslandRecommendationServ
 
     @Override
     public ResponseApi islandRecommendationAdd(IslandRecommendationReq islandRecommendationReq) {
+        QueryWrapper<IslandRecommendation> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(IslandRecommendation.ISLAND_INDEX_CODE, islandRecommendationReq.getIslandIndexCode());
+        Long count = islandRecommendationMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            return ResponseApi.error("该岛屿已被推荐");
+        }
         int insert = islandRecommendationMapper.insert(convertRecommendationEntity(islandRecommendationReq));
         return ResponseApi.ok(insert);
     }

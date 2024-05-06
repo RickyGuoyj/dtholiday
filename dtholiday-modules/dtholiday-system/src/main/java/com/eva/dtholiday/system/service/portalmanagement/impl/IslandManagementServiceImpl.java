@@ -11,16 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.dto.IslandManagementTagInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.*;
-import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandManagementMapper;
-import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandQuotationMapper;
-import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandTagMapper;
-import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandTagRelationMapper;
+import com.eva.dtholiday.commons.dao.mapper.portalmanagement.*;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryDetailResp;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryListResp;
@@ -39,6 +37,8 @@ public class IslandManagementServiceImpl implements IslandManagementService {
     private IslandQuotationMapper islandQuotationMapper;
     @Autowired
     private IslandTagMapper islandTagMapper;
+    @Autowired
+    private IslandRecommendationMapper islandRecommendationMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -118,17 +118,17 @@ public class IslandManagementServiceImpl implements IslandManagementService {
                 convertTagRelationEntityList(islandManagementReq, islandManagement);
             islandTagRelationMapper.insertBatch(islandTagRelationList);
         }
-        // // 将报价单全部重置
-        // List<IslandQuotation> oldQuotationList = islandQuotationMapper.selectList(new QueryWrapper<IslandQuotation>()
-        // .eq(IslandQuotation.ISLAND_INDEX_CODE, islandManagementReq.getIslandIndexCode()));
-        // List<IslandQuotation> needAddList = new ArrayList<>();
-        // List<IslandQuotation> needDeleteList = new ArrayList<>();
-        // handleQuotationList(oldQuotationList, islandManagementReq.getIslandQuotationPdfList(), needAddList,
-        // needDeleteList);
-        // List<IslandQuotation>
-        // List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq,
-        // islandManagement);
-        // islandQuotationMapper.insertBatch(islandQuotationList);
+         // 更新报价单
+//         List<IslandQuotation> oldQuotationList = islandQuotationMapper.selectList(new QueryWrapper<IslandQuotation>()
+//         .eq(IslandQuotation.ISLAND_INDEX_CODE, islandManagementReq.getIslandIndexCode()));
+//         List<IslandQuotation> needAddList = new ArrayList<>();
+//         List<IslandQuotation> needDeleteList = new ArrayList<>();
+//         handleQuotationList(oldQuotationList, islandManagementReq.getIslandQuotationPdfList(), needAddList,
+//         needDeleteList);
+//         List<IslandQuotation>
+//         List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq,
+//         islandManagement);
+//         islandQuotationMapper.insertBatch(islandQuotationList);
         return response.setData(i);
     }
 
@@ -164,9 +164,14 @@ public class IslandManagementServiceImpl implements IslandManagementService {
         try {
             // 删除主表
             int i = islandManagementMapper.deleteBatchIds(islandIndexCodeList);
-            // 删除关联表
+            // 删除标签关联表
             islandTagRelationMapper.deleteBatchByIslandIndexCode(islandIndexCodeList);
-            // 更新pdf报价单
+            // 删除推荐表
+            QueryWrapper<IslandRecommendation> wrapper = new QueryWrapper<>();
+            wrapper.in(IslandRecommendation.ISLAND_INDEX_CODE, islandIndexCodeList);
+            islandRecommendationMapper.delete(wrapper);
+            // 取消关联报价单
+            unlinkIslandPdfQuotation(islandIndexCodeList);
             response.setData(i);
         } catch (Exception e) {
             response = ResponseApi.error(null, BusinessErrorCodeEnum.ISLAND_MANAGEMENT_DELETE_FAIL.getCode(),
@@ -174,6 +179,18 @@ public class IslandManagementServiceImpl implements IslandManagementService {
         }
         return response;
     }
+
+    /**
+     *pdf报价单和岛屿取消关联
+     * @param islandIndexCodeList
+     */
+    private void unlinkIslandPdfQuotation(List<Integer> islandIndexCodeList) {
+    UpdateWrapper<IslandQuotation> updateWrapper = new UpdateWrapper<>();
+    updateWrapper.in(IslandQuotation.ISLAND_INDEX_CODE, islandIndexCodeList);
+    IslandQuotation islandQuotation = new IslandQuotation();
+    islandQuotation.setIslandIndexCode(0);
+    islandQuotationMapper.update(islandQuotation, updateWrapper);
+}
 
     @Override
     public ResponseApi<IslandManagementQueryListResp>
