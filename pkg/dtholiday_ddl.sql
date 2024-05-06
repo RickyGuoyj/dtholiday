@@ -224,6 +224,43 @@ CREATE TABLE IF NOT EXISTS `dt_extra_child_expense`
     PRIMARY KEY (`extra_child_expense_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='额外儿童费用表';
 
+CREATE TABLE IF NOT EXISTS  `dt_island_hotel`
+(
+                                   `island_hotel_id` INT AUTO_INCREMENT COMMENT '岛屿酒店ID',
+                                   `island_index_code` INT COMMENT '岛屿编码',
+                                   `island_cn_name` VARCHAR(255) COMMENT '岛屿中文名称',
+                                   `price_type` INT COMMENT '价格类型：1-打包价，2-合同价',
+                                   `traffic_type` INT COMMENT '上岛工具类型',
+                                   `meal_type` INT COMMENT '餐型类型',
+                                   `hotel_room_type` VARCHAR(255) COMMENT '房型描述',
+                                   `has_environment_tax` INT COMMENT '是否含环境税：0-不含，1-含',
+                                   `effective_date` DATE COMMENT '生效日期',
+                                   `expiry_date` DATE COMMENT '失效日期',
+                                   `total_num` INT COMMENT '总量',
+                                   `remain_num` INT COMMENT '余量',
+                                   `package_nights` INT COMMENT '打包间夜数',
+                                   `currency_type` INT COMMENT '币种类型',
+                                   `package_price` DECIMAL(10, 2) COMMENT '打包价格',
+                                   `traffic_price` DECIMAL(10, 2) COMMENT '往返交通费',
+                                   `meal_price` DECIMAL(10, 2) COMMENT '餐饮价格',
+                                   `environment_tax` DECIMAL(10, 2) COMMENT '环境税',
+                                   `extra_expense` DECIMAL(10, 2) COMMENT '附加费',
+                                   `extra_adult_hotel_price` DECIMAL(10, 2) COMMENT '额外成人酒店价格',
+                                   `extra_adult_traffic_price` DECIMAL(10, 2) COMMENT '额外成人交通价格',
+                                   `extra_adult_meal_price` DECIMAL(10, 2) COMMENT '额外成人餐饮价格',
+                                   `extra_adult_environment_tax` DECIMAL(10, 2) COMMENT '额外成人环境税',
+                                   `extra_adult_package_price` DECIMAL(10, 2) COMMENT '额外成人打包价',
+                                   `extra_adult_currency_type` INT COMMENT '额外成人币种',
+                                   `delay_hotel_room_type` VARCHAR(255) COMMENT '本身的2人延住房型',
+                                   `delay_hotel_room_price` DECIMAL(10, 2) COMMENT '2人的延住1天的价格',
+                                   `delay_currency_type` INT COMMENT '延住价格的币种',
+                                   `extra_adult_delay_hotel_room_price` DECIMAL(10, 2) COMMENT '额外成人延住价格',
+                                   `extra_adult_delay_currency_type` INT COMMENT '额外成人延住币种',
+                                   `special_price` DECIMAL(10, 2) COMMENT '特殊费用（如圣诞元旦）',
+                                   `remarks` TEXT COMMENT '备注信息',
+                                   PRIMARY KEY (`island_hotel_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岛屿酒店信息表';
+
 
 
 

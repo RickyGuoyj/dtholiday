@@ -46,6 +46,7 @@ public class PlaneTicketServiceImpl implements PlaneTicketService {
         PlaneTicket planeTicket = new PlaneTicket();
         planeTicket.setRemainNum(req.getTotalNum());
         BeanUtils.copyProperties(req, planeTicket);
+        planeTicket.setPlaneTicketId(null);
         planeTicketMapper.insert(planeTicket);
         PlaneTicketResp resp = new PlaneTicketResp();
         BeanUtils.copyProperties(planeTicket, resp);

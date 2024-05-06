@@ -20,9 +20,9 @@ import java.util.Date;
 public class IslandHotelPageReq extends BasePage {
 
     /**
-     * 岛屿编码
+     * 岛屿名称
      */
-    private Integer islandIndexCode;
+    private String islandCnName;
 
     /**
      * 上岛工具类型
@@ -43,11 +43,11 @@ public class IslandHotelPageReq extends BasePage {
      * 出发日期，精确查询
      */
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date departureDate;
+    private Date effectiveDate;
 
     /**
      * 返回日期，精确查询
      */
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date returnDate;
+    private Date expiryDate;
 }

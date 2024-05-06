@@ -183,4 +183,12 @@ public class IslandHotel extends Model<IslandHotel> {
      * 备注信息
      */
     private String remarks;
+
+    public static final String ISLAND_CN_NAME = "island_cn_name";
+
+    public static final String EFFECTIVE_DATE = "effective_date";
+
+    public static final String EXPIRY_DATE = "expiry_date";
+
+    public static final String HOTEL_ROOM_TYPE = "hotel_room_type";
 }
