@@ -41,6 +41,7 @@ public class ExtraChildServiceImpl implements ExtraChildService {
     public ResponseApi add(ExtraChildExpenseReq req) {
         ExtraChildExpense extraChildExpense = new ExtraChildExpense();
         BeanUtils.copyProperties(req, extraChildExpense);
+        extraChildExpense.setExtraChildExpenseId(null);
         extraChildExpenseMapper.insert(extraChildExpense);
 
         ExtraChildExpenseResp extraChildExpenseResp = new ExtraChildExpenseResp();

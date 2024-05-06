@@ -1,5 +1,8 @@
 package com.eva.dtholiday.system.service.productManagement.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
 import com.eva.dtholiday.commons.dao.entity.productManagement.PlaneTicket;
@@ -13,8 +16,12 @@ import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @describtion
@@ -38,6 +45,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         IslandHotel islandHotel = new IslandHotel();
         BeanUtils.copyProperties(req, islandHotel);
         islandHotel.setRemainNum(req.getTotalNum());
+        islandHotel.setIslandHotelId(null);
         islandHotelMapper.insert(islandHotel);
         IslandHotelResp resp = new IslandHotelResp();
         BeanUtils.copyProperties(islandHotel, resp);
@@ -76,7 +84,33 @@ public class IslandHotelServiceImpl implements IslandHotelService {
     }
     @Override
     public ResponseApi queryList(IslandHotelPageReq req) {
-        return null;
+        IPage<IslandHotel> entityPage = new Page<>(req.getCurrent(), req.getSize());
+        QueryWrapper<IslandHotel> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(req.getIslandCnName())) {
+            queryWrapper.like(IslandHotel.ISLAND_CN_NAME, req.getIslandCnName());
+        }
+        if (Objects.nonNull(req.getEffectiveDate())) {
+            queryWrapper.ge(IslandHotel.EFFECTIVE_DATE, req.getEffectiveDate());
+        }
+        if (Objects.nonNull(req.getExpiryDate())) {
+            queryWrapper.le(IslandHotel.EXPIRY_DATE, req.getExpiryDate());
+        }
+        if (StringUtils.hasText(req.getHotelRoomType())){
+            queryWrapper.like(IslandHotel.HOTEL_ROOM_TYPE, req.getHotelRoomType());
+        }
+        entityPage = islandHotelMapper.selectPage(entityPage, queryWrapper);
+        if (Objects.isNull(entityPage)) {
+            return ResponseApi.ok(new Page<>(req.getCurrent(), 0));
+        }
+        List<IslandHotelResp> respList = entityPage.getRecords().stream().map(entity -> {
+            IslandHotelResp resp = new IslandHotelResp();
+            BeanUtils.copyProperties(entity, resp);
+            return resp;
+        }).collect(Collectors.toList());
+        IPage<IslandHotelResp> respPage = new Page<>(req.getCurrent(), req.getSize());
+        respPage.setRecords(respList);
+        respPage.setTotal(entityPage.getTotal());
+        return ResponseApi.ok(respPage);
     }
 
     @Override

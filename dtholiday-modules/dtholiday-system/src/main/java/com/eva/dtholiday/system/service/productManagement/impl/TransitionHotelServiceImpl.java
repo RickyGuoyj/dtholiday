@@ -42,6 +42,7 @@ public class TransitionHotelServiceImpl implements TransitionHotelService {
         TransitionHotel transitionHotel = new TransitionHotel();
         BeanUtils.copyProperties(req, transitionHotel);
         transitionHotel.setRemainNum(req.getTotalNum());
+        transitionHotel.setTransitionHotelId(null);
         transitionHotelMapper.insert(transitionHotel);
         TransitionHotelResp resp = new TransitionHotelResp();
         BeanUtils.copyProperties(transitionHotel, resp);
