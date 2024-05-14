@@ -12,6 +12,7 @@ import com.eva.dtholiday.commons.dao.req.productManagement.*;
 import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
 import com.eva.dtholiday.commons.dao.resp.productManagement.PlaneTicketResp;
 import com.eva.dtholiday.commons.dao.resp.productManagement.TransitionHotelResp;
+import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ public class IslandHotelServiceImpl implements IslandHotelService {
 
     @Resource
     private IslandHotelMapper islandHotelMapper;
+
+    @Resource
+    private IslandManagementService islandManagementService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -105,6 +109,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         List<IslandHotelResp> respList = entityPage.getRecords().stream().map(entity -> {
             IslandHotelResp resp = new IslandHotelResp();
             BeanUtils.copyProperties(entity, resp);
+            resp.setIslandCnName(islandManagementService.getIslandName(entity.getIslandIndexCode()));
             return resp;
         }).collect(Collectors.toList());
         IPage<IslandHotelResp> respPage = new Page<>(req.getCurrent(), req.getSize());
@@ -123,6 +128,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         if (islandHotel != null) {
             IslandHotelResp resp = new IslandHotelResp();
             BeanUtils.copyProperties(islandHotel, resp);
+            resp.setIslandCnName(islandManagementService.getIslandName(islandHotel.getIslandIndexCode()));
             return ResponseApi.ok(resp);
         }
         return ResponseApi.error("no islandHotel found");

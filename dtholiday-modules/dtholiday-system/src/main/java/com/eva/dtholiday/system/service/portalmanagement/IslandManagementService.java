@@ -26,7 +26,7 @@ public interface IslandManagementService {
     /**
      * 删除
      *
-     * @param islandIndexCode
+     * @param islandIndexCodeList
      */
     ResponseApi islandManagementDelete(List<Integer> islandIndexCodeList);
 
@@ -44,5 +44,7 @@ public interface IslandManagementService {
      * @return 响应
      */
     ResponseApi islandManagementQueryDetail(int islandIndexCode);
+
+    String getIslandName(Integer islandIndexCode);
 
 }

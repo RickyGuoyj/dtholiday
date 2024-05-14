@@ -16,6 +16,7 @@ import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandArticleResp;
 import com.eva.dtholiday.commons.utils.DateUtils;
 import com.eva.dtholiday.commons.utils.MyStringUtils;
 import com.eva.dtholiday.system.service.portalmanagement.IslandArticleService;
+import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,9 @@ public class IslandArticleServiceImpl implements IslandArticleService {
 
     @Resource
     private IslandManagementMapper islandManagementMapper;
+
+    @Resource
+    private IslandManagementService islandManagementService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -115,6 +119,7 @@ public class IslandArticleServiceImpl implements IslandArticleService {
         if (!Objects.isNull(islandArticle)) {
             //返回业务对象
             BeanUtils.copyProperties(islandArticle, islandArticleResp);
+            islandArticleResp.setIslandCnName(islandManagementService.getIslandName(islandArticle.getIslandIndexCode()));
             List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
             islandArticleResp.setPictures(fileInfos);
             islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
@@ -139,6 +144,7 @@ public class IslandArticleServiceImpl implements IslandArticleService {
             islandArticleRespList = islandArticles.stream().map(islandArticle -> {
                 IslandArticleResp islandArticleResp = new IslandArticleResp();
                 BeanUtils.copyProperties(islandArticle, islandArticleResp);
+                islandArticleResp.setIslandCnName(islandManagementService.getIslandName(islandArticle.getIslandIndexCode()));
                 List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
                 islandArticleResp.setPictures(fileInfos);
                 islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));

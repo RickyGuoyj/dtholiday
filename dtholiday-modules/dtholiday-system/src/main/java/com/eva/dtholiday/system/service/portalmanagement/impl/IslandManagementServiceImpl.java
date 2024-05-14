@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.eva.dtholiday.commons.utils.LocalCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,7 @@ public class IslandManagementServiceImpl implements IslandManagementService {
                 convertQuotationEntityList(islandManagementReq, islandManagement);
             islandQuotationMapper.insertBatch(islandQuotationList);
         }
+        LocalCache.putIslandName(islandManagement.getIslandIndexCode(), islandManagement.getIslandCnName());
         response.setData(insert);
         return response;
     }
@@ -129,6 +131,7 @@ public class IslandManagementServiceImpl implements IslandManagementService {
 //         List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq,
 //         islandManagement);
 //         islandQuotationMapper.insertBatch(islandQuotationList);
+        LocalCache.putIslandName(islandManagement.getIslandIndexCode(), islandManagement.getIslandCnName());
         return response.setData(i);
     }
 
@@ -271,5 +274,18 @@ public class IslandManagementServiceImpl implements IslandManagementService {
             .selectList(new QueryWrapper<IslandQuotation>().eq(IslandQuotation.ISLAND_INDEX_CODE, islandIndexCode));
         resp.setIslandQuotationPdfList(islandQuotations);
         return ResponseApi.ok(resp);
+    }
+
+    @Override
+    public String getIslandName(Integer islandIndexCode) {
+        String islandName = LocalCache.getIslandName(islandIndexCode);
+        if (StringUtils.isBlank(islandName)){
+            IslandManagement islandManagement = islandManagementMapper.selectById(islandIndexCode);
+            if (islandManagement != null){
+                LocalCache.putIslandName(islandIndexCode, islandManagement.getIslandCnName());
+                return islandManagement.getIslandCnName();
+            }
+        }
+        return islandName;
     }
 }

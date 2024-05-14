@@ -56,4 +56,6 @@ public class IslandQuotation extends Model<IslandQuotation> {
     private Timestamp updateTime;
 
     public static final String ISLAND_INDEX_CODE = "island_index_code";
+
+    public static final String QUOTATION_NAME = "quotation_name";
 }

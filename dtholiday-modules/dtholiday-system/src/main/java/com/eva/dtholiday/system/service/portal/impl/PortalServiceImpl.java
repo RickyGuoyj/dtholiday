@@ -7,10 +7,17 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.eva.dtholiday.commons.dao.entity.productManagement.ExtraChildExpense;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandArticleQueryDto;
+import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandQuotationQueryListReq;
 import com.eva.dtholiday.commons.dao.resp.portal.*;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandArticleResp;
+import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandQuotationQueryListResp;
+import com.eva.dtholiday.commons.dao.resp.productManagement.ExtraChildExpenseResp;
 import com.eva.dtholiday.commons.utils.DateUtils;
+import com.eva.dtholiday.commons.utils.LocalCache;
+import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -44,6 +51,9 @@ public class PortalServiceImpl implements PortalService {
 
     @Resource
     private IslandArticleMapper islandArticleMapper;
+
+    @Resource
+    private IslandManagementService islandManagementService;
 
     @Override
     public ResponseApi<List<RecommendIslandResp>> getRecommendIsland() {
@@ -201,6 +211,33 @@ public class PortalServiceImpl implements PortalService {
             islandArticleResp.setUpdateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getUpdateTime()));
         }
         return ResponseApi.ok(islandArticleResp);
+    }
+
+    @Override
+    public ResponseApi getIslandQuotationList(IslandQuotationQueryListReq islandQuotationQueryListReq) {
+        Page<IslandQuotation> entityPage = new Page<>(islandQuotationQueryListReq.getCurrent(), islandQuotationQueryListReq.getSize());
+        QueryWrapper<IslandQuotation> queryWrapper = new QueryWrapper<>();
+        if (islandQuotationQueryListReq.getIslandIndexCode()!=null){
+            queryWrapper.eq(IslandQuotation.ISLAND_INDEX_CODE,islandQuotationQueryListReq.getIslandIndexCode());
+        }
+        if (org.springframework.util.StringUtils.hasText(islandQuotationQueryListReq.getQuotationName())){
+            queryWrapper.like(IslandQuotation.QUOTATION_NAME,islandQuotationQueryListReq.getQuotationName());
+        }
+        entityPage = islandQuotationMapper.selectPage(entityPage, queryWrapper);
+        if (Objects.isNull(entityPage)){
+            return ResponseApi.ok(new Page<>(islandQuotationQueryListReq.getCurrent(), 0));
+        }
+        List<IslandManagementQuotation> respList = entityPage.getRecords().stream().map(entity -> {
+            IslandManagementQuotation resp = new IslandManagementQuotation();
+            BeanUtils.copyProperties(entity, resp);
+            resp.setIslandCnName(islandManagementService.getIslandName(resp.getIslandIndexCode()));
+            return resp;
+        }).collect(Collectors.toList());
+
+        Page<IslandManagementQuotation> respPage = new Page<>(islandQuotationQueryListReq.getCurrent(), islandQuotationQueryListReq.getSize());
+        respPage.setRecords(respList);
+        respPage.setTotal(entityPage.getTotal());
+        return ResponseApi.ok(respPage);
     }
 
     private ResponseApi getIslandListInfo(List<IslandManagement> islandManagements,

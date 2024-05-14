@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -16,11 +17,15 @@ import com.eva.dtholiday.commons.dao.mapper.portalmanagement.IslandQuotationMapp
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandQuotationReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandQuotationQueryListResp;
 import com.eva.dtholiday.system.service.portalmanagement.IslandQuotationService;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class IslandQuotationServiceImpl implements IslandQuotationService {
     @Resource
     private IslandQuotationMapper islandQuotationMapper;
+
+    @Resource
+    private IslandManagementService islandManagementService;
 
     @Override
     public ResponseApi islandQuotationAdd(IslandQuotationReq islandQuotationReq) {
@@ -45,8 +50,13 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
         map.put("from", (islandQuotationReq.getPage() - 1) * islandQuotationReq.getPageSize());
         map.put("to", islandQuotationReq.getPageSize());
         List<IslandManagementQuotation> islandManagementQuotationEntities =
-            islandQuotationMapper.selectIslandManagementQuotationList(map);
+                islandQuotationMapper.selectIslandManagementQuotationList(map);
         IslandQuotationQueryListResp resp = new IslandQuotationQueryListResp();
+        if (!CollectionUtils.isEmpty(islandManagementQuotationEntities)) {
+            islandManagementQuotationEntities.forEach(entity -> {
+                entity.setIslandCnName(islandManagementService.getIslandName(entity.getIslandIndexCode()));
+            });
+        }
         resp.setIslandQuotationList(islandManagementQuotationEntities);
         resp.setPage(islandQuotationReq.getPage());
         resp.setPageSize(islandQuotationReq.getPageSize());
@@ -64,7 +74,7 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
     public ResponseApi islandQuotationUpdate(IslandQuotationReq islandQuotationReq) {
         if (islandQuotationReq.getQuotationIndexCode() > 0) {
             Long count = islandQuotationMapper.selectCount(new QueryWrapper<IslandQuotation>()
-                .eq("quotation_index_code", islandQuotationReq.getQuotationIndexCode()));
+                    .eq("quotation_index_code", islandQuotationReq.getQuotationIndexCode()));
             if (count > 0) {
                 IslandQuotation islandQuotation = convertQuotationEntity(islandQuotationReq);
                 islandQuotation.setQuotationIndexCode(islandQuotationReq.getQuotationIndexCode());
