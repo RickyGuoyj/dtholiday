@@ -25,4 +25,8 @@ public interface PlaneTicketService {
     ResponseApi queryList(PlaneTicketPageReq req);
 
     ResponseApi queryDetail(PlaneTicketQueryReq req);
+
+    ResponseApi getAllAirlineCompany();
+
+    ResponseApi queryPlaneTicketList(PlaneTicketPageReq req);
 }

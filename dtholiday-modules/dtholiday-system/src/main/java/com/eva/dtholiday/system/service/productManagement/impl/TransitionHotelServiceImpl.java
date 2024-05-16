@@ -3,19 +3,24 @@ package com.eva.dtholiday.system.service.productManagement.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.entity.productManagement.PlaneTicket;
 import com.eva.dtholiday.commons.dao.entity.productManagement.TransitionHotel;
 import com.eva.dtholiday.commons.dao.mapper.productManagement.TransitionHotelMapper;
+import com.eva.dtholiday.commons.dao.req.productManagement.PlaneTicketPageReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelPageReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelQueryReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelReq;
+import com.eva.dtholiday.commons.dao.resp.productManagement.PlaneTicketResp;
 import com.eva.dtholiday.commons.dao.resp.productManagement.TransitionHotelResp;
 import com.eva.dtholiday.system.service.productManagement.TransitionHotelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -118,5 +123,40 @@ public class TransitionHotelServiceImpl implements TransitionHotelService {
             return ResponseApi.ok(resp);
         }
         return ResponseApi.error("no transitionHotel found");
+    }
+
+    @Override
+    public ResponseApi getAllTransitionHotel() {
+        List<TransitionHotel> transitionHotelList = transitionHotelMapper.selectList(null);
+        if (!CollectionUtils.isEmpty(transitionHotelList)) {
+            //提取所有的航空公司
+            return ResponseApi.ok(transitionHotelList.stream().map(TransitionHotel::getTransitionHotelName).collect(Collectors.toSet()));
+        }
+        return ResponseApi.ok(Collections.emptyList());
+    }
+
+    @Override
+    public ResponseApi queryTransitionHotelList(TransitionHotelPageReq req) {
+        QueryWrapper<TransitionHotel> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(req.getTransitionHotelName())) {
+            queryWrapper.eq(TransitionHotel.TRANSITION_HOTEL_NAME, req.getTransitionHotelName());
+        }
+        if (Objects.nonNull(req.getEffectiveDate())) {
+            queryWrapper.ge(TransitionHotel.EFFECTIVE_DATE, req.getEffectiveDate());
+        }
+        if (Objects.nonNull(req.getExpiryDate())) {
+            queryWrapper.le(TransitionHotel.EXPIRY_DATE, req.getExpiryDate());
+        }
+        List<TransitionHotel> transitionHotelList = transitionHotelMapper.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(transitionHotelList)) {
+            List<TransitionHotelResp> respList = transitionHotelList.stream().map(entity -> {
+                TransitionHotelResp resp = new TransitionHotelResp();
+                BeanUtils.copyProperties(entity, resp);
+                return resp;
+            }).collect(Collectors.toList());
+            return ResponseApi.ok(respList);
+        }
+
+        return ResponseApi.ok(Collections.emptyList());
     }
 }

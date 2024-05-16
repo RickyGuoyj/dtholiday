@@ -1,14 +1,12 @@
 package com.eva.dtholiday.system.controller.productManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.productManagement.PlaneTicketPageReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelPageReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelQueryReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelReq;
 import com.eva.dtholiday.system.service.productManagement.TransitionHotelService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -53,5 +51,13 @@ public class TransitionHotelController {
     public ResponseApi transitionHotelQueryDetail(@RequestBody TransitionHotelQueryReq req) {
         return transitionHotelService.queryDetail(req);
     }
+    @GetMapping("/getAllTransitionHotel")
+    public ResponseApi getAllTransitionHotel() {
+        return transitionHotelService.getAllTransitionHotel();
+    }
 
+    @PostMapping("/queryTransitionHotelList")
+    public ResponseApi queryPlaneTicketList(@RequestBody TransitionHotelPageReq req) {
+        return transitionHotelService.queryTransitionHotelList(req);
+    }
 }

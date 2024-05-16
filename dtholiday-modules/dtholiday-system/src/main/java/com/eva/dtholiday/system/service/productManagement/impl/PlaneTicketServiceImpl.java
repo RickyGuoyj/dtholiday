@@ -16,9 +16,11 @@ import com.eva.dtholiday.system.service.productManagement.PlaneTicketService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -103,10 +105,10 @@ public class PlaneTicketServiceImpl implements PlaneTicketService {
         if (Objects.nonNull(req.getReturnDate())) {
             queryWrapper.le(PlaneTicket.RETURN_DATE, req.getReturnDate());
         }
-        if (StringUtils.hasText(req.getReturnFlight())){
+        if (StringUtils.hasText(req.getReturnFlight())) {
             queryWrapper.eq(PlaneTicket.RETURN_FLIGHT, req.getReturnFlight());
         }
-        if (StringUtils.hasText(req.getDepartureFlight())){
+        if (StringUtils.hasText(req.getDepartureFlight())) {
             queryWrapper.eq(PlaneTicket.DEPARTURE_FLIGHT, req.getDepartureFlight());
         }
         entityPage = planeTicketMapper.selectPage(entityPage, queryWrapper);
@@ -137,5 +139,52 @@ public class PlaneTicketServiceImpl implements PlaneTicketService {
             return ResponseApi.ok(resp);
         }
         return ResponseApi.error("no planeTicket found");
+    }
+
+    @Override
+    public ResponseApi getAllAirlineCompany() {
+        List<PlaneTicket> planeTicketList = planeTicketMapper.selectList(null);
+        if (!CollectionUtils.isEmpty(planeTicketList)) {
+            //提取所有的航空公司
+            return ResponseApi.ok(planeTicketList.stream().map(PlaneTicket::getAirlineCompanyName).collect(Collectors.toSet()));
+        }
+        return ResponseApi.ok(Collections.emptyList());
+    }
+
+    @Override
+    public ResponseApi queryPlaneTicketList(PlaneTicketPageReq req) {
+        QueryWrapper<PlaneTicket> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(req.getAirlineCompanyName())) {
+            queryWrapper.eq(PlaneTicket.AIRLINE_COMPANY_NAME, req.getAirlineCompanyName());
+        }
+        if (Objects.nonNull(req.getDepartureDate())) {
+            queryWrapper.ge(PlaneTicket.DEPARTURE_DATE, req.getDepartureDate());
+        }
+        if (Objects.nonNull(req.getReturnDate())) {
+            queryWrapper.le(PlaneTicket.RETURN_DATE, req.getReturnDate());
+        }
+//        if (StringUtils.hasText(req.getDeparturePlace())) {
+//            queryWrapper.like(PlaneTicket.DEPARTURE_PLACE, req.getDeparturePlace());
+//        }
+//        if (StringUtils.hasText(req.getArrivalPlace())) {
+//            queryWrapper.like(PlaneTicket.ARRIVAL_PLACE, req.getArrivalPlace());
+//        }
+//        if (StringUtils.hasText(req.getReturnFlight())) {
+//            queryWrapper.eq(PlaneTicket.RETURN_FLIGHT, req.getReturnFlight());
+//        }
+//        if (StringUtils.hasText(req.getDepartureFlight())) {
+//            queryWrapper.eq(PlaneTicket.DEPARTURE_FLIGHT, req.getDepartureFlight());
+//        }
+        List<PlaneTicket> planeTicketList = planeTicketMapper.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(planeTicketList)) {
+            List<PlaneTicketResp> respList = planeTicketList.stream().map(entity -> {
+                PlaneTicketResp resp = new PlaneTicketResp();
+                BeanUtils.copyProperties(entity, resp);
+                return resp;
+            }).collect(Collectors.toList());
+            return ResponseApi.ok(respList);
+        }
+
+        return ResponseApi.ok(Collections.emptyList());
     }
 }

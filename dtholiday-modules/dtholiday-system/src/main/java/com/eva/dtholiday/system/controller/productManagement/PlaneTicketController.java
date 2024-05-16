@@ -8,10 +8,7 @@ import com.eva.dtholiday.commons.dao.req.productManagement.PlaneTicketQueryReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.PlaneTicketReq;
 import com.eva.dtholiday.system.service.productManagement.PlaneTicketService;
 import com.eva.dtholiday.system.service.productManagement.TransitionHotelService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -55,5 +52,15 @@ public class PlaneTicketController {
     @PostMapping("/queryDetail")
     public ResponseApi planeTicketQueryDetail(@RequestBody PlaneTicketQueryReq req) {
         return planeTicketService.queryDetail(req);
+    }
+
+    @GetMapping("/getAllAirlineCompany")
+    public ResponseApi getAllAirlineCompany() {
+        return planeTicketService.getAllAirlineCompany();
+    }
+
+    @PostMapping("/queryPlaneTicketList")
+    public ResponseApi queryPlaneTicketList(@RequestBody PlaneTicketPageReq req) {
+        return planeTicketService.queryPlaneTicketList(req);
     }
 }

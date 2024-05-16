@@ -2,6 +2,7 @@ package com.eva.dtholiday.commons.dao.entity.portalmanagement;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
@@ -27,5 +28,6 @@ public class IslandManagementQuotation {
     /**
      * 更新时间戳，默认为当前时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp updateTime;
 }

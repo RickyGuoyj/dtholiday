@@ -3,6 +3,8 @@ package com.eva.dtholiday.commons.dao.req.productManagement;
 import com.eva.dtholiday.commons.dao.req.BasePage;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -24,6 +26,10 @@ public class TransitionHotelPageReq extends BasePage {
      * 过渡酒店房间类型，用于模糊查询
      */
     private String transitionHotelType;
+
+    private Date effectiveDate;
+
+    private Date expiryDate;
 
 
 }

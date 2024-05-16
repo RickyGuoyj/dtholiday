@@ -1,6 +1,7 @@
 package com.eva.dtholiday.system.service.productManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.productManagement.PlaneTicketPageReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelPageReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelQueryReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.TransitionHotelReq;
@@ -25,4 +26,8 @@ public interface TransitionHotelService {
     ResponseApi queryList(TransitionHotelPageReq req);
 
     ResponseApi queryDetail(TransitionHotelQueryReq req);
+
+    ResponseApi getAllTransitionHotel();
+
+    ResponseApi queryTransitionHotelList(TransitionHotelPageReq req);
 }

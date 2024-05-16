@@ -79,4 +79,8 @@ public class TransitionHotel extends Model<TransitionHotel> {
     public static final String TRANSITION_HOTEL_NAME = "transition_hotel_name";
 
     public static final String TRANSITION_HOTEL_TYPE = "transition_hotel_type";
+
+    public static final String EFFECTIVE_DATE = "effective_date";
+
+    public static final String EXPIRY_DATE = "expiry_date";
 }
