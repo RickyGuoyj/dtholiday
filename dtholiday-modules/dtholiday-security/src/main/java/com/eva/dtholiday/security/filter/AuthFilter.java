@@ -1,12 +1,16 @@
 package com.eva.dtholiday.security.filter;
 
 
+import com.alibaba.fastjson.JSON;
+import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
 import com.eva.dtholiday.commons.exception.BusinessException;
 import com.eva.dtholiday.security.entity.DtHolidayUser;
 import com.eva.dtholiday.security.utils.TokenCache;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @describtion
@@ -33,6 +38,9 @@ import java.io.IOException;
 @AllArgsConstructor
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
+
+    public static final List<String> ignoreHttpUrls = Lists.newArrayList("/login", "/portal/", "/swagger-ui.html", "/swagger-ui.html/",
+            "/swagger-resources/", "/webjars/", "/v2/api-docs", "/portal", "/swagger-resources");
 
     /**
      * 1.判断是否为登录接口
@@ -64,13 +72,27 @@ public class AuthFilter extends OncePerRequestFilter {
                             DtHolidayUser tUser = TokenCache.getUserIdByToken(token);
                             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(tUser, null, tUser.getAuthorities());
                             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        } catch (Exception e) {
+                        } catch (BusinessException e) {
                             logger.error("parse error", e);
                         }
                         filterChain.doFilter(request, response);
                         return;
                     } else {
+                        try {
+                            throw new BusinessException(BusinessErrorCodeEnum.UNAUTHORIZED.getMessageCN(), BusinessErrorCodeEnum.UNAUTHORIZED.getCode());
+                        } catch (BusinessException e) {
+                            log.error("token info is error : request path is {},token is :{}", request.getServletPath(), token);
+                            buildResponse(response, BusinessErrorCodeEnum.UNAUTHORIZED.getMessageCN(), e.getErrorCode(), e.getMessage());
+                            return;
+                        }
+                    }
+                } else {
+                    try {
                         throw new BusinessException(BusinessErrorCodeEnum.UNAUTHORIZED.getMessageCN(), BusinessErrorCodeEnum.UNAUTHORIZED.getCode());
+                    } catch (BusinessException e) {
+                        log.error("token info is error : request path is {},token is :{}", request.getServletPath(), token);
+                        buildResponse(response, BusinessErrorCodeEnum.UNAUTHORIZED.getMessageCN(), e.getErrorCode(), e.getMessage());
+                        return;
                     }
                 }
             }
@@ -79,11 +101,31 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     private boolean isIgnoreHttpUrls(HttpServletRequest request) {
-        return request.getServletPath().contains("/portal/");
+        boolean rt = false;
+        String requestPath = request.getServletPath();
+        for (String ihu : ignoreHttpUrls) {
+            if (requestPath.contains(ihu)) {
+                rt = true;
+                break;
+            }
+        }
+        return rt;
     }
 
     private boolean isLoginRequest(HttpServletRequest request) {
         return "POST".equals(request.getMethod()) && "/login".equals(request.getServletPath());
+    }
+
+    private void buildResponse(HttpServletResponse response, Object data, String code, String message) {
+        response.setStatus(HttpStatus.OK.value());
+        ResponseApi r = ResponseApi.error(data, code, message);
+        response.setHeader("Content-Type", "application/json;charset=utf-8");
+        try {
+            response.getWriter().print(JSON.toJSONString(r));
+            response.getWriter().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
