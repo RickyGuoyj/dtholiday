@@ -261,6 +261,43 @@ CREATE TABLE IF NOT EXISTS  `dt_island_hotel`
                                    PRIMARY KEY (`island_hotel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岛屿酒店信息表';
 
+CREATE TABLE IF NOT EXISTS `dt_order_plane_ticket` (
+                                       `plane_ticket_order_id` INT NOT NULL AUTO_INCREMENT,
+                                       `order_type` INT NOT NULL,
+                                       `customer_info` TEXT,
+                                       `plane_ticket_info` TEXT,
+                                       `initial_price` DECIMAL(10, 2) ,
+                                       `discount_price` DECIMAL(10, 2) ,
+                                       `currency_type` INT NOT NULL,
+                                       `order_status` INT NOT NULL,
+                                       `financial_status` INT NOT NULL,
+                                       `sale_man` VARCHAR(255),
+                                       `financial_man` VARCHAR(255),
+                                       `order_creator` VARCHAR(255),
+                                       `create_time` TIMESTAMP,
+                                       `update_time` TIMESTAMP,
+                                       PRIMARY KEY (`plane_ticket_order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel` (
+                                           `transition_hotel_order_id` INT NOT NULL AUTO_INCREMENT,
+                                           `order_type` INT NOT NULL,
+                                           `customer_info` TEXT,
+                                           `transition_hotel_info` TEXT,
+                                           `initial_price` DECIMAL(10, 2) ,
+                                           `discount_price` DECIMAL(10, 2) ,
+                                           `currency_type` INT NOT NULL,
+                                           `order_status` INT NOT NULL,
+                                           `financial_status` INT NOT NULL,
+                                           `sale_man` VARCHAR(255),
+                                           `financial_man` VARCHAR(255),
+                                           `order_creator` VARCHAR(255),
+                                           `create_time` TIMESTAMP,
+                                           `update_time` TIMESTAMP,
+                                           PRIMARY KEY (`transition_hotel_order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 
 
