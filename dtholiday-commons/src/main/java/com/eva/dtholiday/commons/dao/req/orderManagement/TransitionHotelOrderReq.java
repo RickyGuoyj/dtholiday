@@ -1,6 +1,6 @@
 package com.eva.dtholiday.commons.dao.req.orderManagement;
 
-import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.CustomerInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelInfo;
 import lombok.Data;
 

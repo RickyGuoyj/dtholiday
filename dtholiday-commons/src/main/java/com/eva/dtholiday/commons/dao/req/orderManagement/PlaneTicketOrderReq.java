@@ -1,6 +1,5 @@
 package com.eva.dtholiday.commons.dao.req.orderManagement;
 
-import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import lombok.Data;
 
