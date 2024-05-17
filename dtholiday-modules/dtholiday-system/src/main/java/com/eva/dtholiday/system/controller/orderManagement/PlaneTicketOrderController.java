@@ -1,7 +1,17 @@
 package com.eva.dtholiday.system.controller.orderManagement;
 
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderDetailReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderPageReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
+import com.eva.dtholiday.system.service.orderManagement.PlaneTicketOrderService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @describtion
@@ -16,4 +26,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/erp/orderManagement/planeTicket")
 public class PlaneTicketOrderController {
+
+    @Resource
+    private PlaneTicketOrderService planeTicketOrderService;
+    @PostMapping("/createPlaneTicketOrder")
+    public ResponseApi createPlaneTicketOrder(@RequestBody PlaneTicketOrderReq req){
+        return planeTicketOrderService.createPlaneTicketOrder(req);
+    }
+
+    @PostMapping("/updatePlaneTicketOrder")
+    public ResponseApi updatePlaneTicketOrder(@RequestBody PlaneTicketOrderReq req){
+        return planeTicketOrderService.updatePlaneTicketOrder(req);
+    }
+
+    @PostMapping("/queryPlaneTicketOrderList")
+    public ResponseApi queryPlaneTicketOrderList(@RequestBody PlaneTicketOrderPageReq req){
+        return planeTicketOrderService.queryPlaneTicketOrderList(req);
+    }
+
+    @PostMapping("/queryPlaneTicketOrderDetail")
+    public ResponseApi queryPlaneTicketOrderDetail(@RequestBody PlaneTicketOrderDetailReq req){
+        return planeTicketOrderService.queryPlaneTicketOrderDetail(req);
+    }
 }

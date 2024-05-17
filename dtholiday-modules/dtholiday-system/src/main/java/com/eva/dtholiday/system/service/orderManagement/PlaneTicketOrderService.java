@@ -1,5 +1,11 @@
 package com.eva.dtholiday.system.service.orderManagement;
 
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderDetailReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderPageReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -11,4 +17,11 @@ package com.eva.dtholiday.system.service.orderManagement;
  * @modify by reason :{原因}
  **/
 public interface PlaneTicketOrderService {
+    ResponseApi createPlaneTicketOrder(PlaneTicketOrderReq req);
+
+    ResponseApi updatePlaneTicketOrder(PlaneTicketOrderReq req);
+
+    ResponseApi queryPlaneTicketOrderList(PlaneTicketOrderPageReq req);
+
+    ResponseApi queryPlaneTicketOrderDetail(PlaneTicketOrderDetailReq req);
 }
