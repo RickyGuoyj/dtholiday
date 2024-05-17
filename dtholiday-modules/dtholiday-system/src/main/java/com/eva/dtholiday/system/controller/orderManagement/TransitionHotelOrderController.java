@@ -1,7 +1,14 @@
 package com.eva.dtholiday.system.controller.orderManagement;
 
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.orderManagement.*;
+import com.eva.dtholiday.system.service.orderManagement.TransitionHotelOrderService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @describtion
@@ -16,4 +23,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/erp/orderManagement/transitionHotel")
 public class TransitionHotelOrderController {
+
+    @Resource
+    private TransitionHotelOrderService transitionHotelOrderService;
+    @PostMapping("/createTransitionHotelOrder")
+    public ResponseApi createTransitionHotelOrder(@RequestBody TransitionHotelOrderReq req){
+        return transitionHotelOrderService.createTransitionHotelOrder(req);
+    }
+
+    @PostMapping("/updateTransitionHotelOrder")
+    public ResponseApi updateTransitionHotelOrder(@RequestBody TransitionHotelOrderReq req){
+        return transitionHotelOrderService.updateTransitionHotelOrder(req);
+    }
+
+    @PostMapping("/queryTransitionHotelOrderList")
+    public ResponseApi queryTransitionHotelOrderList(@RequestBody TransitionHotelOrderPageReq req){
+        return transitionHotelOrderService.queryTransitionHotelOrderList(req);
+    }
+
+    @PostMapping("/queryTransitionHotelOrderDetail")
+    public ResponseApi queryTransitionHotelOrderDetail(@RequestBody TransitionHotelOrderDetailReq req){
+        return transitionHotelOrderService.queryTransitionHotelOrderDetail(req);
+    }
 }

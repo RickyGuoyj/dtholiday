@@ -1,5 +1,9 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderDetailReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderPageReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
 import com.eva.dtholiday.system.service.orderManagement.TransitionHotelOrderService;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +19,23 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderService {
+    @Override
+    public ResponseApi createTransitionHotelOrder(TransitionHotelOrderReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi updateTransitionHotelOrder(TransitionHotelOrderReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi queryTransitionHotelOrderList(TransitionHotelOrderPageReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req) {
+        return null;
+    }
 }

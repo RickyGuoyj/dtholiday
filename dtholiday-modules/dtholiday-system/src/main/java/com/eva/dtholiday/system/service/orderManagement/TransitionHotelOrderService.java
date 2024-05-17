@@ -1,5 +1,10 @@
 package com.eva.dtholiday.system.service.orderManagement;
 
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderDetailReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderPageReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -11,4 +16,11 @@ package com.eva.dtholiday.system.service.orderManagement;
  * @modify by reason :{原因}
  **/
 public interface TransitionHotelOrderService {
+    ResponseApi createTransitionHotelOrder(TransitionHotelOrderReq req);
+
+    ResponseApi updateTransitionHotelOrder(TransitionHotelOrderReq req);
+
+    ResponseApi queryTransitionHotelOrderList(TransitionHotelOrderPageReq req);
+
+    ResponseApi queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req);
 }
