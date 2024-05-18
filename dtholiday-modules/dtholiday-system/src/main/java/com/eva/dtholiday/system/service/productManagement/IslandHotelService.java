@@ -2,6 +2,7 @@ package com.eva.dtholiday.system.service.productManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelPageReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryAllReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryReq;
 import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelReq;
 
@@ -25,4 +26,7 @@ public interface IslandHotelService {
     ResponseApi queryList(IslandHotelPageReq req);
 
     ResponseApi queryDetail(IslandHotelQueryReq req);
+
+    ResponseApi queryAllHotelList(IslandHotelQueryAllReq req);
 }
+

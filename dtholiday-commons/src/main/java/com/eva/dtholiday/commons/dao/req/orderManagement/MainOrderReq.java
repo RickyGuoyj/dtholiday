@@ -1,5 +1,6 @@
 package com.eva.dtholiday.commons.dao.req.orderManagement;
 
+import com.eva.dtholiday.commons.dao.entity.orderManagement.TotalPriceInfo;
 import lombok.Data;
 
 /**
@@ -18,4 +19,12 @@ public class MainOrderReq {
     private PlaneTicketOrderReq planeTicketOrder;
 
     private TransitionHotelOrderReq transitionHotelOrder;
+
+    private IslandHotelOrderReq islandHotelOrder;
+
+    private TotalPriceInfo totalPrice;
+
+    private String saleMan;
+
+    private Integer orderType;
 }

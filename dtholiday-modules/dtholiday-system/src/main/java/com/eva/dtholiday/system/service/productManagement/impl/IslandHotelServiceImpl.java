@@ -1,28 +1,30 @@
 package com.eva.dtholiday.system.service.productManagement.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
-import com.eva.dtholiday.commons.dao.entity.productManagement.PlaneTicket;
-import com.eva.dtholiday.commons.dao.entity.productManagement.TransitionHotel;
-import com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper;
-import com.eva.dtholiday.commons.dao.req.productManagement.*;
-import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
-import com.eva.dtholiday.commons.dao.resp.productManagement.PlaneTicketResp;
-import com.eva.dtholiday.commons.dao.resp.productManagement.TransitionHotelResp;
-import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
-import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
+import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder;
+import com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelPageReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryAllReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelReq;
+import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelMainOrderResp;
+import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
+import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
+import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
 
 /**
  * @describtion
@@ -86,6 +88,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         }
         return ResponseApi.error("no islandHotel found");
     }
+
     @Override
     public ResponseApi queryList(IslandHotelPageReq req) {
         IPage<IslandHotel> entityPage = new Page<>(req.getCurrent(), req.getSize());
@@ -99,7 +102,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         if (Objects.nonNull(req.getExpiryDate())) {
             queryWrapper.le(IslandHotel.EXPIRY_DATE, req.getExpiryDate());
         }
-        if (StringUtils.hasText(req.getHotelRoomType())){
+        if (StringUtils.hasText(req.getHotelRoomType())) {
             queryWrapper.like(IslandHotel.HOTEL_ROOM_TYPE, req.getHotelRoomType());
         }
         entityPage = islandHotelMapper.selectPage(entityPage, queryWrapper);
@@ -132,5 +135,34 @@ public class IslandHotelServiceImpl implements IslandHotelService {
             return ResponseApi.ok(resp);
         }
         return ResponseApi.error("no islandHotel found");
+    }
+
+
+    @Override
+    public ResponseApi queryAllHotelList(IslandHotelQueryAllReq req) {
+        Map<String, Object> queryMap = new HashMap<>();
+        queryMap.put("islandIndexCode", req.getIslandIndexCode());
+        queryMap.put("effectiveDate",req.getEffectiveDate());
+        queryMap.put("expiryDate",req.getExpiryDate());
+
+        List<IslandHotelMainOrder> islandHotelMainOrders = islandHotelMapper.queryAllHotelInfo(queryMap);
+        // 封装数据
+        Map<Integer, Map<Date, IslandHotel>> map = new HashMap<>();
+        List<IslandHotelMainOrderResp> collect = islandHotelMainOrders.stream().map(entity -> {
+
+            IslandHotelMainOrderResp resp = new IslandHotelMainOrderResp();
+            resp.setHotelRomType(entity.getHotelRoomType());
+            resp.setDelayHotelRoomType(entity.getDelayHotelRoomType());
+            resp.setIslandIndexCode(entity.getIslandIndexCode());
+            resp.setIslandHotelId(entity.getIslandHotelId());
+            resp.setIslandCnName(entity.getIslandCnName());
+            resp.setTrafficIndexCode(entity.getTrafficType());
+            resp.setTrafficName(entity.getTrafficName());
+            resp.setMealName(entity.getMealName());
+            resp.setMealIndexCode(entity.getMealType());
+            resp.setMealDesc(entity.getRemarks());
+            return resp;
+        }).collect(Collectors.toList());
+        return ResponseApi.ok(collect);
     }
 }

@@ -1,7 +1,11 @@
 package com.eva.dtholiday.commons.dao.mapper.productManagement;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
+import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder;
 
 /**
  * @describtion
@@ -14,4 +18,5 @@ import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
  * @modify by reason :{原因}
  **/
 public interface IslandHotelMapper extends BaseMapper<IslandHotel> {
+    List<IslandHotelMainOrder> queryAllHotelInfo(Map<String,Object> map);
 }

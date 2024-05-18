@@ -3,6 +3,7 @@ package com.eva.dtholiday.system.service.portalmanagement;
 import java.util.List;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.dto.IslandManagementInfo;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementReq;
 
 /**
@@ -46,5 +47,11 @@ public interface IslandManagementService {
     ResponseApi islandManagementQueryDetail(int islandIndexCode);
 
     String getIslandName(Integer islandIndexCode);
+
+    /**
+     * 查询所有岛屿
+     * @return 响应
+     */
+    ResponseApi<List<IslandManagementInfo>> queryAllIsland();
 
 }

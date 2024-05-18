@@ -324,7 +324,51 @@ CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel`  (
     PRIMARY KEY (`transition_hotel_order_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 主订单表
+CREATE TABLE IF NOT EXISTS  `dt_order_main` (
+                                 `main_order_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主订单主键id',
+                                 `island_order_id` int DEFAULT NULL COMMENT '酒店订单id',
+                                 `plane_ticket_order_id` int DEFAULT NULL COMMENT '机票订单id',
+                                 `transition_hotel_order_id` int DEFAULT NULL COMMENT '过度酒店订单id',
+                                 `total_price` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '总价',
+                                 `order_status` int DEFAULT NULL COMMENT '订单状态',
+                                 `financial_status` int DEFAULT NULL COMMENT '财务状态',
+                                 `order_creator` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '订单创建人',
+                                 `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                 `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                 `sale_man` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '销售员id',
+                                 `payment_time` datetime DEFAULT NULL COMMENT '收款时间',
+                                 PRIMARY KEY (`main_order_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='主订单表';
 
+--  岛屿订单表
+CREATE TABLE IF NOT EXISTS `dt_order_island` (
+                                   `island_order_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '岛屿酒店订单主键',
+                                   `order_type` int DEFAULT NULL COMMENT '订单类型',
+                                   `customer_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '客人姓名',
+                                   `nights` int DEFAULT NULL COMMENT '入住间夜数',
+                                   `adult_num` int DEFAULT NULL COMMENT '成人数量',
+                                   `child_num` int DEFAULT NULL COMMENT '儿童数量',
+                                   `first_child_age` int DEFAULT NULL COMMENT '第一个儿童年龄',
+                                   `second_child_age` int DEFAULT NULL COMMENT '第二个儿童年龄',
+                                   `island_hotel_id` int DEFAULT NULL COMMENT '酒店主键',
+                                   `effective_date` date DEFAULT NULL COMMENT '入住日期',
+                                   `expiry_date` date DEFAULT NULL COMMENT '离开日期',
+                                   `total_price` decimal(10,2) DEFAULT NULL COMMENT '酒店订单总价',
+                                   `discount_price` decimal(10,2) DEFAULT NULL COMMENT '优惠后总价',
+                                   `currency_type` int DEFAULT NULL COMMENT '货币种类',
+                                   `cost_price` decimal(10,2) DEFAULT NULL COMMENT '成本价',
+                                   `discount` decimal(10,2) DEFAULT NULL COMMENT '折扣',
+                                   `booking_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '确认号',
+                                   `order_status` int DEFAULT NULL COMMENT '订单状态',
+                                   `financial_status` int DEFAULT NULL COMMENT '财务状态',
+                                   `sale_man` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '销售员',
+                                   `financial_man` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '财务',
+                                   `order_creator` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '订单创建人',
+                                   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                   PRIMARY KEY (`island_order_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岛屿订单表';
 
 
 

@@ -1,14 +1,21 @@
 package com.eva.dtholiday.system.controller.productManagement;
 
-import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.req.productManagement.*;
-import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelPageReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryAllReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelReq;
+import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
+import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
 
 /**
  * @describtion
@@ -50,5 +57,10 @@ public class IslandHotelController {
     @PostMapping("/queryDetail")
     public ResponseApi islandHotelQueryDetail(@RequestBody IslandHotelQueryReq req) {
         return islandHotelService.queryDetail(req);
+    }
+
+    @PostMapping("/queryAllHotelInfo")
+    public ResponseApi<List<IslandHotelResp>> islandHotelQueryAllList(@RequestBody IslandHotelQueryAllReq req) {
+       return islandHotelService.queryAllHotelList(req);
     }
 }

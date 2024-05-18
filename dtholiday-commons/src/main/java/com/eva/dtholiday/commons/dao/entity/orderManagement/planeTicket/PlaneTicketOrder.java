@@ -1,5 +1,7 @@
 package com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
@@ -20,10 +22,13 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("dt_order_plane_ticket")
-public class PlaneTicketOrder extends Model<PlaneTicketOrder>{
+public class PlaneTicketOrder extends Model<PlaneTicketOrder> {
+    private static final long serialVersionUID = 1L;
+
     /**
      * 机票订单id
      */
+    @TableId(value = "plane_ticket_order_id", type = IdType.AUTO)
     private int planeTicketOrderId;
     /**
      * 订单类型

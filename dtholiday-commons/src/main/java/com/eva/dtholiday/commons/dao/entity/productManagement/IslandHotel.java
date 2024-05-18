@@ -191,4 +191,6 @@ public class IslandHotel extends Model<IslandHotel> {
     public static final String EXPIRY_DATE = "expiry_date";
 
     public static final String HOTEL_ROOM_TYPE = "hotel_room_type";
+
+    public static final String ISLAND_INDEX_CODE = "island_index_code";
 }

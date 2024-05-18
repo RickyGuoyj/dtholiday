@@ -1,5 +1,6 @@
 package com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,13 +19,17 @@ import java.util.Date;
 public class PlaneTicketInfo {
     private int planeTicketId;
     private String airlineCompanyName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date departureDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date returnDate;
     private String days;
     private String departureFlight;
     private String returnFlight;
     private String departurePlace;
     private String arrivalPlace;
+    private String ticketNumber;
     private double price;
     private int currencyType;
 }

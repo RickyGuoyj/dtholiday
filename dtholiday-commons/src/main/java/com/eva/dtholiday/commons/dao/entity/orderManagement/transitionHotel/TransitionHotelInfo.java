@@ -1,5 +1,6 @@
 package com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -23,7 +24,9 @@ public class TransitionHotelInfo {
 
     private String transitionHotelType;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date effectiveDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date expiryDate;
 }

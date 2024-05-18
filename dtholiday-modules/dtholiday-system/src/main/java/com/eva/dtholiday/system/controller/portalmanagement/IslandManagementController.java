@@ -1,12 +1,12 @@
 package com.eva.dtholiday.system.controller.portalmanagement;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.dto.IslandManagementInfo;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementDeleteReq;
 import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryDetailResp;
@@ -35,13 +35,24 @@ public class IslandManagementController {
     }
 
     @PostMapping("/querylist")
-    public ResponseApi<IslandManagementQueryListResp> islandManagementQueryList(@RequestBody  IslandManagementReq islandManagementReq) {
+    public ResponseApi<IslandManagementQueryListResp>
+        islandManagementQueryList(@RequestBody IslandManagementReq islandManagementReq) {
         return islandManagementService.islandManagementQueryList(islandManagementReq);
     }
 
     @PostMapping("/querydetail")
-    public ResponseApi<IslandManagementQueryDetailResp> islandManagementQueryDetail(@RequestBody IslandManagementReq req) {
+    public ResponseApi<IslandManagementQueryDetailResp>
+        islandManagementQueryDetail(@RequestBody IslandManagementReq req) {
         return islandManagementService.islandManagementQueryDetail(req.getIslandIndexCode());
+    }
+
+    /**
+     * 查询所有岛屿
+     * @return 结果
+     */
+    @GetMapping("/queryAllIslandInfo")
+    public ResponseApi<List<IslandManagementInfo>> queryAllIsland() {
+        return islandManagementService.queryAllIsland();
     }
 
 }

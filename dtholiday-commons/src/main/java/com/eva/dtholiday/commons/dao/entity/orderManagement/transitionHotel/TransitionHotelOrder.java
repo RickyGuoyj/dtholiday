@@ -1,5 +1,7 @@
 package com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
@@ -21,9 +23,12 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @TableName("dt_order_transition_hotel")
 public class TransitionHotelOrder extends Model<TransitionHotelOrder> {
+    private static final long serialVersionUID = 1L;
+
     /**
      * 订单id
      */
+    @TableId(value = "transition_hotel_order_id", type = IdType.AUTO)
     private int transitionHotelOrderId;
     /**
      * 订单类型

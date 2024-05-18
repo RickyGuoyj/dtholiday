@@ -40,7 +40,7 @@ import java.util.List;
 public class AuthFilter extends OncePerRequestFilter {
 
     public static final List<String> ignoreHttpUrls = Lists.newArrayList("/login", "/portal/", "/swagger-ui.html", "/swagger-ui.html/",
-            "/swagger-resources/", "/webjars/", "/v2/api-docs", "/portal", "/swagger-resources");
+            "/swagger-resources/", "/webjars/", "/v2/api-docs", "/portal/", "/swagger-resources");
 
     /**
      * 1.判断是否为登录接口

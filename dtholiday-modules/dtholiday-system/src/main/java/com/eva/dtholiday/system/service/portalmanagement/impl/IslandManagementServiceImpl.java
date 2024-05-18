@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.eva.dtholiday.commons.utils.LocalCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
+import com.eva.dtholiday.commons.dao.dto.IslandManagementInfo;
 import com.eva.dtholiday.commons.dao.dto.IslandManagementTagInfo;
 import com.eva.dtholiday.commons.dao.entity.portalmanagement.*;
 import com.eva.dtholiday.commons.dao.mapper.portalmanagement.*;
@@ -24,6 +24,7 @@ import com.eva.dtholiday.commons.dao.req.portalmanagement.IslandManagementReq;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryDetailResp;
 import com.eva.dtholiday.commons.dao.resp.portalmanagement.IslandManagementQueryListResp;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
+import com.eva.dtholiday.commons.utils.LocalCache;
 import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 
 @Service
@@ -120,17 +121,17 @@ public class IslandManagementServiceImpl implements IslandManagementService {
                 convertTagRelationEntityList(islandManagementReq, islandManagement);
             islandTagRelationMapper.insertBatch(islandTagRelationList);
         }
-         // 更新报价单
-//         List<IslandQuotation> oldQuotationList = islandQuotationMapper.selectList(new QueryWrapper<IslandQuotation>()
-//         .eq(IslandQuotation.ISLAND_INDEX_CODE, islandManagementReq.getIslandIndexCode()));
-//         List<IslandQuotation> needAddList = new ArrayList<>();
-//         List<IslandQuotation> needDeleteList = new ArrayList<>();
-//         handleQuotationList(oldQuotationList, islandManagementReq.getIslandQuotationPdfList(), needAddList,
-//         needDeleteList);
-//         List<IslandQuotation>
-//         List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq,
-//         islandManagement);
-//         islandQuotationMapper.insertBatch(islandQuotationList);
+        // 更新报价单
+        // List<IslandQuotation> oldQuotationList = islandQuotationMapper.selectList(new QueryWrapper<IslandQuotation>()
+        // .eq(IslandQuotation.ISLAND_INDEX_CODE, islandManagementReq.getIslandIndexCode()));
+        // List<IslandQuotation> needAddList = new ArrayList<>();
+        // List<IslandQuotation> needDeleteList = new ArrayList<>();
+        // handleQuotationList(oldQuotationList, islandManagementReq.getIslandQuotationPdfList(), needAddList,
+        // needDeleteList);
+        // List<IslandQuotation>
+        // List<IslandQuotation> islandQuotationList = convertQuotationEntityList(islandManagementReq,
+        // islandManagement);
+        // islandQuotationMapper.insertBatch(islandQuotationList);
         LocalCache.putIslandName(islandManagement.getIslandIndexCode(), islandManagement.getIslandCnName());
         return response.setData(i);
     }
@@ -184,16 +185,17 @@ public class IslandManagementServiceImpl implements IslandManagementService {
     }
 
     /**
-     *pdf报价单和岛屿取消关联
+     * pdf报价单和岛屿取消关联
+     *
      * @param islandIndexCodeList
      */
     private void unlinkIslandPdfQuotation(List<Integer> islandIndexCodeList) {
-    UpdateWrapper<IslandQuotation> updateWrapper = new UpdateWrapper<>();
-    updateWrapper.in(IslandQuotation.ISLAND_INDEX_CODE, islandIndexCodeList);
-    IslandQuotation islandQuotation = new IslandQuotation();
-    islandQuotation.setIslandIndexCode(0);
-    islandQuotationMapper.update(islandQuotation, updateWrapper);
-}
+        UpdateWrapper<IslandQuotation> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.in(IslandQuotation.ISLAND_INDEX_CODE, islandIndexCodeList);
+        IslandQuotation islandQuotation = new IslandQuotation();
+        islandQuotation.setIslandIndexCode(0);
+        islandQuotationMapper.update(islandQuotation, updateWrapper);
+    }
 
     @Override
     public ResponseApi<IslandManagementQueryListResp>
@@ -279,13 +281,25 @@ public class IslandManagementServiceImpl implements IslandManagementService {
     @Override
     public String getIslandName(Integer islandIndexCode) {
         String islandName = LocalCache.getIslandName(islandIndexCode);
-        if (StringUtils.isBlank(islandName)){
+        if (StringUtils.isBlank(islandName)) {
             IslandManagement islandManagement = islandManagementMapper.selectById(islandIndexCode);
-            if (islandManagement != null){
+            if (islandManagement != null) {
                 LocalCache.putIslandName(islandIndexCode, islandManagement.getIslandCnName());
                 return islandManagement.getIslandCnName();
             }
         }
         return islandName;
+    }
+
+    @Override
+    public ResponseApi<List<IslandManagementInfo>> queryAllIsland() {
+        List<IslandManagement> islandManagementList = islandManagementMapper.selectList(null);
+        List<IslandManagementInfo> infoList = islandManagementList.stream().map(item -> {
+            IslandManagementInfo islandManagementInfo = new IslandManagementInfo();
+            islandManagementInfo.setIslandIndexCode(item.getIslandIndexCode());
+            islandManagementInfo.setIslandCnName(item.getIslandCnName());
+            return islandManagementInfo;
+        }).collect(Collectors.toList());
+        return ResponseApi.ok(infoList);
     }
 }
