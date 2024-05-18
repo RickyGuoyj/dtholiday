@@ -1,6 +1,8 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
@@ -57,46 +59,69 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
     }
 
     @Override
-    public List<TransitionHotelOrderResp> queryTransitionHotelOrderList(TransitionHotelOrderPageReq req) {
+    public ResponseApi queryTransitionHotelOrderList(TransitionHotelOrderPageReq req) {
+        IPage<TransitionHotelOrder> entityPage = new Page<>(req.getCurrent(), req.getSize());
         UserResp currentUserInfo = userService.getCurrentUserDetail();
         QueryWrapper<TransitionHotelOrder> queryWrapper = new QueryWrapper<>();
         if (currentUserInfo != null) {
+            setQueryWrapper(queryWrapper, currentUserInfo, req);
+        } else {
+            return ResponseApi.ok(new Page<>(req.getCurrent(), 0));
+        }
+        entityPage = transitionHotelOrderMapper.selectPage(entityPage, queryWrapper);
+        if (Objects.isNull(entityPage)) {
+            return ResponseApi.ok(new Page<>(req.getCurrent(), 0));
+        }
+        String roleInfo = currentUserInfo.getRoleInfo().getName();
+        List<TransitionHotelOrderResp> orderRespList = entityPage.getRecords().stream().map(order -> {
+            TransitionHotelOrderResp transitionHotelOrderResp = new TransitionHotelOrderResp();
+            convertTransitionHotelOrderEntityToResp(order, transitionHotelOrderResp, roleInfo);
+            return transitionHotelOrderResp;
+        }).collect(Collectors.toList());
+        IPage<TransitionHotelOrderResp> respPage = new Page<>(req.getCurrent(), req.getSize());
+        respPage.setRecords(orderRespList);
+        respPage.setTotal(entityPage.getTotal());
+        return ResponseApi.ok(respPage);
+    }
+
+    private void setQueryWrapper(QueryWrapper<TransitionHotelOrder> queryWrapper, UserResp currentUserInfo, TransitionHotelOrderPageReq req) {
+        if (req.getTransitionHotelOrderId() != null) {
+            queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+        }
+        if (req.getOrderStatus() != null) {
+            queryWrapper.eq("order_status", req.getOrderStatus());
+        }
+        if (req.getFinancialStatus() != null) {
+            queryWrapper.eq("financial_status", req.getFinancialStatus());
+        }
+        if (Objects.nonNull(req.getEffectiveDate())) {
+            queryWrapper.ge("effective_date", req.getEffectiveDate());
+        }
+        if (Objects.nonNull(req.getExpiryDate())) {
+            queryWrapper.le("expiry_date", req.getExpiryDate());
+        }
+        if (StringUtils.hasText(req.getTransitionHotelName())) {
+            queryWrapper.like("transition_hotel_name", req.getTransitionHotelName());
+        }
+        if (StringUtils.hasText(req.getCustomerName())) {
+            queryWrapper.like("customer_name", req.getCustomerName());
+        }
+
+        //根据角色特殊化处理
+        String roleInfo = currentUserInfo.getRoleInfo().getName();
+        if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
             queryWrapper.eq("order_creator", currentUserInfo.getUserName());
-            if (req.getOrderStatus() != null) {
-                queryWrapper.eq("order_status", req.getOrderStatus());
-            }
-            if (req.getFinancialStatus() != null) {
-                queryWrapper.eq("financial_status", req.getFinancialStatus());
-            }
-            if (req.getSaleMan() != null) {
+            if (!StringUtils.hasText(req.getSaleMan())) {
                 queryWrapper.eq("sale_man", req.getSaleMan());
             }
-            if (Objects.nonNull(req.getEffectiveDate())) {
-                queryWrapper.ge("effective_date", req.getEffectiveDate());
-            }
-            if (Objects.nonNull(req.getExpiryDate())) {
-                queryWrapper.le("expiry_date", req.getExpiryDate());
-            }
-            if (StringUtils.hasText(req.getTransitionHotelName())) {
-                queryWrapper.like("transition_hotel_name", req.getTransitionHotelName());
-            }
-            if (StringUtils.hasText(req.getCustomerName())) {
-                queryWrapper.like("customer_name", req.getCustomerName());
-            }
+        } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
+            queryWrapper.eq("sale_man", currentUserInfo.getUserName());
         } else {
-            return Collections.emptyList();
+            if (!StringUtils.hasText(req.getSaleMan())) {
+                queryWrapper.eq("sale_man", req.getSaleMan());
+            }
         }
-        List<TransitionHotelOrder> orderList = transitionHotelOrderMapper.selectList(queryWrapper);
-        List<TransitionHotelOrderResp> orderRespList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(orderList)) {
-            String roleInfo = currentUserInfo.getRoleInfo().getName();
-            orderRespList = orderList.stream().map(order -> {
-                TransitionHotelOrderResp transitionHotelOrderResp = new TransitionHotelOrderResp();
-                convertTransitionHotelOrderEntityToResp(order, transitionHotelOrderResp, roleInfo);
-                return transitionHotelOrderResp;
-            }).collect(Collectors.toList());
-        }
-        return orderRespList;
+
     }
 
     private void convertTransitionHotelOrderEntityToResp(TransitionHotelOrder order, TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
@@ -126,9 +151,15 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
     @Override
     public TransitionHotelOrderResp queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req) {
         UserResp currentUserInfo = userService.getCurrentUserDetail();
+        String roleInfo;
         QueryWrapper<TransitionHotelOrder> queryWrapper = new QueryWrapper<>();
         if (currentUserInfo != null) {
-            queryWrapper.eq("order_creator", currentUserInfo.getUserName());
+            roleInfo = currentUserInfo.getRoleInfo().getName();
+            if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
+                queryWrapper.eq("order_creator", currentUserInfo.getUserName());
+            } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
+                queryWrapper.eq("sale_man", currentUserInfo.getUserName());
+            }
             if (req.getTransitionHotelOrderId() != null) {
                 queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
             }
@@ -138,7 +169,6 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         TransitionHotelOrder order = transitionHotelOrderMapper.selectOne(queryWrapper);
         TransitionHotelOrderResp transitionHotelOrderResp = new TransitionHotelOrderResp();
         if (order != null) {
-            String roleInfo = currentUserInfo.getRoleInfo().getName();
             convertTransitionHotelOrderEntityToResp(order, transitionHotelOrderResp, roleInfo);
         }
         return transitionHotelOrderResp;
@@ -161,21 +191,21 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
             if (transitionHotelOrder == null) {
                 return ResponseApi.error("过度酒店订单不存在");
             }
-            transitionHotelOrder.setCostPrice(req.getCostPrice());
-            transitionHotelOrder.setDiscount(req.getDiscount());
-            transitionHotelOrder.setBookingCode(req.getBookingCode());
-            transitionHotelOrder.setFinancialMan(req.getFinancialMan());
-            transitionHotelOrder.setRemarks(req.getCheckRemark());
-            // 计算金额
-            transitionHotelOrder.setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
-            // todo 主订单金额重新计算
             QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
             mainOrderQueryWrapper.eq("transition_hotel_order_id", transitionHotelOrder.getTransitionHotelOrderId());
             MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
             if (req.getCheckStatus() == 1) {
                 transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+                transitionHotelOrder.setCostPrice(req.getCostPrice());
+                transitionHotelOrder.setDiscount(req.getDiscount());
+                transitionHotelOrder.setBookingCode(req.getBookingCode());
+                transitionHotelOrder.setFinancialMan(req.getFinancialMan());
+                // 计算金额
+                transitionHotelOrder.setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
+                // todo 主订单金额重新计算
             } else {
                 transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
+                transitionHotelOrder.setRemarks(req.getCheckRemark());
             }
             if (mainOrder != null) {
                 //计算三个值中最小的

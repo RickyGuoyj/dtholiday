@@ -1,5 +1,6 @@
 package com.eva.dtholiday.commons.dao.req.orderManagement;
 
+import com.eva.dtholiday.commons.dao.req.BasePage;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,7 +16,9 @@ import java.util.Date;
  * @modify by reason :{原因}
  **/
 @Data
-public class PlaneTicketOrderPageReq {
+public class PlaneTicketOrderPageReq extends BasePage {
+
+    private Integer planeTicketOrderId;
 
     private String customerName;
 

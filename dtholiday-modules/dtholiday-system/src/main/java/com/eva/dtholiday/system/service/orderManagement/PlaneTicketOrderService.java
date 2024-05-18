@@ -19,7 +19,7 @@ import java.util.List;
 public interface PlaneTicketOrderService {
     ResponseApi createPlaneTicketOrder(PlaneTicketOrderReq req);
 
-    List<PlaneTicketOrderResp> queryPlaneTicketOrderList(PlaneTicketOrderPageReq req);
+    ResponseApi queryPlaneTicketOrderList(PlaneTicketOrderPageReq req);
 
     PlaneTicketOrderResp queryPlaneTicketOrderDetail(PlaneTicketOrderDetailReq req);
 

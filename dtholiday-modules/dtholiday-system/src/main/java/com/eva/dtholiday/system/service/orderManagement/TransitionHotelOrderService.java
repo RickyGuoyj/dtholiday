@@ -19,7 +19,7 @@ import java.util.List;
 public interface TransitionHotelOrderService {
     ResponseApi createTransitionHotelOrder(TransitionHotelOrderReq req);
 
-    List<TransitionHotelOrderResp> queryTransitionHotelOrderList(TransitionHotelOrderPageReq req);
+    ResponseApi queryTransitionHotelOrderList(TransitionHotelOrderPageReq req);
 
     TransitionHotelOrderResp queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req);
 

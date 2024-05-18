@@ -1,5 +1,6 @@
 package com.eva.dtholiday.commons.dao.req.orderManagement;
 
+import com.eva.dtholiday.commons.dao.req.BasePage;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
@@ -16,7 +17,9 @@ import java.util.Date;
  * @modify by reason :{原因}
  **/
 @Data
-public class TransitionHotelOrderPageReq {
+public class TransitionHotelOrderPageReq extends BasePage {
+
+    private Integer transitionHotelOrderId;
     /**
      * 客户姓名
      */

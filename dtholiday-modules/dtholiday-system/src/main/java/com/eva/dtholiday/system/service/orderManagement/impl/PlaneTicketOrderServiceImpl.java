@@ -1,16 +1,20 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
+import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.PlaneTicketOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
+import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.orderManagement.PlaneTicketOrderService;
@@ -55,93 +59,66 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
     }
 
     @Override
-    public List<PlaneTicketOrderResp> queryPlaneTicketOrderList(PlaneTicketOrderPageReq req) {
+    public ResponseApi queryPlaneTicketOrderList(PlaneTicketOrderPageReq req) {
+        IPage<PlaneTicketOrder> entityPage = new Page<>(req.getCurrent(), req.getSize());
         UserResp currentUserInfo = userService.getCurrentUserDetail();
         QueryWrapper<PlaneTicketOrder> queryWrapper = new QueryWrapper<>();
         if (currentUserInfo != null) {
             setQueryWrapper(queryWrapper, currentUserInfo, req);
         } else {
-            return Collections.emptyList();
+            return ResponseApi.ok(new Page<>(req.getCurrent(), 0));
         }
-        List<PlaneTicketOrder> orderList = planeTicketOrderMapper.selectList(queryWrapper);
-        List<PlaneTicketOrderResp> orderRespList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(orderList)) {
-            String roleInfo = currentUserInfo.getRoleInfo().getName();
-            orderRespList = orderList.stream().map(order -> {
-                PlaneTicketOrderResp planeTicketOrderResp = new PlaneTicketOrderResp();
-                convertPlaneTicketOrderEntityToResp(order, planeTicketOrderResp, roleInfo);
-                return planeTicketOrderResp;
-            }).collect(Collectors.toList());
+        entityPage = planeTicketOrderMapper.selectPage(entityPage, queryWrapper);
+        if (Objects.isNull(entityPage)) {
+            return ResponseApi.ok(new Page<>(req.getCurrent(), 0));
         }
-        return orderRespList;
+        String roleInfo = currentUserInfo.getRoleInfo().getName();
+        List<PlaneTicketOrderResp> orderRespList = entityPage.getRecords().stream().map(order -> {
+            PlaneTicketOrderResp planeTicketOrderResp = new PlaneTicketOrderResp();
+            convertPlaneTicketOrderEntityToResp(order, planeTicketOrderResp, roleInfo);
+            return planeTicketOrderResp;
+        }).collect(Collectors.toList());
+        IPage<PlaneTicketOrderResp> respPage = new Page<>(req.getCurrent(), req.getSize());
+        respPage.setRecords(orderRespList);
+        respPage.setTotal(entityPage.getTotal());
+        return ResponseApi.ok(respPage);
     }
 
     private void setQueryWrapper(QueryWrapper<PlaneTicketOrder> queryWrapper, UserResp currentUserInfo, PlaneTicketOrderPageReq req) {
+        if (req.getPlaneTicketOrderId() != null) {
+            queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
+        }
+        if (req.getOrderStatus() != null) {
+            queryWrapper.eq("order_status", req.getOrderStatus());
+        }
+        if (req.getFinancialStatus() != null) {
+            queryWrapper.eq("financial_status", req.getFinancialStatus());
+        }
+        if (Objects.nonNull(req.getDepartureDate())) {
+            queryWrapper.ge("departure_date", req.getDepartureDate());
+        }
+        if (Objects.nonNull(req.getReturnDate())) {
+            queryWrapper.le("return_date", req.getReturnDate());
+        }
+        if (StringUtils.hasText(req.getAirlineCompanyName())) {
+            queryWrapper.like("airline_company_name", req.getAirlineCompanyName());
+        }
+        if (StringUtils.hasText(req.getCustomerName())) {
+            queryWrapper.like("customer_name", req.getCustomerName());
+        }
+
+        //根据角色特殊化处理
         String roleInfo = currentUserInfo.getRoleInfo().getName();
         if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
             queryWrapper.eq("order_creator", currentUserInfo.getUserName());
-            if (req.getOrderStatus() != null) {
-                queryWrapper.eq("order_status", req.getOrderStatus());
-            }
-            if (req.getFinancialStatus() != null) {
-                queryWrapper.eq("financial_status", req.getFinancialStatus());
-            }
-            if (req.getSaleMan() != null) {
+            if (!StringUtils.hasText(req.getSaleMan())) {
                 queryWrapper.eq("sale_man", req.getSaleMan());
-            }
-            if (Objects.nonNull(req.getDepartureDate())) {
-                queryWrapper.ge("departure_date", req.getDepartureDate());
-            }
-            if (Objects.nonNull(req.getReturnDate())) {
-                queryWrapper.le("return_date", req.getReturnDate());
-            }
-            if (StringUtils.hasText(req.getAirlineCompanyName())) {
-                queryWrapper.like("airline_company_name", req.getAirlineCompanyName());
-            }
-            if (StringUtils.hasText(req.getCustomerName())) {
-                queryWrapper.like("customer_name", req.getCustomerName());
             }
         } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
-            if (req.getOrderStatus() != null) {
-                queryWrapper.eq("order_status", req.getOrderStatus());
-            }
-            if (req.getFinancialStatus() != null) {
-                queryWrapper.eq("financial_status", req.getFinancialStatus());
-            }
             queryWrapper.eq("sale_man", currentUserInfo.getUserName());
-            if (Objects.nonNull(req.getDepartureDate())) {
-                queryWrapper.ge("departure_date", req.getDepartureDate());
-            }
-            if (Objects.nonNull(req.getReturnDate())) {
-                queryWrapper.le("return_date", req.getReturnDate());
-            }
-            if (StringUtils.hasText(req.getAirlineCompanyName())) {
-                queryWrapper.like("airline_company_name", req.getAirlineCompanyName());
-            }
-            if (StringUtils.hasText(req.getCustomerName())) {
-                queryWrapper.like("customer_name", req.getCustomerName());
-            }
         } else {
-            if (req.getOrderStatus() != null) {
-                queryWrapper.eq("order_status", req.getOrderStatus());
-            }
-            if (req.getFinancialStatus() != null) {
-                queryWrapper.eq("financial_status", req.getFinancialStatus());
-            }
-            if (req.getSaleMan() != null) {
+            if (!StringUtils.hasText(req.getSaleMan())) {
                 queryWrapper.eq("sale_man", req.getSaleMan());
-            }
-            if (Objects.nonNull(req.getDepartureDate())) {
-                queryWrapper.ge("departure_date", req.getDepartureDate());
-            }
-            if (Objects.nonNull(req.getReturnDate())) {
-                queryWrapper.le("return_date", req.getReturnDate());
-            }
-            if (StringUtils.hasText(req.getAirlineCompanyName())) {
-                queryWrapper.like("airline_company_name", req.getAirlineCompanyName());
-            }
-            if (StringUtils.hasText(req.getCustomerName())) {
-                queryWrapper.like("customer_name", req.getCustomerName());
             }
         }
 
@@ -251,21 +228,22 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
             if (planeTicketOrder == null) {
                 return ResponseApi.error("机票订单不存在");
             }
-            planeTicketOrder.setCostPrice(req.getCostPrice());
-            planeTicketOrder.setDiscount(req.getDiscount());
-            planeTicketOrder.setTicketNumber(req.getTicketNumber());
-            planeTicketOrder.setFinancialMan(req.getFinancialMan());
-            planeTicketOrder.setRemarks(req.getCheckRemark());
-            // 计算金额
-            planeTicketOrder.setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
-            // todo 主订单金额重新计算
+
             QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
             mainOrderQueryWrapper.eq("plane_ticket_order_id", planeTicketOrder.getPlaneTicketOrderId());
             MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
             if (req.getCheckStatus() == 1) {
                 planeTicketOrder.setOrderStatus(OrderStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+                planeTicketOrder.setCostPrice(req.getCostPrice());
+                planeTicketOrder.setDiscount(req.getDiscount());
+                planeTicketOrder.setTicketNumber(req.getTicketNumber());
+                planeTicketOrder.setFinancialMan(req.getFinancialMan());
+                // 计算金额
+                planeTicketOrder.setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
+                // todo 主订单金额重新计算
             } else {
                 planeTicketOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
+                planeTicketOrder.setRemarks(req.getCheckRemark());
             }
             if (mainOrder != null) {
                 //计算三个值中最小的
