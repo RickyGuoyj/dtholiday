@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 public class PlaneTicketOrderFinancialManReq {
 
+    private Integer planeTicketOrderId;
     /**
      * 确认号
      */
@@ -23,7 +24,7 @@ public class PlaneTicketOrderFinancialManReq {
     /**
      * 0-失败， 1-成功
      */
-    private String checkStatus;
+    private Integer checkStatus;
 
     /**
      * 审批意见

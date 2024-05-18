@@ -3,15 +3,18 @@ package com.eva.dtholiday.system.service.orderManagement.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
+import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.TransitionHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.TransitionHotelOrderResp;
+import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.orderManagement.TransitionHotelOrderService;
 import org.springframework.beans.BeanUtils;
@@ -44,6 +47,10 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
 
     @Resource
     private TransitionHotelOrderMapper transitionHotelOrderMapper;
+
+    @Resource
+    private MainOrderMapper mainOrderMapper;
+
     @Override
     public ResponseApi createTransitionHotelOrder(TransitionHotelOrderReq req) {
         return null;
@@ -144,11 +151,75 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
 
     @Override
     public ResponseApi updateTransitionHotelOrderBySaleMan(TransitionHotelOrderSalesmanReq req) {
-        return null;
+        if (req.getCheckStatus() != null) {
+            QueryWrapper<TransitionHotelOrder> queryWrapper = new QueryWrapper<>();
+            if (req.getTransitionHotelOrderId() == null) {
+                return ResponseApi.error("请选择过度酒店订单");
+            }
+            queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+            TransitionHotelOrder transitionHotelOrder = transitionHotelOrderMapper.selectOne(queryWrapper);
+            if (transitionHotelOrder == null) {
+                return ResponseApi.error("过度酒店订单不存在");
+            }
+            transitionHotelOrder.setCostPrice(req.getCostPrice());
+            transitionHotelOrder.setDiscount(req.getDiscount());
+            transitionHotelOrder.setBookingCode(req.getBookingCode());
+            transitionHotelOrder.setFinancialMan(req.getFinancialMan());
+            transitionHotelOrder.setRemarks(req.getCheckRemark());
+            // 计算金额
+            transitionHotelOrder.setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
+            // todo 主订单金额重新计算
+            QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+            mainOrderQueryWrapper.eq("transition_hotel_order_id", transitionHotelOrder.getTransitionHotelOrderId());
+            MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+            if (req.getCheckStatus() == 1) {
+                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+            } else {
+                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
+            }
+            if (mainOrder != null) {
+                //计算三个值中最小的
+                mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+            }
+            transitionHotelOrderMapper.updateById(transitionHotelOrder);
+            mainOrderMapper.updateById(mainOrder);
+            return ResponseApi.ok("审核成功");
+        } else {
+            return ResponseApi.error("请选择审核状态");
+        }
     }
 
     @Override
     public ResponseApi updateTransitionHotelOrderByFinancialMan(TransitionHotelOrderFinancialManReq req) {
-        return null;
+        if (req.getCheckStatus() != null) {
+            QueryWrapper<TransitionHotelOrder> queryWrapper = new QueryWrapper<>();
+            if (req.getTransitionHotelOrderId() == null) {
+                return ResponseApi.error("请选择过度酒店订单");
+            }
+            queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+            TransitionHotelOrder transitionHotelOrder = transitionHotelOrderMapper.selectOne(queryWrapper);
+            if (transitionHotelOrder == null) {
+                return ResponseApi.error("过度酒店订单不存在");
+            }
+            QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+            mainOrderQueryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+            MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+            if (req.getCheckStatus() == 1) {
+                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_HOTEL_CONFIRM.getCode());
+                transitionHotelOrder.setConfirmInfo(req.getConfirmInfo());
+            } else {
+                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT2.getCode());
+                transitionHotelOrder.setRemarks(req.getCheckRemark());
+            }
+            if (mainOrder != null) {
+                //计算三个值中最小的
+                mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+            }
+            transitionHotelOrderMapper.updateById(transitionHotelOrder);
+            mainOrderMapper.updateById(mainOrder);
+            return ResponseApi.ok("审核成功");
+        } else {
+            return ResponseApi.error("请选择审核状态");
+        }
     }
 }

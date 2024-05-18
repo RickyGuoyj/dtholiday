@@ -34,7 +34,7 @@ public class LoginController {
         return loginService.login(loginUser);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/erp/logout")
     public ResponseApi logout(@RequestBody LogoutReq logoutReq) {
 
         return loginService.logout(logoutReq);

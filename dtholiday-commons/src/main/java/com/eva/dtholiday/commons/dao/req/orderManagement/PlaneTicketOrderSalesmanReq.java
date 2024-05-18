@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 public class PlaneTicketOrderSalesmanReq {
 
+    private Integer planeTicketOrderId;
     /**
      * 成本价
      */

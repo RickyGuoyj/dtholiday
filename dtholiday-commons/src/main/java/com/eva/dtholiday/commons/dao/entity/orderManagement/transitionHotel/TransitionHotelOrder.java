@@ -127,6 +127,14 @@ public class TransitionHotelOrder extends Model<TransitionHotelOrder> {
      * 订单创建人
      */
     private String orderCreator;
+    /**
+     * 确认号
+     */
+    private String confirmInfo;
+    /**
+     * 备注
+     */
+    private String remarks;
     private Date createTime;
     private Date updateTime;
 }

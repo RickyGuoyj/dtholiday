@@ -18,8 +18,11 @@ public class MainOrder extends Model<MainOrder> {
     @TableId(value = "main_order_id", type = IdType.AUTO)
     private Integer mainOrderId;
     private Integer islandOrderId;
+    private Integer islandOrderStatus;
     private Integer planeTicketOrderId;
+    private Integer planeTicketOrderStatus;
     private Integer transitionHotelOrderId;
+    private Integer transitionHotelOrderStatus;
     private String totalPrice;
     private Integer orderStatus;
     private Integer financialStatus;
@@ -28,5 +31,9 @@ public class MainOrder extends Model<MainOrder> {
     private Timestamp updateTime;
     private String saleMan;
     private Timestamp paymentTime;
+    /**
+     * 备注
+     */
+    private String remarks;
 
 }

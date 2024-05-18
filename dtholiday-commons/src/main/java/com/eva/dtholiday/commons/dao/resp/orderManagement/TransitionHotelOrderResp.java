@@ -65,4 +65,13 @@ public class TransitionHotelOrderResp {
      * 优惠金额
      */
     private Double discount;
+
+    /**
+     * 确认号
+     */
+    private String confirmInfo;
+    /**
+     * 备注
+     */
+    private String remarks;
 }

@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 public class TransitionHotelOrderFinancialManReq {
 
+    private Integer transitionHotelOrderId;
     /**
      * 确认号
      */
@@ -23,7 +24,7 @@ public class TransitionHotelOrderFinancialManReq {
     /**
      * 0-失败， 1-成功
      */
-    private String checkStatus;
+    private Integer checkStatus;
 
     /**
      * 审批意见

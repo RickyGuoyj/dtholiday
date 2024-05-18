@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 public class TransitionHotelOrderSalesmanReq {
 
+    private Integer transitionHotelOrderId;
     /**
      * 成本价
      */
