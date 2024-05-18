@@ -42,4 +42,9 @@ public class TokenCache {
     public static List<DtHolidayUser> getAllAliveUser() {
         return new ArrayList<>(tokenUserIdCache.asMap().values());
     }
+
+    public static String deleteTokenUserIdCache(String token) {
+        tokenUserIdCache.invalidate(token);
+        return token;
+    }
 }

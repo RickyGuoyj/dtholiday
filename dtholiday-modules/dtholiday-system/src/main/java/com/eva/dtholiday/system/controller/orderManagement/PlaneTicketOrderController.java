@@ -1,9 +1,7 @@
 package com.eva.dtholiday.system.controller.orderManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderDetailReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderPageReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.system.service.orderManagement.PlaneTicketOrderService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,9 +32,19 @@ public class PlaneTicketOrderController {
         return planeTicketOrderService.createPlaneTicketOrder(req);
     }
 
-    @PostMapping("/updatePlaneTicketOrder")
-    public ResponseApi updatePlaneTicketOrder(@RequestBody PlaneTicketOrderReq req){
-        return planeTicketOrderService.updatePlaneTicketOrder(req);
+    @PostMapping("/updatePlaneTicketOrderByAgent")
+    public ResponseApi updatePlaneTicketOrderByAgent(@RequestBody PlaneTicketOrderReq req){
+        return planeTicketOrderService.updatePlaneTicketOrderByAgent(req);
+    }
+
+    @PostMapping("/updatePlaneTicketOrderBySaleMan")
+    public ResponseApi updatePlaneTicketOrderBySaleMan(@RequestBody PlaneTicketOrderSalesmanReq req){
+        return planeTicketOrderService.updatePlaneTicketOrderBySaleMan(req);
+    }
+
+    @PostMapping("/updatePlaneTicketOrderByFinancialMan")
+    public ResponseApi updatePlaneTicketOrderByFinancialMan(@RequestBody PlaneTicketOrderFinancialManReq req){
+        return planeTicketOrderService.updatePlaneTicketOrderByFinancialMan(req);
     }
 
     @PostMapping("/queryPlaneTicketOrderList")

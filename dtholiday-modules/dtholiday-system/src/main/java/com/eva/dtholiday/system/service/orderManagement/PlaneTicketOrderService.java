@@ -1,9 +1,7 @@
 package com.eva.dtholiday.system.service.orderManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderDetailReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderPageReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 
 import java.util.List;
@@ -21,9 +19,13 @@ import java.util.List;
 public interface PlaneTicketOrderService {
     ResponseApi createPlaneTicketOrder(PlaneTicketOrderReq req);
 
-    ResponseApi updatePlaneTicketOrder(PlaneTicketOrderReq req);
-
     List<PlaneTicketOrderResp> queryPlaneTicketOrderList(PlaneTicketOrderPageReq req);
 
     PlaneTicketOrderResp queryPlaneTicketOrderDetail(PlaneTicketOrderDetailReq req);
+
+    ResponseApi updatePlaneTicketOrderByFinancialMan(PlaneTicketOrderFinancialManReq req);
+
+    ResponseApi updatePlaneTicketOrderBySaleMan(PlaneTicketOrderSalesmanReq req);
+
+    ResponseApi updatePlaneTicketOrderByAgent(PlaneTicketOrderReq req);
 }

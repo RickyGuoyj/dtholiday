@@ -2,6 +2,7 @@ package com.eva.dtholiday.security.controller;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.LoginUserReq;
+import com.eva.dtholiday.commons.dao.req.LogoutReq;
 import com.eva.dtholiday.security.service.LoginService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,12 @@ public class LoginController {
     public ResponseApi login(@RequestBody LoginUserReq loginUser) {
 
         return loginService.login(loginUser);
+    }
+
+    @PostMapping("/logout")
+    public ResponseApi logout(@RequestBody LogoutReq logoutReq) {
+
+        return loginService.logout(logoutReq);
     }
 }
 

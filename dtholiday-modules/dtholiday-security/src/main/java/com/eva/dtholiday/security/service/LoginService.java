@@ -2,6 +2,7 @@ package com.eva.dtholiday.security.service;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.LoginUserReq;
+import com.eva.dtholiday.commons.dao.req.LogoutReq;
 
 /**
  * @describtion
@@ -15,4 +16,6 @@ import com.eva.dtholiday.commons.dao.req.LoginUserReq;
  **/
 public interface LoginService {
     ResponseApi login(LoginUserReq loginUser);
+
+    ResponseApi logout(LogoutReq logoutReq);
 }
