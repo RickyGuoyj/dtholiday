@@ -1,7 +1,7 @@
 package com.eva.dtholiday.commons.dao.resp.orderManagement;
 
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelInfo;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,22 +10,23 @@ import java.util.Date;
  * @describtion
  * @copyright Copyright: 2015-2025
  * @creator guoyongjie
- * @create-time 2024/5/17 2:09
+ * @create-time 2024/5/18 11:49
  * @department evangelion
  * @modificationHistory=========================逻辑或功能性重大变更记录
  * @modify by user :{修改人} :{修改时间}
  * @modify by reason :{原因}
  **/
 @Data
-public class PlaneTicketOrderResp {
+public class TransitionHotelOrderResp {
 
-    private int planeTicketOrderId;
+    private int transitionHotelOrderId;
 
     private int orderType;
 
     private CustomerInfo customerInfo;
 
-    private PlaneTicketInfo planeTicketInfo;
+    private TransitionHotelInfo transitionHotelInfo;
+
     /**
      * 订单总价
      */
@@ -35,9 +36,9 @@ public class PlaneTicketOrderResp {
      */
     private Double discountPrice;
     /**
-     * 机票号
+     * 确认号
      */
-    private String ticketNumber;
+    private String bookingCode;
 
     private int currencyType;
 

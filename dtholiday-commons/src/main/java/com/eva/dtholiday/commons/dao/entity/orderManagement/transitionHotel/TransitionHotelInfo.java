@@ -16,9 +16,14 @@ import java.util.Date;
  **/
 @Data
 public class TransitionHotelInfo {
+
     private int transitionHotelId;
+
     private String transitionHotelName;
+
     private String transitionHotelType;
+
     private Date effectiveDate;
+
     private Date expiryDate;
 }

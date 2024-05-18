@@ -1,6 +1,9 @@
 package com.eva.dtholiday.commons.dao.req.orderManagement;
 
+import io.swagger.models.auth.In;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @describtion
@@ -14,7 +17,32 @@ import lombok.Data;
  **/
 @Data
 public class TransitionHotelOrderPageReq {
-    private int orderStatus;
-    private int financialStatus;
+    /**
+     * 客户姓名
+     */
+    private String customerName;
+    /**
+     * 中转酒店名称
+     */
+    private String transitionHotelName;
+    /**
+     * 生效日期
+     */
+    private Date effectiveDate;
+    /**
+     * 失效日期
+     */
+    private Date expiryDate;
+    /**
+     * 订单状态
+     */
+    private Integer orderStatus;
+    /**
+     * 财务状态
+     */
+    private Integer financialStatus;
+    /**
+     * 销售员
+     */
     private String saleMan;
 }

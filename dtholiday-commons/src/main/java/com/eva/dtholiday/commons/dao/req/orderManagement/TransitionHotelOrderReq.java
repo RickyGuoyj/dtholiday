@@ -18,9 +18,14 @@ import lombok.Data;
 public class TransitionHotelOrderReq {
 
     private int orderType;
+
     private CustomerInfo customerInfo;
+
     private TransitionHotelInfo transitionHotelInfo;
+
     private double totalPrice;
+
     private int currencyType;
+
     private String saleMan;
 }

@@ -312,6 +312,7 @@ CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel`  (
     `discount_price` DECIMAL(10, 2) COMMENT '订单折扣后价格',
     `cost_price` DECIMAL(10, 2)  COMMENT '订单成本价',
     `discount` DECIMAL(10, 2) COMMENT '订单折扣',
+    `booking_code` VARCHAR(255) COMMENT '过度酒店确认号',
     `currency_type` INT NOT NULL COMMENT '订单货币类型',
     `order_status` INT NOT NULL COMMENT '订单状态',
     `financial_status` INT NOT NULL COMMENT '财务状态',

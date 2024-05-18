@@ -38,11 +38,11 @@ public class TransitionHotelOrderController {
 
     @PostMapping("/queryTransitionHotelOrderList")
     public ResponseApi queryTransitionHotelOrderList(@RequestBody TransitionHotelOrderPageReq req){
-        return transitionHotelOrderService.queryTransitionHotelOrderList(req);
+        return ResponseApi.ok(transitionHotelOrderService.queryTransitionHotelOrderList(req));
     }
 
     @PostMapping("/queryTransitionHotelOrderDetail")
     public ResponseApi queryTransitionHotelOrderDetail(@RequestBody TransitionHotelOrderDetailReq req){
-        return transitionHotelOrderService.queryTransitionHotelOrderDetail(req);
+        return ResponseApi.ok(transitionHotelOrderService.queryTransitionHotelOrderDetail(req));
     }
 }

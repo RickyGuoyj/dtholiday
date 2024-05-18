@@ -4,6 +4,9 @@ import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderDetailReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderPageReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.TransitionHotelOrderResp;
+
+import java.util.List;
 
 /**
  * @describtion
@@ -20,7 +23,7 @@ public interface TransitionHotelOrderService {
 
     ResponseApi updateTransitionHotelOrder(TransitionHotelOrderReq req);
 
-    ResponseApi queryTransitionHotelOrderList(TransitionHotelOrderPageReq req);
+    List<TransitionHotelOrderResp> queryTransitionHotelOrderList(TransitionHotelOrderPageReq req);
 
-    ResponseApi queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req);
+    TransitionHotelOrderResp queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req);
 }

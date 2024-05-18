@@ -81,19 +81,23 @@ public class TransitionHotelOrder extends Model<TransitionHotelOrder> {
     /**
      * 订单总价
      */
-    private double totalPrice;
+    private Double totalPrice;
     /**
      * 优惠后价格
      */
-    private double discountPrice;
+    private Double discountPrice;
     /**
      * 订单成本价
      */
-    private double costPrice;
+    private Double costPrice;
     /**
      * 订单折扣
      */
-    private double discount;
+    private Double discount;
+    /**
+     * 酒店预定号
+     */
+    private String bookingCode;
     /**
      * 订单货币类型
      */

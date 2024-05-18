@@ -93,15 +93,6 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 convertPlaneTicketOrderEntityToResp(order, planeTicketOrderResp, roleInfo);
                 return planeTicketOrderResp;
             }).collect(Collectors.toList());
-            if (currentUserInfo.getRoleInfo().getName().equals("代理")) {
-                orderRespList = orderRespList.stream().map(resp -> {
-                    resp.setCostPrice(null);
-                    resp.setDiscount(null);
-                    resp.setTicketNumber(null);
-                    resp.setFinancialMan(null);
-                    return resp;
-                }).collect(Collectors.toList());
-            }
         }
         return orderRespList;
     }
