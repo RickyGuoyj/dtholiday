@@ -20,7 +20,7 @@ public class TransitionHotelOrderReq {
     private int orderType;
     private CustomerInfo customerInfo;
     private TransitionHotelInfo transitionHotelInfo;
-    private double initialPrice;
+    private double totalPrice;
     private int currencyType;
     private String saleMan;
 }

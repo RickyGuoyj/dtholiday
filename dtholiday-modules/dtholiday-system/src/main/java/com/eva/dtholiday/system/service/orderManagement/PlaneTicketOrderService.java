@@ -6,6 +6,8 @@ import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderPageReq
 import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 
+import java.util.List;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -21,7 +23,7 @@ public interface PlaneTicketOrderService {
 
     ResponseApi updatePlaneTicketOrder(PlaneTicketOrderReq req);
 
-    ResponseApi queryPlaneTicketOrderList(PlaneTicketOrderPageReq req);
+    List<PlaneTicketOrderResp> queryPlaneTicketOrderList(PlaneTicketOrderPageReq req);
 
-    ResponseApi queryPlaneTicketOrderDetail(PlaneTicketOrderDetailReq req);
+    PlaneTicketOrderResp queryPlaneTicketOrderDetail(PlaneTicketOrderDetailReq req);
 }

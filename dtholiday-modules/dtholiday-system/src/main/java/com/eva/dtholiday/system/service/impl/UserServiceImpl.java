@@ -140,6 +140,16 @@ public class UserServiceImpl implements UserService {
         return ResponseApi.ok(userResp);
     }
 
+    @Override
+    public UserResp getCurrentUserDetail() {
+        Principal principal = httpServletRequest.getUserPrincipal();
+        if (principal == null) {
+            return null;
+        }
+        String username = principal.getName();
+        return getUserDetail(username);
+    }
+
     private UserResp getUserDetail(String userName) {
         UserResp userResp = new UserResp();
         //根据用户名获取用户

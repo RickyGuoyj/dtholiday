@@ -5,6 +5,7 @@ import com.eva.dtholiday.commons.dao.req.PasswordReq;
 import com.eva.dtholiday.commons.dao.req.UserAddReq;
 import com.eva.dtholiday.commons.dao.req.UserReq;
 import com.eva.dtholiday.commons.dao.req.UserUpdateReq;
+import com.eva.dtholiday.commons.dao.resp.UserResp;
 
 /**
  *
@@ -26,6 +27,8 @@ public interface UserService {
     ResponseApi getUserInfo(String username);
 
     ResponseApi getCurrentUserInfo();
+
+    UserResp getCurrentUserDetail();
 
     ResponseApi updateUser(UserUpdateReq userUpdateReq);
 

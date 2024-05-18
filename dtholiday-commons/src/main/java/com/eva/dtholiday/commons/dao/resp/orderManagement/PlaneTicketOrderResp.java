@@ -23,8 +23,18 @@ public class PlaneTicketOrderResp {
     private int orderType;
     private CustomerInfo customerInfo;
     private PlaneTicketInfo planeTicketInfo;
-    private double initialPrice;
-    private double discountPrice;
+    /**
+     * 订单总价
+     */
+    private Double totalPrice;
+    /**
+     * 优惠后价格
+     */
+    private Double discountPrice;
+    /**
+     * 机票号
+     */
+    private String ticketNumber;
     private int currencyType;
     private int orderStatus;
     private int financialStatus;
@@ -33,4 +43,14 @@ public class PlaneTicketOrderResp {
     private String orderCreator;
     private Date createTime;
     private Date updateTime;
+
+    /**
+     * 成本价
+     */
+    private Double costPrice;
+
+    /**
+     * 优惠金额
+     */
+    private Double discount;
 }

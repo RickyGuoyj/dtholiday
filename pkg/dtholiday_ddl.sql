@@ -261,41 +261,67 @@ CREATE TABLE IF NOT EXISTS  `dt_island_hotel`
                                    PRIMARY KEY (`island_hotel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岛屿酒店信息表';
 
-CREATE TABLE IF NOT EXISTS `dt_order_plane_ticket` (
-                                       `plane_ticket_order_id` INT NOT NULL AUTO_INCREMENT,
-                                       `order_type` INT NOT NULL,
-                                       `customer_info` TEXT,
-                                       `plane_ticket_info` TEXT,
-                                       `initial_price` DECIMAL(10, 2) ,
-                                       `discount_price` DECIMAL(10, 2) ,
-                                       `currency_type` INT NOT NULL,
-                                       `order_status` INT NOT NULL,
-                                       `financial_status` INT NOT NULL,
-                                       `sale_man` VARCHAR(255),
-                                       `financial_man` VARCHAR(255),
-                                       `order_creator` VARCHAR(255),
-                                       `create_time` TIMESTAMP,
-                                       `update_time` TIMESTAMP,
-                                       PRIMARY KEY (`plane_ticket_order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS `dt_order_plane_ticket`  (
+    `plane_ticket_order_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '机票订单id',
+    `order_type` INT NOT NULL COMMENT '订单类型',
+    `customer_name` VARCHAR(255) NOT NULL COMMENT '客户信息',
+    `adult_num` INT  COMMENT '成人数量',
+    `child_num` INT  COMMENT '儿童数量',
+    `plane_ticket_id` INT(11) NOT NULL COMMENT '机票id',
+    `airline_company_name` VARCHAR(255) NOT NULL COMMENT '航空公司名称',
+    `departure_date` DATE NOT NULL COMMENT '出发日期',
+    `return_date` DATE NOT NULL COMMENT '返程日期',
+    `days` VARCHAR(50) COMMENT '航班天数',
+    `departure_flight` VARCHAR(255) NOT NULL COMMENT '出发航班',
+    `return_flight` VARCHAR(255) NOT NULL COMMENT '返程航班',
+    `departure_place` VARCHAR(255) NOT NULL COMMENT '出发地点',
+    `arrival_place` VARCHAR(255) NOT NULL COMMENT '到达地点',
+    `price` DECIMAL(10, 2) NOT NULL COMMENT '机票价格',
+    `currency_type` INT NOT NULL COMMENT '货币类型',
+    `total_price` DECIMAL(10, 2) NOT NULL COMMENT '机票订单总价格',
+    `discount_price` DECIMAL(10, 2) COMMENT '优惠后价格',
+    `cost_price` DECIMAL(10, 2) COMMENT '成本价',
+    `discount` DECIMAL(10, 2) COMMENT '折扣金额',
+    `ticket_number` VARCHAR(30) NOT NULL COMMENT '机票号',
+    `order_status` INT NOT NULL COMMENT '订单状态',
+    `financial_status` INT NOT NULL COMMENT '财务状态',
+    `sale_man` VARCHAR(255) COMMENT '销售员',
+    `financial_man` VARCHAR(255) COMMENT '财务员',
+    `order_creator` VARCHAR(255) NOT NULL COMMENT '订单创建人',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`plane_ticket_order_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='机票订单表';
 
-CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel` (
-                                           `transition_hotel_order_id` INT NOT NULL AUTO_INCREMENT,
-                                           `order_type` INT NOT NULL,
-                                           `customer_info` TEXT,
-                                           `transition_hotel_info` TEXT,
-                                           `initial_price` DECIMAL(10, 2) ,
-                                           `discount_price` DECIMAL(10, 2) ,
-                                           `currency_type` INT NOT NULL,
-                                           `order_status` INT NOT NULL,
-                                           `financial_status` INT NOT NULL,
-                                           `sale_man` VARCHAR(255),
-                                           `financial_man` VARCHAR(255),
-                                           `order_creator` VARCHAR(255),
-                                           `create_time` TIMESTAMP,
-                                           `update_time` TIMESTAMP,
-                                           PRIMARY KEY (`transition_hotel_order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel`  (
+    `transition_hotel_order_id` INT NOT NULL AUTO_INCREMENT COMMENT '订单ID',
+    `order_type` INT NOT NULL COMMENT '订单类型',
+    `customer_name` VARCHAR(255) COMMENT '客人名称',
+    `adult_num` INT  COMMENT '成人数量',
+    `child_num` INT  COMMENT '孩子数量',
+    `room_num` INT  COMMENT '房间数量',
+    `nights` INT  COMMENT '间夜数',
+    `first_child_age` INT COMMENT '第一个孩子的年龄',
+    `second_child_age` INT COMMENT '第二个孩子的年龄',
+    `transition_hotel_id` INT NOT NULL COMMENT '过度酒店产品ID',
+    `transition_hotel_name` VARCHAR(255) COMMENT '过度酒店产品名称',
+    `transition_hotel_type` VARCHAR(255) COMMENT '过度酒店产品房型',
+    `effective_date` DATE COMMENT '过度酒店产品生效日期',
+    `expiry_date` DATE COMMENT '过度酒店产品失效日期',
+    `total_price` DECIMAL(10, 2) COMMENT '订单总价',
+    `discount_price` DECIMAL(10, 2) COMMENT '订单折扣后价格',
+    `cost_price` DECIMAL(10, 2)  COMMENT '订单成本价',
+    `discount` DECIMAL(10, 2) COMMENT '订单折扣',
+    `currency_type` INT NOT NULL COMMENT '订单货币类型',
+    `order_status` INT NOT NULL COMMENT '订单状态',
+    `financial_status` INT NOT NULL COMMENT '财务状态',
+    `sale_man` VARCHAR(255) COMMENT '销售',
+    `financial_man` VARCHAR(255) COMMENT '财务',
+    `order_creator` VARCHAR(255) COMMENT '订单创建人',
+    `create_time` TIMESTAMP COMMENT '创建时间',
+    `update_time` TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`transition_hotel_order_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 

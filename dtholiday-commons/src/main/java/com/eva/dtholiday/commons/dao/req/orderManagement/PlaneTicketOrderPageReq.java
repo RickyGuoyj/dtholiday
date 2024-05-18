@@ -2,6 +2,8 @@ package com.eva.dtholiday.commons.dao.req.orderManagement;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -15,7 +17,17 @@ import lombok.Data;
 @Data
 public class PlaneTicketOrderPageReq {
 
-    private int orderStatus;
-    private int financialStatus;
+    private String customerName;
+
+    private Date departureDate;
+
+    private Date returnDate;
+
+    private String airlineCompanyName;
+
+    private Integer orderStatus;
+
+    private Integer financialStatus;
+
     private String saleMan;
 }

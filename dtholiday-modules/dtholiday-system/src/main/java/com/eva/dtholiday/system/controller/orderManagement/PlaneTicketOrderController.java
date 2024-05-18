@@ -41,11 +41,11 @@ public class PlaneTicketOrderController {
 
     @PostMapping("/queryPlaneTicketOrderList")
     public ResponseApi queryPlaneTicketOrderList(@RequestBody PlaneTicketOrderPageReq req){
-        return planeTicketOrderService.queryPlaneTicketOrderList(req);
+        return ResponseApi.ok(planeTicketOrderService.queryPlaneTicketOrderList(req));
     }
 
     @PostMapping("/queryPlaneTicketOrderDetail")
     public ResponseApi queryPlaneTicketOrderDetail(@RequestBody PlaneTicketOrderDetailReq req){
-        return planeTicketOrderService.queryPlaneTicketOrderDetail(req);
+        return ResponseApi.ok(planeTicketOrderService.queryPlaneTicketOrderDetail(req));
     }
 }

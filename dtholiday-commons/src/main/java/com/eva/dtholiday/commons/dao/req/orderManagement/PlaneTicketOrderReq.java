@@ -20,7 +20,7 @@ public class PlaneTicketOrderReq {
     private int orderType;
     private CustomerInfo customerInfo;
     private PlaneTicketInfo planeTicketInfo;
-    private double initialPrice;
+    private double totalPrice;
     private int currencyType;
     private int orderStatus;
     private int financialStatus;
