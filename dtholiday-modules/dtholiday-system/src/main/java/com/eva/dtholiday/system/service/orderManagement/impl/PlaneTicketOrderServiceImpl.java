@@ -6,9 +6,7 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.PlaneTicketOrderMapper;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderDetailReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderPageReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.system.service.UserService;
@@ -46,11 +44,6 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
 
     @Override
     public ResponseApi createPlaneTicketOrder(PlaneTicketOrderReq req) {
-        return null;
-    }
-
-    @Override
-    public ResponseApi updatePlaneTicketOrder(PlaneTicketOrderReq req) {
         return null;
     }
 
@@ -147,5 +140,20 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
             convertPlaneTicketOrderEntityToResp(order, planeTicketOrderResp, roleInfo);
         }
         return planeTicketOrderResp;
+    }
+
+    @Override
+    public ResponseApi updatePlaneTicketOrderByFinancialMan(PlaneTicketOrderFinancialManReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi updatePlaneTicketOrderBySaleMan(PlaneTicketOrderSalesmanReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi updatePlaneTicketOrderByAgent(PlaneTicketOrderReq req) {
+        return null;
     }
 }

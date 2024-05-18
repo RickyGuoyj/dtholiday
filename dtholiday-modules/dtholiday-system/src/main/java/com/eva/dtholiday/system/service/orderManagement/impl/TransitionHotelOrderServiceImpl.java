@@ -8,9 +8,7 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTic
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.TransitionHotelOrderMapper;
-import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderDetailReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderPageReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.TransitionHotelOrderResp;
@@ -48,11 +46,6 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
     private TransitionHotelOrderMapper transitionHotelOrderMapper;
     @Override
     public ResponseApi createTransitionHotelOrder(TransitionHotelOrderReq req) {
-        return null;
-    }
-
-    @Override
-    public ResponseApi updateTransitionHotelOrder(TransitionHotelOrderReq req) {
         return null;
     }
 
@@ -142,5 +135,20 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
             convertTransitionHotelOrderEntityToResp(order, transitionHotelOrderResp, roleInfo);
         }
         return transitionHotelOrderResp;
+    }
+
+    @Override
+    public ResponseApi updateTransitionHotelOrderByAgent(TransitionHotelOrderReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi updateTransitionHotelOrderBySaleMan(TransitionHotelOrderSalesmanReq req) {
+        return null;
+    }
+
+    @Override
+    public ResponseApi updateTransitionHotelOrderByFinancialMan(TransitionHotelOrderFinancialManReq req) {
+        return null;
     }
 }

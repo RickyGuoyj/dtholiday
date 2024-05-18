@@ -31,9 +31,19 @@ public class TransitionHotelOrderController {
         return transitionHotelOrderService.createTransitionHotelOrder(req);
     }
 
-    @PostMapping("/updateTransitionHotelOrder")
-    public ResponseApi updateTransitionHotelOrder(@RequestBody TransitionHotelOrderReq req){
-        return transitionHotelOrderService.updateTransitionHotelOrder(req);
+    @PostMapping("/updateTransitionHotelOrderByAgent")
+    public ResponseApi updateTransitionHotelOrderByAgent(@RequestBody TransitionHotelOrderReq req){
+        return transitionHotelOrderService.updateTransitionHotelOrderByAgent(req);
+    }
+
+    @PostMapping("/updateTransitionHotelOrderBySaleMan")
+    public ResponseApi updateTransitionHotelOrderBySaleMan(@RequestBody TransitionHotelOrderSalesmanReq req){
+        return transitionHotelOrderService.updateTransitionHotelOrderBySaleMan(req);
+    }
+
+    @PostMapping("/updateTransitionHotelOrderByFinancialMan")
+    public ResponseApi updateTransitionHotelOrderByFinancialMan(@RequestBody TransitionHotelOrderFinancialManReq req){
+        return transitionHotelOrderService.updateTransitionHotelOrderByFinancialMan(req);
     }
 
     @PostMapping("/queryTransitionHotelOrderList")

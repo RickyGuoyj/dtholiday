@@ -2,6 +2,7 @@ package com.eva.dtholiday.security.service.impl;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.LoginUserReq;
+import com.eva.dtholiday.commons.dao.req.LogoutReq;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
 import com.eva.dtholiday.commons.exception.BusinessException;
 import com.eva.dtholiday.security.service.LoginService;
@@ -59,5 +60,11 @@ public class LoginServiceImpl implements LoginService {
         }catch (Exception e){
             throw new BusinessException(BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getMessageCN(), BusinessErrorCodeEnum.LOGIN_ACCOUNT_OR_PASSWORD_ERROR.getCode());
         }
+    }
+
+    @Override
+    public ResponseApi logout(LogoutReq logoutReq) {
+        String token = TokenCache.deleteTokenUserIdCache(logoutReq.getToken());
+        return ResponseApi.ok(token);
     }
 }

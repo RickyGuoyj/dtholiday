@@ -1,9 +1,7 @@
 package com.eva.dtholiday.system.service.orderManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderDetailReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderPageReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
+import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.TransitionHotelOrderResp;
 
 import java.util.List;
@@ -21,9 +19,13 @@ import java.util.List;
 public interface TransitionHotelOrderService {
     ResponseApi createTransitionHotelOrder(TransitionHotelOrderReq req);
 
-    ResponseApi updateTransitionHotelOrder(TransitionHotelOrderReq req);
-
     List<TransitionHotelOrderResp> queryTransitionHotelOrderList(TransitionHotelOrderPageReq req);
 
     TransitionHotelOrderResp queryTransitionHotelOrderDetail(TransitionHotelOrderDetailReq req);
+
+    ResponseApi updateTransitionHotelOrderByAgent(TransitionHotelOrderReq req);
+
+    ResponseApi updateTransitionHotelOrderBySaleMan(TransitionHotelOrderSalesmanReq req);
+
+    ResponseApi updateTransitionHotelOrderByFinancialMan(TransitionHotelOrderFinancialManReq req);
 }
