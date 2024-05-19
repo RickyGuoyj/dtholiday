@@ -1,4 +1,4 @@
-package com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotel;
+package com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

@@ -2,4 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper">
 
+    <select id="queryMainOrderList" resultType="com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrderListInfo">
+        select
+        a.main_order_id,a.island_order_id,a.plane_ticket_order_id,a.transition_hotel_order_id,a.total_price,a.sale_man,a.create_time,
+        a.update_time,a.order_status,a.financial_status,a.order_creator,a.payment_time
+        b.total_price as island_total_price,b.currency_type as island_currency_type,d.total_price as
+        plane_ticket_total_price,
+        d.currency_type as plane_ticket_currency_type,e.total_price as transition_hotel_total_price,e.currency_type as
+        transition_hotel_currency_type
+        from dt_order_main a
+        LEFT JOIN dt_order_island b on b.island_order_id = a.island_order_id
+        left join dt_order_plane_ticket d on d.plane_ticket_order_id = a.plane_ticket_order_id
+        left join dt_order_transition_hotel e on e.transition_hotel_order_id = a.transition_hotel_order_id
+        <where>
+            <if test="mainOrderId != null  and mainOrderId>0">
+                and main_order_id = #{mainOrderId}
+            </if>
+            <if test="orderCreator != null  and orderCreator != ''">
+                and order_creator = #{orderCreator}
+            </if>
+            <if test="saleMan != null  and saleMan != ''">
+                and sale_man = #{saleMan}
+            </if>
+            <if test="islandOrderId != null and islandOrderId>0">
+                and island_order_id = #{islandOrderId}
+            </if>
+            <if test="planeTicketOrderId != null  and planeTicketOrderId>0">
+                and plane_ticket_order_id = #{planeTicketOrderId}
+            </if>
+            <if test="transitionHotelOrderId != null and transitionHotelOrderId>0 ">
+                and transition_hotel_order_id = #{transitionHotelOrderId}
+            </if>
+        </where>
+        order by update_time desc
+        LIMIT #{from},#{to}
+    </select>
+
+    <select id="countMainOrderList" resultType="java.lang.Integer">
+        select count(1)
+        from dt_order_main a
+        LEFT JOIN dt_order_island b on b.island_order_id = a.island_order_id
+        left join dt_order_plane_ticket d on d.plane_ticket_order_id = a.plane_ticket_order_id
+        left join dt_order_transition_hotel e on e.transition_hotel_order_id = a.transition_hotel_order_id
+        <where>
+            <if test="mainOrderId != null  and mainOrderId>0">
+                and a.main_order_id = #{mainOrderId}
+            </if>
+            <if test="orderCreator != null  and orderCreator != ''">
+                and a.order_creator = #{orderCreator}
+            </if>
+            <if test="saleMan != null  and saleMan != ''">
+                and a.sale_man = #{saleMan}
+            </if>
+            <if test="islandOrderId != null and islandOrderId>0">
+                and a.island_order_id = #{islandOrderId}
+            </if>
+            <if test="planeTicketOrderId != null  and planeTicketOrderId>0">
+                and a.plane_ticket_order_id = #{planeTicketOrderId}
+            </if>
+            <if test="transitionHotelOrderId != null and transitionHotelOrderId>0 ">
+                and a.transition_hotel_order_id = #{transitionHotelOrderId}
+            </if>
+        </where>
+    </select>
+
 </mapper>

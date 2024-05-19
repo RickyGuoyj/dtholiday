@@ -1,4 +1,4 @@
-package com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotel;
+package com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

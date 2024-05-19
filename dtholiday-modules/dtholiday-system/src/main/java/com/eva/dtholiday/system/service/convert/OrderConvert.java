@@ -4,8 +4,8 @@ import java.sql.Timestamp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotel.IslandHotelInfo;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotel.IslandHotelOrder;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;

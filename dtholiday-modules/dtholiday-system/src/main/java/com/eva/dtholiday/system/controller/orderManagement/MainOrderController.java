@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.controller.orderManagement;
 
+import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderQueryListReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.system.service.orderManagement.MainOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,10 @@ public class MainOrderController {
     @PostMapping("/add")
     public ResponseApi addMainOrder(@RequestBody MainOrderReq req){
         return mainOrderService.addMainOrder(req);
+    }
+
+    @PostMapping("/queryList")
+    public ResponseApi queryMainOrderList(@RequestBody MainOrderQueryListReq req){
+        return mainOrderService.queryMainOrderList(req);
     }
 }

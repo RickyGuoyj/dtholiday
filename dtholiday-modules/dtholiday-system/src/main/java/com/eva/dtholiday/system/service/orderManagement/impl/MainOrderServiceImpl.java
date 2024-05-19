@@ -1,7 +1,8 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotel.IslandHotelOrder;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrderListInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
@@ -9,8 +10,10 @@ import com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapp
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.PlaneTicketOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.TransitionHotelOrderMapper;
+import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderQueryListReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.MainOrderQueryListResp;
 import com.eva.dtholiday.system.constant.ErpConstant;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.convert.OrderConvert;
@@ -19,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -77,5 +83,29 @@ public class MainOrderServiceImpl implements MainOrderService {
         mainOrder.setFinancialStatus(0);
         int insert = mainOrderMapper.insert(mainOrder);
         return ResponseApi.ok(insert);
+    }
+
+    @Override
+    public ResponseApi<MainOrderQueryListResp> queryMainOrderList(MainOrderQueryListReq req) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("mainOrderId",req.getMainOrderId());
+        map.put("orderCreator",req.getOrderCreator());
+        map.put("saleMan",req.getSaleMan());
+        map.put("islandOrderId",req.getIslandOrderId());
+        map.put("planeTicketOrderId",req.getPlaneTicketOrderId());
+        map.put("transitionHotelOrderId",req.getTransitionHotelOrderId());
+        int count = mainOrderMapper.countMainOrderList(map);
+        map.put("from", (req.getPage() - 1) * req.getPageSize());
+        map.put("to", req.getPageSize());
+        List<MainOrderListInfo> mainOrderListInfos = mainOrderMapper.queryMainOrderList(map);
+        if (Objects.nonNull(mainOrderListInfos)) {
+            MainOrderQueryListResp mainOrderQueryListResp = new MainOrderQueryListResp();
+            mainOrderQueryListResp.setTotal(count);
+            mainOrderQueryListResp.setPage(req.getPage());
+            mainOrderQueryListResp.setPageSize(req.getPageSize());
+            mainOrderQueryListResp.setMainOrderListInfoList(mainOrderListInfos);
+            return ResponseApi.ok(mainOrderQueryListResp);
+        }
+        return ResponseApi.ok();
     }
 }
