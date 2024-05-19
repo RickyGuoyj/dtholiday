@@ -38,7 +38,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         map.put("islandCnName", req.getIslandCnName());
         map.put("orderStatus", req.getOrderStatus());
         map.put("financialStatus", req.getFinancialStatus());
-        map.put("islandHotelOrderId",req.getIslandHotelOrderId());
+        map.put("islandHotelOrderId", req.getIslandHotelOrderId());
         int count = islandHotelOrderMapper.countIslandHotelOrderList(map);
         map.put("from", (req.getPage() - 1) * req.getPageSize());
         map.put("to", req.getPageSize());
@@ -57,7 +57,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Override
     public ResponseApi queryIslandHotelOrderDetail(IslandHotelOrderQueryDetailReq req) {
         IslandHotelOrderInfo islandHotelOrderInfo =
-            islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
+                islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
         return ResponseApi.ok(islandHotelOrderInfo);
     }
 
@@ -96,6 +96,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setRemarks(req.getCheckRemark());
                 }
                 if (mainOrder != null) {
+                    mainOrder.setIslandOrderStatus(islandHotelOrder.getOrderStatus());
                     //计算三个值中最小的
                     mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
                 }
@@ -135,6 +136,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setRemarks(req.getCheckRemark());
                 }
                 if (mainOrder != null) {
+                    mainOrder.setIslandOrderStatus(islandHotelOrder.getOrderStatus());
                     //计算三个值中最小的
                     mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
                 }

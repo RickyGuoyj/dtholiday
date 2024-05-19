@@ -210,6 +210,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                     transitionHotelOrder.setRemarks(req.getCheckRemark());
                 }
                 if (mainOrder != null) {
+                    mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
                     //计算三个值中最小的
                     mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
                 }
@@ -248,6 +249,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                     transitionHotelOrder.setRemarks(req.getCheckRemark());
                 }
                 if (mainOrder != null) {
+                    mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
                     //计算三个值中最小的
                     mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
                 }
