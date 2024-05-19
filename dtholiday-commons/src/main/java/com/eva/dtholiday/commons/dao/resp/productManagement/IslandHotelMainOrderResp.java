@@ -19,7 +19,7 @@ public class IslandHotelMainOrderResp {
     /**
      * 酒店房间类型
      */
-    private String hotelRomType ;
+    private String hotelRomType;
     /**
      * 延迟酒店房间类型
      */
@@ -44,5 +44,7 @@ public class IslandHotelMainOrderResp {
      * 餐食描述
      */
     private String mealDesc;
+
+    private Integer hasEnvironmentTax;
 
 }

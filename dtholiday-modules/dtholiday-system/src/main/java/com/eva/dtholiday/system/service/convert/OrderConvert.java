@@ -32,7 +32,12 @@ public class OrderConvert {
         islandHotelOrder.setSecondChildAge(customerInfo.getSecondChildAge());
         islandHotelOrder.setFirstChildAge(customerInfo.getFirstChildAge());
         IslandHotelInfo hotelInfo = req.getHotelInfo();
-        islandHotelOrder.setIslandHotelId(hotelInfo.getIslandHotelId());
+        islandHotelOrder.setIslandIndexCode(hotelInfo.getIslandIndexCode());
+        islandHotelOrder.setIslandCnName(hotelInfo.getIslandCnName());
+        islandHotelOrder.setTrafficType(hotelInfo.getTrafficType());
+        islandHotelOrder.setMealType(hotelInfo.getMealType());
+        islandHotelOrder.setHotelRoomType(hotelInfo.getHotelRoomType());
+        islandHotelOrder.setDelayHotelRoomType(hotelInfo.getDelayHotelRoomType());
         islandHotelOrder.setEffectiveDate(hotelInfo.getEffectiveDate());
         islandHotelOrder.setExpiryDate(hotelInfo.getExpiryDate());
         islandHotelOrder.setTotalPrice(req.getTotalPrice());

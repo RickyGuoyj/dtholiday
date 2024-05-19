@@ -17,4 +17,5 @@ public class IslandHotelOrderReq {
     private String saleMan;
     private String financialMan;
     private String orderCreator;
+    private Integer hasEnvironmentTax;
 }

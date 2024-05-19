@@ -161,6 +161,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
             resp.setMealName(entity.getMealName());
             resp.setMealIndexCode(entity.getMealType());
             resp.setMealDesc(entity.getRemarks());
+            resp.setHasEnvironmentTax(entity.getHasEnvironmentTax());
             return resp;
         }).collect(Collectors.toList());
         return ResponseApi.ok(collect);

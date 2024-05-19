@@ -6,15 +6,14 @@
         SELECT count(1)
         FROM
         dt_order_island a
-        LEFT JOIN dt_island_hotel b on a.island_hotel_id = b.island_hotel_id
-        left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
-        left join dt_meal_management d on b.meal_type = d.meal_index_code
+        left join dt_traffic_management c on a.traffic_type = c.traffic_index_code
+        left join dt_meal_management d on a.meal_type = d.meal_index_code
         <where>
             <if test="customerName != null and customerName != ''">
                 and a.customer_name = #{customerName}
             </if>
             <if test="islandCnName != null and islandCnName != ''">
-                and b.island_cn_name = #{islandCnName}
+                and a.island_cn_name = #{islandCnName}
             </if>
             <if test="orderStatus != null ">
                 and a.order_status = #{orderStatus}
@@ -36,14 +35,14 @@
         a.first_child_age,
         a.second_child_age,
         a.nights,
-        b.island_cn_name,
-        b.has_environment_tax,
-        b.traffic_type,
+        a.island_cn_name,
+        a.has_environment_tax,
+        a.traffic_type,
         c.traffic_name,
-        b.meal_type,
-        d.meal_name,
-        b.hotel_room_type,
-        b.delay_hotel_room_type,
+        a.meal_type,
+        a.meal_name,
+        a.hotel_room_type,
+        a.delay_hotel_room_type,
         a.effective_date,
         a.expiry_date,
         a.currency_type,
@@ -60,7 +59,6 @@
         a.update_time
         FROM
         dt_order_island a
-        LEFT JOIN dt_island_hotel b on a.island_hotel_id = b.island_hotel_id
         left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
         left join dt_meal_management d on b.meal_type = d.meal_index_code
         <where>
@@ -91,14 +89,14 @@
                a.first_child_age,
                a.second_child_age,
                a.nights,
-               b.island_cn_name,
-               b.has_environment_tax,
-               b.traffic_type,
+               a.island_cn_name,
+               a.has_environment_tax,
+               a.traffic_type,
                c.traffic_name,
-               b.meal_type,
+               a.meal_type,
                d.meal_name,
-               b.hotel_room_type,
-               b.delay_hotel_room_type,
+               a.hotel_room_type,
+               a.delay_hotel_room_type,
                a.effective_date,
                a.expiry_date,
                a.currency_type,
@@ -114,7 +112,6 @@
                a.create_time,
                a.update_time
         FROM dt_order_island a
-                 LEFT JOIN dt_island_hotel b on a.island_hotel_id = b.island_hotel_id
                  left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
                  left join dt_meal_management d on b.meal_type = d.meal_index_code
         where island_hotel_order_id = #{islandHotelOrderId}

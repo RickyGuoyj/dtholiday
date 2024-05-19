@@ -8,7 +8,13 @@ import java.sql.Date;
 
 @Data
 public class IslandHotelInfo {
-    private Integer islandHotelId;
+    private Integer islandIndexCode;
+    private String islandCnName;
+    private Integer trafficType;
+    private Integer mealType;
+    private String hotelRoomType;
+    private String delayHotelRoomType;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date effectiveDate;
 

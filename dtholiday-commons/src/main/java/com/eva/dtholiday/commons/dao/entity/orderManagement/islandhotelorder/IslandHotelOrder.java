@@ -25,9 +25,14 @@ public class IslandHotelOrder extends Model<IslandHotelOrder> {
     private Integer childNum;
     private Integer firstChildAge;
     private Integer secondChildAge;
-    private Integer islandHotelId;
+    private Integer islandIndexCode;
+    private String islandCnName;
+    private Integer trafficType;
+    private Integer mealType;
+    private String hotelRoomType;
+    private String delayHotelRoomType;
     private Date effectiveDate;
-    private  Date expiryDate;
+    private Date expiryDate;
     private Double totalPrice;
     private Double discountPrice;
     private Integer currencyType;
