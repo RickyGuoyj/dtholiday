@@ -15,6 +15,8 @@ import lombok.Data;
 @Data
 public class IslandHotelOrderSalesmanReq {
 
+    private Integer islandHotelOrderId;
+
     /**
      * 成本价
      */
@@ -38,7 +40,7 @@ public class IslandHotelOrderSalesmanReq {
     /**
      * 0-失败， 1-成功
      */
-    private String checkStatus;
+    private Integer checkStatus;
 
     /**
      * 审批意见

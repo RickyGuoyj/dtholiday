@@ -44,6 +44,8 @@ public class IslandHotelOrder extends Model<IslandHotelOrder> {
     private String saleMan;
     private String financialMan;
     private String orderCreator;
+    private String confirmInfo;
+    private String remarks;
     private Timestamp createTime;
     private Timestamp updateTime;
 }
