@@ -2,6 +2,7 @@ package com.eva.dtholiday.system.controller.orderManagement;
 
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderQueryListReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentReq;
 import com.eva.dtholiday.system.service.orderManagement.MainOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,4 +26,11 @@ public class MainOrderController {
     public ResponseApi queryMainOrderList(@RequestBody MainOrderQueryListReq req){
         return mainOrderService.queryMainOrderList(req);
     }
+
+    @PostMapping("/agentPay")
+    public ResponseApi agentPay(@RequestBody PaymentReq req){
+        return mainOrderService.agentPay(req);
+    }
+
+
 }

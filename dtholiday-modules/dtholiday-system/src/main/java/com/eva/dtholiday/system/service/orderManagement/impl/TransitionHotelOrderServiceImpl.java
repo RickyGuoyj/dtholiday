@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import ch.qos.logback.core.hook.DelayingShutdownHook;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -111,13 +112,13 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         String roleInfo = currentUserInfo.getRoleInfo().getName();
         if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
             queryWrapper.eq("order_creator", currentUserInfo.getUserName());
-            if (!StringUtils.hasText(req.getSaleMan())) {
+            if (StringUtils.hasText(req.getSaleMan())) {
                 queryWrapper.eq("sale_man", req.getSaleMan());
             }
         } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
             queryWrapper.eq("sale_man", currentUserInfo.getUserName());
         } else {
-            if (!StringUtils.hasText(req.getSaleMan())) {
+            if (StringUtils.hasText(req.getSaleMan())) {
                 queryWrapper.eq("sale_man", req.getSaleMan());
             }
         }
@@ -191,29 +192,33 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
             if (transitionHotelOrder == null) {
                 return ResponseApi.error("过度酒店订单不存在");
             }
-            QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
-            mainOrderQueryWrapper.eq("transition_hotel_order_id", transitionHotelOrder.getTransitionHotelOrderId());
-            MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
-            if (req.getCheckStatus() == 1) {
-                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
-                transitionHotelOrder.setCostPrice(req.getCostPrice());
-                transitionHotelOrder.setDiscount(req.getDiscount());
-                transitionHotelOrder.setBookingCode(req.getBookingCode());
-                transitionHotelOrder.setFinancialMan(req.getFinancialMan());
-                // 计算金额
-                transitionHotelOrder.setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
-                // todo 主订单金额重新计算
+            if (transitionHotelOrder.getOrderStatus() == OrderStatusEnum.WAIT_SALE_CHECK.getCode()) {
+                QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+                mainOrderQueryWrapper.eq("transition_hotel_order_id", transitionHotelOrder.getTransitionHotelOrderId());
+                MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+                if (req.getCheckStatus() == 1) {
+                    transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+                    transitionHotelOrder.setCostPrice(req.getCostPrice());
+                    transitionHotelOrder.setDiscount(req.getDiscount());
+                    transitionHotelOrder.setBookingCode(req.getBookingCode());
+                    transitionHotelOrder.setFinancialMan(req.getFinancialMan());
+                    // 计算金额
+                    transitionHotelOrder.setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
+                    // todo 主订单金额重新计算
+                } else {
+                    transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
+                    transitionHotelOrder.setRemarks(req.getCheckRemark());
+                }
+                if (mainOrder != null) {
+                    //计算三个值中最小的
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+                }
+                transitionHotelOrderMapper.updateById(transitionHotelOrder);
+                mainOrderMapper.updateById(mainOrder);
+                return ResponseApi.ok("审核成功");
             } else {
-                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
-                transitionHotelOrder.setRemarks(req.getCheckRemark());
+                return ResponseApi.error("未到你的流程");
             }
-            if (mainOrder != null) {
-                //计算三个值中最小的
-                mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
-            }
-            transitionHotelOrderMapper.updateById(transitionHotelOrder);
-            mainOrderMapper.updateById(mainOrder);
-            return ResponseApi.ok("审核成功");
         } else {
             return ResponseApi.error("请选择审核状态");
         }
@@ -231,23 +236,27 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
             if (transitionHotelOrder == null) {
                 return ResponseApi.error("过度酒店订单不存在");
             }
-            QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
-            mainOrderQueryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
-            MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
-            if (req.getCheckStatus() == 1) {
-                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_HOTEL_CONFIRM.getCode());
-                transitionHotelOrder.setConfirmInfo(req.getConfirmInfo());
+            if (transitionHotelOrder.getOrderStatus() == OrderStatusEnum.WAIT_FINANCIAL_CHECK.getCode()) {
+                QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+                mainOrderQueryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+                MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+                if (req.getCheckStatus() == 1) {
+                    transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_HOTEL_CONFIRM.getCode());
+                    transitionHotelOrder.setConfirmInfo(req.getConfirmInfo());
+                } else {
+                    transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT2.getCode());
+                    transitionHotelOrder.setRemarks(req.getCheckRemark());
+                }
+                if (mainOrder != null) {
+                    //计算三个值中最小的
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+                }
+                transitionHotelOrderMapper.updateById(transitionHotelOrder);
+                mainOrderMapper.updateById(mainOrder);
+                return ResponseApi.ok("审核成功");
             } else {
-                transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT2.getCode());
-                transitionHotelOrder.setRemarks(req.getCheckRemark());
+                return ResponseApi.error("未到你的流程");
             }
-            if (mainOrder != null) {
-                //计算三个值中最小的
-                mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
-            }
-            transitionHotelOrderMapper.updateById(transitionHotelOrder);
-            mainOrderMapper.updateById(mainOrder);
-            return ResponseApi.ok("审核成功");
         } else {
             return ResponseApi.error("请选择审核状态");
         }

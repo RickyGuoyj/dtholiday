@@ -1,27 +1,30 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.entity.financialManagement.Payment;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrderListInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
+import com.eva.dtholiday.commons.dao.mapper.financialManagement.PaymentMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.PlaneTicketOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.TransitionHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderQueryListReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentReq;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.MainOrderQueryListResp;
 import com.eva.dtholiday.system.constant.ErpConstant;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.MainOrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,19 +32,17 @@ import java.util.Objects;
 
 @Service
 public class MainOrderServiceImpl implements MainOrderService {
-    @Autowired
+    @Resource
     private PlaneTicketOrderMapper planeTicketOrderMapper;
-
-    @Autowired
+    @Resource
     private IslandHotelOrderMapper islandHotelOrderMapper;
-
-    @Autowired
+    @Resource
     private TransitionHotelOrderMapper transitionHotelOrderMapper;
-
-    @Autowired
+    @Resource
     private MainOrderMapper mainOrderMapper;
-
-    @Autowired
+    @Resource
+    private PaymentMapper paymentMapper;
+    @Resource
     private UserService userService;
 
     @Override
@@ -107,5 +108,36 @@ public class MainOrderServiceImpl implements MainOrderService {
             return ResponseApi.ok(mainOrderQueryListResp);
         }
         return ResponseApi.ok();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseApi agentPay(PaymentReq req) {
+        Payment payment = new Payment();
+        payment.setMainOrderId(req.getMainOrderId());
+        payment.setCurrencyType(req.getCurrencyType());
+        payment.setPaymentAmountCNY(req.getPaymentAmountCNY());
+        payment.setPaymentAmountUSD(req.getPaymentAmountUSD());
+        payment.setPaymentAmountUSDToCNY(req.getPaymentAmountUSDToCNY());
+        payment.setPaymentDate(req.getPaymentDate());
+        payment.setPaymentRemarks(req.getPaymentRemarks());
+        payment.setPaymentType(req.getPaymentType());
+        payment.setExchangeRate(req.getExchangeRate());
+        payment.setPaymentTotal(req.getPaymentTotal());
+
+        MainOrder mainOrder = mainOrderMapper.selectById(req.getMainOrderId());
+        if (mainOrder != null){
+            if (mainOrder.getFinancialStatus() == 0){
+                payment.setFinancialStatus(0);
+                payment.setFinancialMan(mainOrder.getFinancialMan());
+                payment.setSaleMan(mainOrder.getSaleMan());
+                mainOrder.setFinancialStatus(0);
+                paymentMapper.insert(payment);
+                mainOrderMapper.updateById(mainOrder);
+            }
+        }else{
+            return ResponseApi.error("订单不存在");
+        }
+        return null;
     }
 }

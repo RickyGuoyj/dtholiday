@@ -10,6 +10,7 @@ import com.eva.dtholiday.commons.dao.mapper.UserMapper;
 import com.eva.dtholiday.commons.dao.mapper.UserRoleMapper;
 import com.eva.dtholiday.commons.dao.req.*;
 import com.eva.dtholiday.commons.dao.resp.RoleResp;
+import com.eva.dtholiday.commons.dao.resp.SimpleUserInfoResp;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
 import com.eva.dtholiday.commons.exception.BusinessException;
@@ -33,6 +34,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -72,7 +74,7 @@ public class UserServiceImpl implements UserService {
     private HttpServletRequest httpServletRequest;
 
     @Override
-    public ResponseApi getUserList(UserReq userReq) {
+    public List<UserResp> getUserList(UserReq userReq) {
         List<User> userList = new ArrayList<>();
         // 如果用户名不为空，则根据用户名模糊匹配用户
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
@@ -99,11 +101,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (CollectionUtils.isEmpty(userList)) {
-            return ResponseApi.ok();
+            return Collections.emptyList();
         }
         //通过username去获取用户详细信息，并组装成list
         List<UserResp> userRespList = userList.stream().map(this::getUserDetail).collect(Collectors.toList());
-        return ResponseApi.ok(userRespList);
+        return userRespList;
     }
 
     private UserResp getUserDetail(User user) {
@@ -309,5 +311,75 @@ public class UserServiceImpl implements UserService {
             }
         }
         return ResponseApi.error("状态修改失败");
+    }
+
+    @Override
+    public List<SimpleUserInfoResp> getUserListBySaleManRoleType(UserReq userReq) {
+        List<User> userList = new ArrayList<>();
+        // 如果用户名不为空，则根据用户名模糊匹配用户
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq(User.STATUS, 1);
+        userList = userMapper.selectList(userQueryWrapper);
+        // 如果角色不为空，则根据角色找用户编码
+        if (!CollectionUtils.isEmpty(userReq.getRoleCode())) {
+            QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+            List<String> saleRoleCode = new ArrayList<>();
+            saleRoleCode.add("b7bd16c32de44e35abdd7c939dabb311");
+            saleRoleCode.add("25523fbd6917410aa6f3c8b0c487ad43");
+            userRoleQueryWrapper.in(UserRole.ROLE_CODE, saleRoleCode);
+            List<UserRole> userRoleList = userRoleMapper.selectList(userRoleQueryWrapper);
+            // 获取用户编码
+            List<String> inRoleUserList = userRoleList.stream().map(UserRole::getUserCode).collect(Collectors.toList());
+            // 筛出用户编码对应的用户
+            userList = userList.stream().filter(user -> inRoleUserList.contains(user.getUserCode())).collect(Collectors.toList());
+        }
+
+        if (CollectionUtils.isEmpty(userList)) {
+            return Collections.emptyList();
+        }
+        //通过username去获取用户详细信息，并组装成list
+        List<SimpleUserInfoResp> userRespList = userList.stream().map(user -> {
+                    SimpleUserInfoResp userInfo = new SimpleUserInfoResp();
+                    userInfo.setUserName(user.getUserName());
+                    userInfo.setUserCode(user.getUserCode());
+                    return userInfo;
+                }
+        ).collect(Collectors.toList());
+        return userRespList;
+    }
+
+    @Override
+    public List<SimpleUserInfoResp> getUserListByFinancialManRoleType(UserReq userReq) {
+        List<User> userList = new ArrayList<>();
+        // 如果用户名不为空，则根据用户名模糊匹配用户
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq(User.STATUS, 1);
+        userList = userMapper.selectList(userQueryWrapper);
+        // 如果角色不为空，则根据角色找用户编码
+        if (!CollectionUtils.isEmpty(userReq.getRoleCode())) {
+            QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+            List<String> saleRoleCode = new ArrayList<>();
+            saleRoleCode.add("20769fe45f374aa68e3c0afee3a98b08");
+            saleRoleCode.add("8e23b763cea44afd960c9b72c60cc4f7");
+            userRoleQueryWrapper.in(UserRole.ROLE_CODE, saleRoleCode);
+            List<UserRole> userRoleList = userRoleMapper.selectList(userRoleQueryWrapper);
+            // 获取用户编码
+            List<String> inRoleUserList = userRoleList.stream().map(UserRole::getUserCode).collect(Collectors.toList());
+            // 筛出用户编码对应的用户
+            userList = userList.stream().filter(user -> inRoleUserList.contains(user.getUserCode())).collect(Collectors.toList());
+        }
+
+        if (CollectionUtils.isEmpty(userList)) {
+            return Collections.emptyList();
+        }
+        //通过username去获取用户详细信息，并组装成list
+        List<SimpleUserInfoResp> userRespList = userList.stream().map(user -> {
+                    SimpleUserInfoResp userInfo = new SimpleUserInfoResp();
+                    userInfo.setUserName(user.getUserName());
+                    userInfo.setUserCode(user.getUserCode());
+                    return userInfo;
+                }
+        ).collect(Collectors.toList());
+        return userRespList;
     }
 }

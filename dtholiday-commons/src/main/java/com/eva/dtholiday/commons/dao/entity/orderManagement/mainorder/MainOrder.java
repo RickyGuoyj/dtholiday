@@ -30,6 +30,7 @@ public class MainOrder extends Model<MainOrder> {
     private Timestamp createTime;
     private Timestamp updateTime;
     private String saleMan;
+    private String financialMan;
     private Timestamp paymentTime;
     /**
      * 备注

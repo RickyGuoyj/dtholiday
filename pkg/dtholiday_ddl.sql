@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS `dt_order_plane_ticket`  (
     `discount_price` DECIMAL(10, 2) COMMENT '优惠后价格',
     `cost_price` DECIMAL(10, 2) COMMENT '成本价',
     `discount` DECIMAL(10, 2) COMMENT '折扣金额',
-    `ticket_number` VARCHAR(30) NOT NULL COMMENT '机票号',
+    `ticket_number` VARCHAR(30)  COMMENT '机票号',
     `order_status` INT DEFAULT 0 COMMENT '订单状态',
     `financial_status` INT DEFAULT 0 COMMENT '财务状态',
     `sale_man` VARCHAR(255) COMMENT '销售员',
@@ -323,8 +323,8 @@ CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel`  (
     `confirm_info` VARCHAR(1024) COMMENT '确认号',
     `remarks` VARCHAR(1024) COMMENT '备注',
     `order_creator` VARCHAR(255) COMMENT '订单创建人',
-    `create_time` TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP COMMENT '更新时间',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`transition_hotel_order_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -344,6 +344,7 @@ CREATE TABLE IF NOT EXISTS  `dt_order_main` (
                                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
                                  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
                                  `sale_man` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '销售员',
+                                 `financial_man` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '财务',
                                  `remarks` VARCHAR(1024) COMMENT '备注',
                                  `payment_time` datetime DEFAULT NULL COMMENT '收款时间',
                                  PRIMARY KEY (`main_order_id`) USING BTREE
@@ -385,6 +386,27 @@ CREATE TABLE IF NOT EXISTS `dt_order_island` (
                                    `has_environment_tax` int DEFAULT NULL COMMENT '是否包含环境税',
                                    PRIMARY KEY (`island_hotel_order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岛屿订单表';
+
+CREATE TABLE IF NOT EXISTS `dt_payment` (
+                           `payment_id` INT NOT NULL AUTO_INCREMENT, -- 支付ID
+                           `main_order_id` INT NOT NULL, -- 主订单ID
+                           `payment_date` DATE NOT NULL, -- 支付日期
+                           `payment_amount_usd` DECIMAL(10, 2) NOT NULL, -- USD支付金额
+                           `exchange_rate` DECIMAL(5, 4) NOT NULL, -- 汇率
+                           `payment_amount_usd_to_cny` DECIMAL(10, 2) NOT NULL, -- USD转换为CNY的金额
+                           `payment_amount_cny` DECIMAL(10, 2) NOT NULL, -- CNY支付金额
+                           `payment_total` DECIMAL(10, 2) NOT NULL, -- 总支付金额
+                           `currency_type` TINYINT NOT NULL, -- 货币类型（假设为整数编码）
+                           `payment_type` VARCHAR(255) NOT NULL, -- 支付方式
+                           `payment_remarks` VARCHAR(255), -- 支付备注
+                           `sale_man` VARCHAR(50) NOT NULL, -- 销售员
+                           `financial_man` VARCHAR(50) , -- 财务人员
+                           `financial_status` TINYINT NOT NULL, -- 财务状态（假设为整数编码）
+                           `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                           `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                           PRIMARY KEY (`payment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='订单付款表';
+
 
 
 

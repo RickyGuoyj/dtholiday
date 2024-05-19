@@ -9,6 +9,7 @@ import com.eva.dtholiday.security.service.LoginService;
 import com.eva.dtholiday.security.entity.DtHolidayUser;
 import com.eva.dtholiday.security.utils.JwtUtil;
 import com.eva.dtholiday.security.utils.TokenCache;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ import javax.annotation.Resource;
  * @modify by reason :{原因}
  **/
 @Service
+@Slf4j
 public class LoginServiceImpl implements LoginService {
 
     @Autowired

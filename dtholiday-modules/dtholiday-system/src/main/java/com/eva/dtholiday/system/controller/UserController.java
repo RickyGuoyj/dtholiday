@@ -29,7 +29,7 @@ public class UserController {
 
     @PostMapping("/getUserList")
     public ResponseApi getUserList(@RequestBody UserReq userReq) {
-        return userService.getUserList(userReq);
+        return ResponseApi.ok(userService.getUserList(userReq));
     }
 
     @PostMapping("/getUserInfo")
@@ -67,6 +67,16 @@ public class UserController {
     @PostMapping("/changeStatus")
     public ResponseApi changeStatus(@RequestBody UserReq userReq) {
         return userService.changeStatus(userReq);
+    }
+
+    @PostMapping("/getUserListBySaleManRoleType")
+    public ResponseApi getUserListBySaleManRoleType(@RequestBody UserReq userReq) {
+        return ResponseApi.ok(userService.getUserListBySaleManRoleType(userReq));
+    }
+
+    @PostMapping("/getUserListByFinancialManRoleType")
+    public ResponseApi getUserListByFinancialManRoleType(@RequestBody UserReq userReq) {
+        return ResponseApi.ok(userService.getUserListByFinancialManRoleType(userReq));
     }
 
 }

@@ -5,7 +5,10 @@ import com.eva.dtholiday.commons.dao.req.PasswordReq;
 import com.eva.dtholiday.commons.dao.req.UserAddReq;
 import com.eva.dtholiday.commons.dao.req.UserReq;
 import com.eva.dtholiday.commons.dao.req.UserUpdateReq;
+import com.eva.dtholiday.commons.dao.resp.SimpleUserInfoResp;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
+
+import java.util.List;
 
 /**
  *
@@ -22,7 +25,7 @@ public interface UserService {
 
     ResponseApi addUser(UserAddReq userAddReq);
 
-    ResponseApi getUserList(UserReq userReq);
+    List<UserResp> getUserList(UserReq userReq);
 
     ResponseApi getUserInfo(String username);
 
@@ -37,4 +40,8 @@ public interface UserService {
     ResponseApi resetPwd(PasswordReq passwordReq);
 
     ResponseApi changeStatus(UserReq userReq);
+
+    List<SimpleUserInfoResp> getUserListBySaleManRoleType(UserReq userReq);
+
+    List<SimpleUserInfoResp> getUserListByFinancialManRoleType(UserReq userReq);
 }
