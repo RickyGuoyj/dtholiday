@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import lombok.Data;
 
 @Data
-public class IslandHotelOrderListInfo {
+public class IslandHotelOrderInfo {
     private Integer islandOrderId;
     private Integer orderType;
     private String customerName;

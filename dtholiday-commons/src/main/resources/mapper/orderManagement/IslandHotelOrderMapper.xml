@@ -26,7 +26,7 @@
     </select>
 
     <select id="queryIslandHotelOrderList"
-            resultType="com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderListInfo">
+            resultType="com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo">
         SELECT
         a.island_order_id,
         a.order_type,
@@ -79,5 +79,44 @@
         </where>
         order by update_time desc
         LIMIT #{from},#{to}
+    </select>
+
+    <select id="queryIslandHotelOrderById"
+            resultType="com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo">
+        SELECT a.island_order_id,
+               a.order_type,
+               a.customer_name,
+               a.adult_num,
+               a.child_num,
+               a.first_child_age,
+               a.second_child_age,
+               a.nights,
+               b.island_cn_name,
+               b.has_environment_tax,
+               b.traffic_type,
+               c.traffic_name,
+               b.meal_type,
+               d.meal_name,
+               b.hotel_room_type,
+               b.delay_hotel_room_type,
+               a.effective_date,
+               a.expiry_date,
+               a.currency_type,
+               a.total_price,
+               a.discount_price,
+               a.booking_code,
+               a.cost_price,
+               a.discount,
+               a.order_status,
+               a.financial_status,
+               a.sale_man,
+               a.financial_man,
+               a.create_time,
+               a.update_time
+        FROM dt_order_island a
+                 LEFT JOIN dt_island_hotel b on a.island_hotel_id = b.island_hotel_id
+                 left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
+                 left join dt_meal_management d on b.meal_type = d.meal_index_code
+        where island_order_id = #{islandOrderId}
     </select>
 </mapper>

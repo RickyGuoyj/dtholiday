@@ -2,7 +2,7 @@ package com.eva.dtholiday.commons.dao.resp.orderManagement;
 
 import java.util.List;
 
-import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderListInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo;
 
 import lombok.Data;
 
@@ -17,7 +17,7 @@ public class IslandHotelOrderQueryListResp {
      */
     private int pageSize;
 
-    private List<IslandHotelOrderListInfo> islandHotelOrderListInfoList;
+    private List<IslandHotelOrderInfo> islandHotelOrderListInfo;
 
     /**
      * 总数
