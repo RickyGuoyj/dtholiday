@@ -28,6 +28,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         map.put("islandCnName", req.getIslandCnName());
         map.put("orderStatus", req.getOrderStatus());
         map.put("financialStatus", req.getFinancialStatus());
+        map.put("islandHotelOrderId",req.getIslandHotelOrderId());
         int count = islandHotelOrderMapper.countIslandHotelOrderList(map);
         map.put("from", (req.getPage() - 1) * req.getPageSize());
         map.put("to", req.getPageSize());

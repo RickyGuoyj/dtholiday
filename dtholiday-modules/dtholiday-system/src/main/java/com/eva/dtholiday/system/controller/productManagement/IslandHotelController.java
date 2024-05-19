@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelPageReq;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryAllReq;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryReq;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.*;
 import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
 import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
 
@@ -62,5 +59,10 @@ public class IslandHotelController {
     @PostMapping("/queryAllHotelInfo")
     public ResponseApi<List<IslandHotelResp>> islandHotelQueryAllList(@RequestBody IslandHotelQueryAllReq req) {
        return islandHotelService.queryAllHotelList(req);
+    }
+
+    @PostMapping("/calculateIslandHotelAmount")
+    public ResponseApi  calculateIslandHotelAmount(@RequestBody IslandHotelCalculateReq req) {
+        return islandHotelService.calculateIslandHotelAmount(req);
     }
 }

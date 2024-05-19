@@ -1,5 +1,9 @@
 package com.eva.dtholiday.system.service.productManagement.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,13 +18,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.entity.productManagement.ExtraChildExpense;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder;
+import com.eva.dtholiday.commons.dao.mapper.productManagement.ExtraChildExpenseMapper;
 import com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelPageReq;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryAllReq;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryReq;
-import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelReq;
+import com.eva.dtholiday.commons.dao.req.productManagement.*;
 import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelMainOrderResp;
 import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
 import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
@@ -41,6 +44,9 @@ public class IslandHotelServiceImpl implements IslandHotelService {
 
     @Resource
     private IslandHotelMapper islandHotelMapper;
+
+    @Resource
+    private ExtraChildExpenseMapper extraChildExpenseMapper;
 
     @Resource
     private IslandManagementService islandManagementService;
@@ -137,13 +143,12 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         return ResponseApi.error("no islandHotel found");
     }
 
-
     @Override
     public ResponseApi queryAllHotelList(IslandHotelQueryAllReq req) {
         Map<String, Object> queryMap = new HashMap<>();
         queryMap.put("islandIndexCode", req.getIslandIndexCode());
-        queryMap.put("effectiveDate",req.getEffectiveDate());
-        queryMap.put("expiryDate",req.getExpiryDate());
+        queryMap.put("effectiveDate", req.getEffectiveDate());
+        queryMap.put("expiryDate", req.getExpiryDate());
 
         List<IslandHotelMainOrder> islandHotelMainOrders = islandHotelMapper.queryAllHotelInfo(queryMap);
         // 封装数据
@@ -165,5 +170,73 @@ public class IslandHotelServiceImpl implements IslandHotelService {
             return resp;
         }).collect(Collectors.toList());
         return ResponseApi.ok(collect);
+    }
+
+    @Override
+    public ResponseApi calculateIslandHotelAmount(IslandHotelCalculateReq req) {
+
+        IslandHotel islandHotel = islandHotelMapper.selectById(req.getIslandHotelId());
+        long nights = calTwoDayBetween(req.getEffectiveDate(), req.getExpiryDate());
+        long leftNights = nights - 4 < 0 ? 0 : nights - 4;
+        BigDecimal totalPrice = new BigDecimal(0);
+
+        // 计算两人价格
+        BigDecimal packagePrice = new BigDecimal(islandHotel.getPackagePrice());
+        BigDecimal extraExpense = new BigDecimal(islandHotel.getExtraExpense());
+        BigDecimal delayHotelRoomPrice = new BigDecimal(islandHotel.getDelayHotelRoomPrice());
+        BigDecimal twoPersonPrice =
+            extraExpense.add(packagePrice).add(delayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights)));
+        // 多余人数价格
+        BigDecimal morePersonPrice = new BigDecimal(0);
+        if (req.getAdultNum() > 2) {
+            int moreAdultNum = req.getAdultNum() - 2;
+            BigDecimal extraAdultHotelPrice = new BigDecimal(islandHotel.getExtraAdultHotelPrice());
+            BigDecimal multiply = extraAdultHotelPrice.multiply(BigDecimal.valueOf(moreAdultNum));
+            BigDecimal extraAdultDelayHotelRoomPrice = new BigDecimal(islandHotel.getExtraAdultDelayHotelRoomPrice());
+
+            BigDecimal multiply1 = extraAdultDelayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights));
+            morePersonPrice = extraAdultHotelPrice.add(multiply).add(multiply1);
+        }
+        // 儿童1价格
+        BigDecimal firstChildPrice = new BigDecimal(0);
+        if (req.getFirstChildAge() > 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.le("start_age", req.getFirstChildAge());
+            queryWrapper.ge("end_age", req.getFirstChildAge());
+            ExtraChildExpense extraChildExpense = extraChildExpenseMapper.selectOne(queryWrapper);
+            if (Objects.nonNull(extraChildExpense)) {
+                BigDecimal extraChildCharge = new BigDecimal(extraChildExpense.getExtraChildCharge());
+                BigDecimal price = new BigDecimal(extraChildExpense.getPrice());
+                BigDecimal extraChildDelayHotelPrice = new BigDecimal(extraChildExpense.getExtraChildDelayHotelPrice());
+                firstChildPrice = extraChildCharge.add(price).add(extraChildDelayHotelPrice);
+            }
+        }
+        // 儿童2价格
+        BigDecimal secondChildPrice = new BigDecimal(0);
+
+        if (req.getSecondChildAge() > 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.le("start_age", req.getSecondChildAge());
+            queryWrapper.ge("end_age", req.getSecondChildAge());
+            ExtraChildExpense extraChildExpense = extraChildExpenseMapper.selectOne(queryWrapper);
+            if (Objects.nonNull(extraChildExpense)) {
+                BigDecimal extraChildCharge = new BigDecimal(extraChildExpense.getExtraChildCharge());
+                BigDecimal price = new BigDecimal(extraChildExpense.getPrice());
+                BigDecimal extraChildDelayHotelPrice = new BigDecimal(extraChildExpense.getExtraChildDelayHotelPrice());
+                secondChildPrice = extraChildCharge.add(price).add(extraChildDelayHotelPrice);
+            }
+        }
+        BigDecimal total =
+            totalPrice.add(twoPersonPrice).add(morePersonPrice).add(firstChildPrice).add(secondChildPrice);
+        return ResponseApi.ok(total);
+    }
+
+    private long calTwoDayBetween(Date startTime, Date endTime) {
+        return ChronoUnit.DAYS.between(convertToLocalDate(startTime), convertToLocalDate(endTime));
+    }
+
+    // 将 Date 转换为 LocalDate 的方法
+    private static LocalDate convertToLocalDate(Date dateToConvert) {
+        return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }

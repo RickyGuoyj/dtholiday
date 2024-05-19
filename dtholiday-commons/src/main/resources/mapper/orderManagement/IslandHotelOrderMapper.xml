@@ -21,6 +21,9 @@
             <if test="financialStatus != null ">
                 and a.financial_status = #{financialStatus}
             </if>
+            <if test="islandHotelOrderId != null and islandHotelOrderId > 0">
+                and a.island_hotel_order_id = #{islandHotelOrderId}
+            </if>
         </where>
     </select>
 
@@ -35,12 +38,13 @@
         a.first_child_age,
         a.second_child_age,
         a.nights,
+        a.island_index_code,
         a.island_cn_name,
         a.has_environment_tax,
         a.traffic_type,
         c.traffic_name,
         a.meal_type,
-        a.meal_name,
+        d.meal_name,
         a.hotel_room_type,
         a.delay_hotel_room_type,
         a.effective_date,
@@ -59,8 +63,8 @@
         a.update_time
         FROM
         dt_order_island a
-        left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
-        left join dt_meal_management d on b.meal_type = d.meal_index_code
+        left join dt_traffic_management c on a.traffic_type = c.traffic_index_code
+        left join dt_meal_management d on a.meal_type = d.meal_index_code
         <where>
             <if test="customerName != null and customerName != ''">
                 and customer_name = #{customerName}
@@ -73,6 +77,9 @@
             </if>
             <if test="financialStatus != null ">
                 and financial_status = #{financialStatus}
+            </if>
+            <if test="islandHotelOrderId != null and islandHotelOrderId >0 ">
+                and a.island_hotel_order_id = #{islandHotelOrderId}
             </if>
         </where>
         order by update_time desc
@@ -89,6 +96,7 @@
                a.first_child_age,
                a.second_child_age,
                a.nights,
+               a.island_index_code,
                a.island_cn_name,
                a.has_environment_tax,
                a.traffic_type,
@@ -112,8 +120,8 @@
                a.create_time,
                a.update_time
         FROM dt_order_island a
-                 left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
-                 left join dt_meal_management d on b.meal_type = d.meal_index_code
+                 left join dt_traffic_management c on a.traffic_type = c.traffic_index_code
+                 left join dt_meal_management d on a.meal_type = d.meal_index_code
         where island_hotel_order_id = #{islandHotelOrderId}
     </select>
 </mapper>

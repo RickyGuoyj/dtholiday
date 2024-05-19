@@ -20,4 +20,6 @@ public class IslandHotelOrderQueryListReq {
     private Integer orderStatus;
     private Integer financialStatus;
 
+    private Integer islandHotelOrderId;
+
 }

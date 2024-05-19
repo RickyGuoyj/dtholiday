@@ -15,6 +15,7 @@ public class IslandHotelOrderInfo {
     private Integer firstChildAge;
     private Integer secondChildAge;
     private Integer nights;
+    private Integer islandIndexCode;
     private String islandCnName;
     private Integer hasEnvironmentTax;
     private Integer trafficType;
