@@ -17,7 +17,7 @@ public class MainOrder extends Model<MainOrder> {
 
     @TableId(value = "main_order_id", type = IdType.AUTO)
     private Integer mainOrderId;
-    private Integer islandOrderId;
+    private Integer islandHotelOrderId;
     private Integer islandOrderStatus;
     private Integer planeTicketOrderId;
     private Integer planeTicketOrderStatus;

@@ -28,7 +28,7 @@
     <select id="queryIslandHotelOrderList"
             resultType="com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo">
         SELECT
-        a.island_order_id,
+        a.island_hotel_order_id,
         a.order_type,
         a.customer_name,
         a.adult_num,
@@ -83,7 +83,7 @@
 
     <select id="queryIslandHotelOrderById"
             resultType="com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo">
-        SELECT a.island_order_id,
+        SELECT a.island_hotel_order_id,
                a.order_type,
                a.customer_name,
                a.adult_num,
@@ -117,6 +117,6 @@
                  LEFT JOIN dt_island_hotel b on a.island_hotel_id = b.island_hotel_id
                  left join dt_traffic_management c on b.traffic_type = c.traffic_index_code
                  left join dt_meal_management d on b.meal_type = d.meal_index_code
-        where island_order_id = #{islandOrderId}
+        where island_hotel_order_id = #{islandHotelOrderId}
     </select>
 </mapper>

@@ -18,7 +18,7 @@ public class MainOrderQueryListReq {
     private Integer mainOrderId;
 
     private String saleMan;
-    private Integer islandOrderId;
+    private Integer islandHotelOrderId;
     private Integer planeTicketOrderId;
     private Integer transitionHotelOrderId;
 }

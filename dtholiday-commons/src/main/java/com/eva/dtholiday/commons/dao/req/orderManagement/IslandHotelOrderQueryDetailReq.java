@@ -7,6 +7,6 @@ public class IslandHotelOrderQueryDetailReq {
     /**
      * 岛屿订单id
      */
-    private Integer islandOrderId;
+    private Integer islandHotelOrderId;
 
 }

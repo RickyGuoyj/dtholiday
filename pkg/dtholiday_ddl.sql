@@ -331,7 +331,7 @@ CREATE TABLE IF NOT EXISTS `dt_order_transition_hotel`  (
 -- 主订单表
 CREATE TABLE IF NOT EXISTS  `dt_order_main` (
                                  `main_order_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主订单主键id',
-                                 `island_order_id` int DEFAULT NULL COMMENT '酒店订单id',
+                                 `island_hotel_order_id` int DEFAULT NULL COMMENT '酒店订单id',
                                  `plane_ticket_order_id` int DEFAULT NULL COMMENT '机票订单id',
                                  `transition_hotel_order_id` int DEFAULT NULL COMMENT '过度酒店订单id',
                                  `total_price` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '总价',
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS  `dt_order_main` (
 
 --  岛屿订单表
 CREATE TABLE IF NOT EXISTS `dt_order_island` (
-                                   `island_order_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '岛屿酒店订单主键',
+                                   `island_hotel_order_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '岛屿酒店订单主键',
                                    `order_type` int DEFAULT NULL COMMENT '订单类型',
                                    `customer_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '客人姓名',
                                    `nights` int DEFAULT NULL COMMENT '入住间夜数',
@@ -377,7 +377,7 @@ CREATE TABLE IF NOT EXISTS `dt_order_island` (
                                    `remarks` VARCHAR(1024) COMMENT '备注',
                                    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
                                    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                   PRIMARY KEY (`island_order_id`) USING BTREE
+                                   PRIMARY KEY (`island_hotel_order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岛屿订单表';
 
 

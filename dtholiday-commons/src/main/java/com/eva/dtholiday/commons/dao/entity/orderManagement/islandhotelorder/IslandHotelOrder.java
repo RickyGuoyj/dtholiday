@@ -16,8 +16,8 @@ import java.sql.Timestamp;
 public class IslandHotelOrder extends Model<IslandHotelOrder> {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "island_order_id", type = IdType.AUTO)
-    private Integer islandOrderId;
+    @TableId(value = "island_hotel_order_id", type = IdType.AUTO)
+    private Integer islandHotelOrderId;
     private Integer orderType;
     private String customerName;
     private Integer nights;

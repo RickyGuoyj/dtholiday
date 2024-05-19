@@ -105,10 +105,10 @@ public class OrderConvert {
         return transitionHotelOrder;
     }
 
-    public static MainOrder convertMainOrderInfoToEntity(MainOrderReq req, String userName, Integer islandOrderId,
+    public static MainOrder convertMainOrderInfoToEntity(MainOrderReq req, String userName, Integer islandHotelOrderId,
         Integer planeTicketOrderId, Integer transitionHotelOrderId) {
         MainOrder mainOrder = new MainOrder();
-        mainOrder.setIslandOrderId(islandOrderId);
+        mainOrder.setIslandHotelOrderId(islandHotelOrderId);
         mainOrder.setPlaneTicketOrderId(planeTicketOrderId);
         mainOrder.setTransitionHotelOrderId(transitionHotelOrderId);
         mainOrder.setOrderCreator(userName);

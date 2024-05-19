@@ -13,7 +13,7 @@ public class MainOrderListInfo {
     private String orderCreator;
     private String saleMan;
     private TotalPriceInfo totalPrice;
-    private Integer islandOrderId;
+    private Integer islandHotelOrderId;
     private Double islandTotalPrice;
     private Integer islandCurrencyType;
     private Integer planeTicketOrderId;

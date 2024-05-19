@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class IslandHotelOrderInfo {
-    private Integer islandOrderId;
+    private Integer islandHotelOrderId;
     private Integer orderType;
     private String customerName;
     private Integer adultNum;

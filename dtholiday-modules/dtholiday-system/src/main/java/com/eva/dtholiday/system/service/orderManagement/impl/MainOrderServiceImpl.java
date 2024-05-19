@@ -77,7 +77,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         }
         // 写主表
         MainOrder mainOrder = OrderConvert.convertMainOrderInfoToEntity(req, currentUserDetail.getUserName(),
-                islandHotelOrder.getIslandOrderId(), planeTicketOrder.getPlaneTicketOrderId(),
+                islandHotelOrder.getIslandHotelOrderId(), planeTicketOrder.getPlaneTicketOrderId(),
                 transitionHotelOrder.getTransitionHotelOrderId());
         mainOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
         mainOrder.setFinancialStatus(0);
@@ -91,7 +91,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         map.put("mainOrderId",req.getMainOrderId());
         map.put("orderCreator",req.getOrderCreator());
         map.put("saleMan",req.getSaleMan());
-        map.put("islandOrderId",req.getIslandOrderId());
+        map.put("islandHotelOrderId",req.getIslandHotelOrderId());
         map.put("planeTicketOrderId",req.getPlaneTicketOrderId());
         map.put("transitionHotelOrderId",req.getTransitionHotelOrderId());
         int count = mainOrderMapper.countMainOrderList(map);
