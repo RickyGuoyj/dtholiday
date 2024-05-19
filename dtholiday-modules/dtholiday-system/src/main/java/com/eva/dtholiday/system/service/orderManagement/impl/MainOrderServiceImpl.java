@@ -116,9 +116,9 @@ public class MainOrderServiceImpl implements MainOrderService {
         Payment payment = new Payment();
         payment.setMainOrderId(req.getMainOrderId());
         payment.setCurrencyType(req.getCurrencyType());
-        payment.setPaymentAmountCNY(req.getPaymentAmountCNY());
-        payment.setPaymentAmountUSD(req.getPaymentAmountUSD());
-        payment.setPaymentAmountUSDToCNY(req.getPaymentAmountUSDToCNY());
+        payment.setPaymentAmountCny(req.getPaymentAmountCNY());
+        payment.setPaymentAmountUsd(req.getPaymentAmountUSD());
+        payment.setPaymentAmountUsdToCny(req.getPaymentAmountUSDToCNY());
         payment.setPaymentDate(req.getPaymentDate());
         payment.setPaymentRemarks(req.getPaymentRemarks());
         payment.setPaymentType(req.getPaymentType());
@@ -138,6 +138,6 @@ public class MainOrderServiceImpl implements MainOrderService {
         }else{
             return ResponseApi.error("订单不存在");
         }
-        return null;
+        return ResponseApi.ok();
     }
 }

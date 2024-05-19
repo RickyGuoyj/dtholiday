@@ -45,7 +45,7 @@ public class Payment extends Model<Payment> {
     /**
      * 收款金额USD
      */
-    private double paymentAmountUSD;
+    private double paymentAmountUsd;
 
     /**
      * 汇率
@@ -55,12 +55,12 @@ public class Payment extends Model<Payment> {
     /**
      * 收款金额USDtoCNY
      */
-    private double paymentAmountUSDToCNY;
+    private double paymentAmountUsdToCny;
 
     /**
      * 收款金额CNY
      */
-    private double paymentAmountCNY;
+    private double paymentAmountCny;
 
     /**
      * 收款总金额

@@ -1,5 +1,6 @@
 package com.eva.dtholiday.commons.dao.req.financialManagement;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ public class PaymentReq {
 
     private int mainOrderId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date paymentDate;
 
     private double paymentAmountUSD;
