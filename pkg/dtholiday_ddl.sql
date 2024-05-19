@@ -335,7 +335,7 @@ CREATE TABLE IF NOT EXISTS  `dt_order_main` (
                                  `plane_ticket_order_id` int DEFAULT NULL COMMENT '机票订单id',
                                  `transition_hotel_order_id` int DEFAULT NULL COMMENT '过度酒店订单id',
                                  `total_price` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '总价',
-                                 `island_order_status` int DEFAULT 0 COMMENT '岛屿酒店订单状态',
+                                 `island_hotel_order_status` int DEFAULT 0 COMMENT '岛屿酒店订单状态',
                                  `plane_ticket_order_status` int DEFAULT 0 COMMENT '机票订单状态',
                                  `transition_hotel_order_status` int DEFAULT 0 COMMENT '过度酒店订单状态',
                                  `order_status` int DEFAULT 0 COMMENT '主订单状态',

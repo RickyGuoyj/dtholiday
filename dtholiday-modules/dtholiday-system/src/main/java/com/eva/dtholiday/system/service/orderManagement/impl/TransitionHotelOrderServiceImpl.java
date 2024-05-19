@@ -211,7 +211,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 }
                 if (mainOrder != null) {
                     //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
                 }
                 transitionHotelOrderMapper.updateById(transitionHotelOrder);
                 mainOrderMapper.updateById(mainOrder);
@@ -249,7 +249,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 }
                 if (mainOrder != null) {
                     //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
                 }
                 transitionHotelOrderMapper.updateById(transitionHotelOrder);
                 mainOrderMapper.updateById(mainOrder);

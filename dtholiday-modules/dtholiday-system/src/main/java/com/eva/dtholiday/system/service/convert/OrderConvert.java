@@ -15,6 +15,7 @@ import com.eva.dtholiday.commons.dao.req.orderManagement.IslandHotelOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
+import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 
 /**
  * 订单转换类
@@ -46,6 +47,10 @@ public class OrderConvert {
         islandHotelOrder.setOrderCreator(userName);
         islandHotelOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
         islandHotelOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_SALE_CHECK.getCode());
+//        islandHotelOrder.set(OrderStatusEnum.WAIT_SALE_CHECK.getCode());
+        islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_SALE_CHECK.getCode());
+        islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_SALE_CHECK.getCode());
         return islandHotelOrder;
     }
 

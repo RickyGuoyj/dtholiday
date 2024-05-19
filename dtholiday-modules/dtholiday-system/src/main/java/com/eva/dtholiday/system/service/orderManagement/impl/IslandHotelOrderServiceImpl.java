@@ -97,7 +97,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                 }
                 if (mainOrder != null) {
                     //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
                 mainOrderMapper.updateById(mainOrder);
@@ -136,7 +136,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                 }
                 if (mainOrder != null) {
                     //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
                 mainOrderMapper.updateById(mainOrder);

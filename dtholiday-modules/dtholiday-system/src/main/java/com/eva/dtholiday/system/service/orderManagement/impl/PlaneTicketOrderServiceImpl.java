@@ -1,5 +1,16 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,28 +19,14 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
-import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.PlaneTicketOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
-import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.orderManagement.PlaneTicketOrderService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @describtion
@@ -206,7 +203,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 }
                 if (mainOrder != null) {
                     //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), planeTicketOrder.getOrderStatus()));
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), planeTicketOrder.getOrderStatus()));
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
                 mainOrderMapper.updateById(mainOrder);
@@ -251,7 +248,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 }
                 if (mainOrder != null) {
                     //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), planeTicketOrder.getOrderStatus()));
+                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), planeTicketOrder.getOrderStatus()));
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
                 mainOrderMapper.updateById(mainOrder);
