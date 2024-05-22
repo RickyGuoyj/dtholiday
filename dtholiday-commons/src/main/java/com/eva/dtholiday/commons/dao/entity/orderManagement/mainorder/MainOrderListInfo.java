@@ -1,9 +1,8 @@
 package com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder;
 
-import com.eva.dtholiday.commons.dao.entity.orderManagement.TotalPriceInfo;
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 @Data
 public class MainOrderListInfo {
@@ -12,7 +11,7 @@ public class MainOrderListInfo {
     private Timestamp updateTime;
     private String orderCreator;
     private String saleMan;
-    private TotalPriceInfo totalPrice;
+    private String totalPrice;
     private Integer islandHotelOrderId;
     private Double islandTotalPrice;
     private Integer islandCurrencyType;

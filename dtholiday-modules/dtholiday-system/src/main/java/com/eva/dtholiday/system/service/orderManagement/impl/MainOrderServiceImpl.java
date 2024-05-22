@@ -53,7 +53,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         PlaneTicketOrder planeTicketOrder = new PlaneTicketOrder();
         TransitionHotelOrder transitionHotelOrder = new TransitionHotelOrder();
         // 岛屿订单
-        if (Objects.nonNull(req.getIslandHotelOrder())) {
+        if (Objects.nonNull(req.getIslandHotelOrder()) && Objects.nonNull(req.getIslandHotelOrder().getHotelInfo())) {
             islandHotelOrder =
                 OrderConvert.convertIslandHotelInfoToEntity(req.getIslandHotelOrder(), currentUserDetail.getUserName());
             islandHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
@@ -61,7 +61,7 @@ public class MainOrderServiceImpl implements MainOrderService {
             islandHotelOrderMapper.insert(islandHotelOrder);
         }
         // 机票订单
-        if (Objects.nonNull(req.getPlaneTicketOrder())) {
+        if (Objects.nonNull(req.getPlaneTicketOrder()) && Objects.nonNull(req.getPlaneTicketOrder().getPlaneTicketInfo())) {
             planeTicketOrder =
                 OrderConvert.convertPlaneTicketInfoToEntity(req.getPlaneTicketOrder(), currentUserDetail.getUserName());
             planeTicketOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
@@ -69,7 +69,7 @@ public class MainOrderServiceImpl implements MainOrderService {
             planeTicketOrderMapper.insert(planeTicketOrder);
         }
         // 过度酒店订单
-        if (Objects.nonNull(req.getTransitionHotelOrder())) {
+        if (Objects.nonNull(req.getTransitionHotelOrder()) && Objects.nonNull(req.getTransitionHotelOrder().getTransitionHotelInfo())) {
             transitionHotelOrder = OrderConvert.convertTransitionHotelInfoToEntity(req.getTransitionHotelOrder(),
                 currentUserDetail.getUserName());
             transitionHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
