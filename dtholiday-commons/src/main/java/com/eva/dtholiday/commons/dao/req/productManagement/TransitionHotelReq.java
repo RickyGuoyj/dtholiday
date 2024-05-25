@@ -1,5 +1,7 @@
 package com.eva.dtholiday.commons.dao.req.productManagement;
 
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -18,32 +20,41 @@ import java.util.Date;
 @Data
 public class TransitionHotelReq {
 
+    @ExcelProperty(value = "编号")
     private Integer transitionHotelId;
 
     /**
      * 过渡酒店名称
      */
+    @ExcelProperty(value = "酒店名称")
     private String transitionHotelName;
     /**
      * 过渡酒店房间类型
      */
+    @ExcelProperty(value = "房型")
     private String transitionHotelType;
     /**
      * 生效日期
      */
+    @ExcelProperty(value = "生效日期")
+    @DateTimeFormat("yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date effectiveDate;
     /**
      * 失效日期
      */
+    @ExcelProperty(value = "失效日期")
+    @DateTimeFormat("yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date expiryDate;
     /**
      * 总量
      */
+    @ExcelProperty(value = "总房间数")
     private Integer totalNum;
     /**
      * 备注
      */
+    @ExcelProperty(value = "备注")
     private String remark;
 }
