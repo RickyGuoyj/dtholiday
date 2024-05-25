@@ -15,4 +15,7 @@ public interface IslandHotelOrderMapper extends BaseMapper<IslandHotelOrder> {
     List<IslandHotelOrderInfo> queryIslandHotelOrderList(Map<String, Object> map);
 
     IslandHotelOrderInfo queryIslandHotelOrderById(@Param("islandHotelOrderId") Integer islandHotelOrderId);
+
+    void updateFinancialStatusById(@Param("id") int islandHotelOrderId,
+                                   @Param("financialStatus") int financialStatus);
 }

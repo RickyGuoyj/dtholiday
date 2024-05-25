@@ -2,6 +2,7 @@ package com.eva.dtholiday.commons.dao.mapper.orderManagement;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @describtion
@@ -14,4 +15,6 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.Tran
  * @modify by reason :{原因}
  **/
 public interface TransitionHotelOrderMapper extends BaseMapper<TransitionHotelOrder> {
+    void updateFinancialStatusById(@Param("id") Integer transitionHotelOrderId,
+                                   @Param("financialStatus") int financialStatus);
 }

@@ -2,6 +2,7 @@ package com.eva.dtholiday.commons.dao.mapper.orderManagement;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @describtion
@@ -14,4 +15,6 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTic
  * @modify by reason :{原因}
  **/
 public interface PlaneTicketOrderMapper extends BaseMapper<PlaneTicketOrder> {
+    void updateFinancialStatusById(@Param("id") int planeTicketOrderId,
+                                   @Param("financialStatus") int financialStatus);
 }

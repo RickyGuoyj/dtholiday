@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS  `dt_order_main` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='主订单表';
 
 --  岛屿订单表
-CREATE TABLE IF NOT EXISTS `dt_order_island` (
+CREATE TABLE IF NOT EXISTS `dt_order_island_hotel` (
                                    `island_hotel_order_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '岛屿酒店订单主键',
                                    `order_type` int DEFAULT NULL COMMENT '订单类型',
                                    `customer_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '客人姓名',
@@ -385,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `dt_order_island` (
                                    `delay_hotel_room_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '延住房型',
                                    `has_environment_tax` int DEFAULT NULL COMMENT '是否包含环境税',
                                    PRIMARY KEY (`island_hotel_order_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岛屿订单表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岛屿酒店订单表';
 
 CREATE TABLE IF NOT EXISTS `dt_payment` (
                            `payment_id` INT NOT NULL AUTO_INCREMENT, -- 支付ID
@@ -403,6 +403,7 @@ CREATE TABLE IF NOT EXISTS `dt_payment` (
                            `financial_man` VARCHAR(50) , -- 财务人员
                            `financial_status` TINYINT NOT NULL, -- 财务状态（假设为整数编码）
                            `company_name` VARCHAR(255) NOT NULL, -- 公司名称`
+                           `check_remark` VARCHAR(255) NOT NULL, -- 审核备注`
                            `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                            PRIMARY KEY (`payment_id`)

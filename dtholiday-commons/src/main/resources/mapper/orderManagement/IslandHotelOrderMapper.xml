@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapper">
+    <update id="updateFinancialStatusById">
+        update dt_order_island_hotel
+        set financial_status = #{financialStatus}
+        where island_hotel_order_id = #{id}
+    </update>
 
     <select id="countIslandHotelOrderList" resultType="java.lang.Integer">
         SELECT count(1)
