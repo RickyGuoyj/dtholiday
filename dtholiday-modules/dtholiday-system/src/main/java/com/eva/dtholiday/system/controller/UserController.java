@@ -79,7 +79,7 @@ public class UserController {
         return ResponseApi.ok(userService.getUserListByFinancialManRoleType(userReq));
     }
 
-    @PostMapping("/getAllCompanyName")
+    @GetMapping("/getAllCompanyName")
     public ResponseApi getAllCompanyName() {
         return ResponseApi.ok(userService.getAllCompanyName());
     }
