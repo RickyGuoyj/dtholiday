@@ -268,7 +268,7 @@ public class UserServiceImpl implements UserService {
         List<String> userCodeList = userList.stream().map(User::getUserCode).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(userList)) {
             userMapper.delete(new QueryWrapper<User>().in(User.USER_NAME, userReq.getUserNames()));
-            userRoleMapper.delete(new QueryWrapper<UserRole>().eq(UserRole.USER_CODE, userCodeList));
+            userRoleMapper.delete(new QueryWrapper<UserRole>().in(UserRole.USER_CODE, userCodeList));
         }
 
         return ResponseApi.ok("已删除");
@@ -375,5 +375,15 @@ public class UserServiceImpl implements UserService {
                 }
         ).collect(Collectors.toList());
         return userRespList;
+    }
+
+    @Override
+    public List<String> getAllCompanyName() {
+        List<User> userList = userMapper.selectList(null);
+        if (CollectionUtils.isEmpty(userList)) {
+            return Collections.emptyList();
+        } else {
+            return userList.stream().distinct().map(User::getBelongCompany).distinct().collect(Collectors.toList());
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.eva.dtholiday.commons.dao.req.BasePage;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @describtion
@@ -18,10 +19,11 @@ import java.util.Date;
 @Data
 public class PaymentPageReq extends BasePage {
 
-    private Integer financialStatus; // 0-待审核 1-销售审核通过 2-销售审核失败 3-财务审核通过 4-财务审核失败
+    private List<Integer> financialStatus; // 0-待审核 1-销售审核通过 2-销售审核失败 3-财务审核通过 4-财务审核失败
     private Date startTime;
     private Date endTime;
     private String paymentType; // 支付方式
     private String saleMan; // 销售员
+    private String companyName;
 
 }

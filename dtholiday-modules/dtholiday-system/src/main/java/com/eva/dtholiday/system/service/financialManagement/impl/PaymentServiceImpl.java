@@ -2,6 +2,7 @@ package com.eva.dtholiday.system.service.financialManagement.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.financialManagement.Payment;
@@ -39,8 +40,8 @@ public class PaymentServiceImpl implements PaymentService {
     public ResponseApi queryPaymentList(PaymentPageReq req) {
         IPage<Payment> entityPage = new Page<>(req.getCurrent(), req.getSize());
         QueryWrapper<Payment> queryWrapper = new QueryWrapper<>();
-        if (req.getFinancialStatus() != null) {
-            queryWrapper.eq("financial_status", req.getFinancialStatus());
+        if (CollectionUtils.isNotEmpty(req.getFinancialStatus())) {
+            queryWrapper.in("financial_status", req.getFinancialStatus());
         }
         if (req.getPaymentType() != null) {
             queryWrapper.eq("payment_type", req.getPaymentType());
@@ -53,6 +54,9 @@ public class PaymentServiceImpl implements PaymentService {
         }
         if (Objects.nonNull(req.getEndTime())) {
             queryWrapper.le("payment_date", req.getEndTime());
+        }
+        if (Objects.nonNull(req.getCompanyName())) {
+            queryWrapper.eq("company_name", req.getCompanyName());
         }
         entityPage = paymentMapper.selectPage(entityPage, queryWrapper);
         if (Objects.isNull(entityPage)) {

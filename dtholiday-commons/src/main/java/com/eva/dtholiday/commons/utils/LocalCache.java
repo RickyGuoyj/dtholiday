@@ -23,6 +23,8 @@ public class LocalCache {
      */
     private static Map<Integer, String> islandNameMap = new ConcurrentHashMap<>();
 
+    private static Map<Integer, String> islandTagNameMap = new ConcurrentHashMap<>();
+
     public static void putIslandName(Integer islandIndexCode, String islandCnName) {
         islandNameMap.put(islandIndexCode, islandCnName);
     }
@@ -31,11 +33,27 @@ public class LocalCache {
         return islandNameMap.get(islandIndexCode);
     }
 
+    public static List<String> getTagNamesByTagIndexCodes(List<Integer> tagIndexCodeList) {
+        // 根据编码列表从map中获取批量名称
+        List<String> tagNames = new ArrayList<>();
+        tagIndexCodeList.forEach(tagIndexCode -> {
+            String tagName = islandTagNameMap.get(tagIndexCode);
+            if (tagName != null) {
+                tagNames.add(tagName);
+            }
+        });
+        return tagNames;
+    }
+
+    public static void putIslandTagName(Integer tagIndexCode, String tagName) {
+        islandTagNameMap.put(tagIndexCode, tagName);
+    }
+
     public List<String> getAllIslandNames() {
         return new ArrayList<>(islandNameMap.values());
     }
 
-    public void deleteIslandName(Integer islandIndexCode) {
+    public static void deleteIslandName(Integer islandIndexCode) {
         islandNameMap.remove(islandIndexCode);
     }
 

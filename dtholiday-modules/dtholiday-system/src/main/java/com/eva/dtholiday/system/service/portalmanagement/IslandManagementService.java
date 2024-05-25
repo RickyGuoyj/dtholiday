@@ -54,4 +54,5 @@ public interface IslandManagementService {
      */
     ResponseApi<List<IslandManagementInfo>> queryAllIsland();
 
+    void loadAllIslandName();
 }

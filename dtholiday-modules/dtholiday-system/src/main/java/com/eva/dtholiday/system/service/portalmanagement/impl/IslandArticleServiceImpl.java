@@ -119,7 +119,9 @@ public class IslandArticleServiceImpl implements IslandArticleService {
         if (!Objects.isNull(islandArticle)) {
             //返回业务对象
             BeanUtils.copyProperties(islandArticle, islandArticleResp);
-            islandArticleResp.setIslandCnName(islandManagementService.getIslandName(islandArticle.getIslandIndexCode()));
+            if (islandArticle.getIslandIndexCode() != null) {
+                islandArticleResp.setIslandCnName(islandManagementService.getIslandName(islandArticle.getIslandIndexCode()));
+            }
             List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
             islandArticleResp.setPictures(fileInfos);
             islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));
@@ -144,7 +146,9 @@ public class IslandArticleServiceImpl implements IslandArticleService {
             islandArticleRespList = islandArticles.stream().map(islandArticle -> {
                 IslandArticleResp islandArticleResp = new IslandArticleResp();
                 BeanUtils.copyProperties(islandArticle, islandArticleResp);
-                islandArticleResp.setIslandCnName(islandManagementService.getIslandName(islandArticle.getIslandIndexCode()));
+                if (islandArticle.getIslandIndexCode() != null) {
+                    islandArticleResp.setIslandCnName(islandManagementService.getIslandName(islandArticle.getIslandIndexCode()));
+                }
                 List<FileInfo> fileInfos = JSONObject.parseArray(islandArticle.getArticleImages(), FileInfo.class);
                 islandArticleResp.setPictures(fileInfos);
                 islandArticleResp.setCreateTime(DateUtils.convertDateToLocalDateTime(islandArticle.getCreateTime()));

@@ -20,6 +20,7 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.Isl
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.IslandHotelOrderQueryListResp;
 import com.eva.dtholiday.system.service.orderManagement.IslandHotelOrderService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -96,7 +97,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setRemarks(req.getCheckRemark());
                 }
                 if (mainOrder != null) {
-                    mainOrder.setIslandOrderStatus(islandHotelOrder.getOrderStatus());
+                    mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
                     //计算三个值中最小的
                     mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
                 }
@@ -113,6 +114,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseApi updateIslandHotelOrderByFinancialMan(IslandHotelOrderFinancialManReq req) {
         if (req.getCheckStatus() != null) {
             QueryWrapper<IslandHotelOrder> queryWrapper = new QueryWrapper<>();
@@ -136,7 +138,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setRemarks(req.getCheckRemark());
                 }
                 if (mainOrder != null) {
-                    mainOrder.setIslandOrderStatus(islandHotelOrder.getOrderStatus());
+                    mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
                     //计算三个值中最小的
                     mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
                 }

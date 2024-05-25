@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS sys_user (
     gender INT,
     dept_leader_name VARCHAR(64),
     status INT DEFAULT 1,
-    belong_company VARCHAR(255),
+    belong_company VARCHAR(255) not null,
     belong_company_phone VARCHAR(255),
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -402,6 +402,7 @@ CREATE TABLE IF NOT EXISTS `dt_payment` (
                            `sale_man` VARCHAR(50) NOT NULL, -- 销售员
                            `financial_man` VARCHAR(50) , -- 财务人员
                            `financial_status` TINYINT NOT NULL, -- 财务状态（假设为整数编码）
+                           `company_name` VARCHAR(255) NOT NULL, -- 公司名称`
                            `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                            PRIMARY KEY (`payment_id`)

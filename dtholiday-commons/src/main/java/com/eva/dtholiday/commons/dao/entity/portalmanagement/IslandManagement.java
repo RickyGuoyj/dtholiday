@@ -46,7 +46,7 @@ public class IslandManagement extends Model<IslandManagement> {
      */
     private String islandImage;
     /**
-     * 岛屿文件
+     * 岛屿资料链接
      */
     private String islandFile;
     /**
@@ -59,4 +59,7 @@ public class IslandManagement extends Model<IslandManagement> {
     private Timestamp updateTime;
 
     public static final String ISLAND_INDEX_CODE = "island_index_code";
+    public static final String ISLAND_CN_NAME = "island_cn_name";
+
+    public static final String ISLAND_EN_NAME = "island_en_name";
 }

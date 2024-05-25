@@ -2,6 +2,8 @@ package com.eva.dtholiday.commons.dao.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class IslandManagementTagInfo {
     private int islandIndexCode;
@@ -9,6 +11,6 @@ public class IslandManagementTagInfo {
     private String islandCnName;
     private String islandDesc;
     private String islandFile;
-    private String tagName;
+    private List<String> tagName;
     private String tagIndexCode;
 }

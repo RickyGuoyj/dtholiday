@@ -58,7 +58,13 @@ public enum BusinessErrorCodeEnum {
 
     ISLAND_MANAGEMENT_DELETE_FAIL("0xdcb00203", "island management delete fail", "岛屿管理删除失败"),
 
+    ISLAND_NAME_HAS_EXISTED("0xdcb00204", "island name has existed", "岛屿名称已存在"),
 
+    ISLAND_NOT_EXISTED("0xdcb00205", "island dose not existed", "岛屿不存在"),
+
+    ISLAND_TAG_NOT_EXISTED("0xdcb00206", "island tag dose not existed", "岛屿标签不存在"),
+
+    ISLAND_TAG_NAME_HAS_EXISTED("0xdcb00206", "island tag has existed", "岛屿标签名称已存在"),
     ;
 
     /**

@@ -5,6 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.eva.dtholiday.commons.dao.entity.portalmanagement.IslandManagement;
+import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
+import com.eva.dtholiday.commons.exception.BusinessException;
+import com.eva.dtholiday.commons.utils.LocalCache;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +34,6 @@ public class IslandTagServiceImpl implements IslandTagService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-
     public ResponseApi islandTagQueryDetail(int tagIndexCode) {
         IslandTag islandTag = islandTagMapper.selectById(tagIndexCode);
         return ResponseApi.ok(islandTag);
@@ -52,9 +57,16 @@ public class IslandTagServiceImpl implements IslandTagService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi islandTagAdd(IslandTagReq islandTagReq) {
         IslandTag islandTag = new IslandTag();
+        // 重名校验
+        IslandTag oldIslandTag = islandTagMapper.selectOne(
+                new QueryWrapper<IslandTag>().lambda().eq(IslandTag::getTagName,
+                        islandTagReq.getTagName()));
+        if (oldIslandTag != null) {
+            throw new BusinessException(BusinessErrorCodeEnum.ISLAND_TAG_NAME_HAS_EXISTED.getMessageCN(), BusinessErrorCodeEnum.ISLAND_TAG_NAME_HAS_EXISTED.getCode());
+        }
         convertTagEntity(islandTagReq, islandTag);
-        int insert = islandTagMapper.insert(islandTag);
-        return ResponseApi.ok(insert);
+        islandTagMapper.insert(islandTag);
+        return islandTagQueryDetail(islandTag.getTagIndexCode());
     }
 
     private void convertTagEntity(IslandTagReq islandTagReq, IslandTag islandTag) {
@@ -66,19 +78,25 @@ public class IslandTagServiceImpl implements IslandTagService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi islandTagUpdate(IslandTagReq islandTagReq) {
         if (islandTagReq.getTagIndexCode() > 0) {
-            Long count = islandTagMapper.selectCount(
-                new QueryWrapper<IslandTag>().eq(IslandTag.TAG_INDEX_CODE, islandTagReq.getTagIndexCode()));
-            if (count > 0) {
-                IslandTag islandTag = new IslandTag();
-                convertTagEntity(islandTagReq, islandTag);
-                islandTag.setTagIndexCode(islandTagReq.getTagIndexCode());
-                Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-                islandTag.setUpdateTime(updateTime);
-                int update = islandTagMapper.updateById(islandTag);
-                return ResponseApi.ok(update);
+            IslandTag islandTag = islandTagMapper.selectById(islandTagReq.getTagIndexCode());
+            // 存在性校验
+            if (islandTag == null ){
+                throw new BusinessException(BusinessErrorCodeEnum.ISLAND_TAG_NOT_EXISTED.getMessageCN(), BusinessErrorCodeEnum.ISLAND_TAG_NOT_EXISTED.getCode());
             }
+            IslandTag oldNameTag  = islandTagMapper.selectOne(
+                    new QueryWrapper<IslandTag>().lambda().eq(IslandTag::getTagName,
+                            islandTagReq.getTagName()));
+            if (oldNameTag!=null && !oldNameTag.getTagIndexCode().equals(islandTagReq.getTagIndexCode())){
+                throw new BusinessException(BusinessErrorCodeEnum.ISLAND_TAG_NAME_HAS_EXISTED.getMessageCN(), BusinessErrorCodeEnum.ISLAND_TAG_NAME_HAS_EXISTED.getCode());
+            }
+            BeanUtils.copyProperties(islandTagReq, islandTag);
+            islandTag.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            islandTagMapper.updateById(islandTag);
+            LocalCache.putIslandTagName(islandTag.getTagIndexCode(), islandTag.getTagName());
+            return ResponseApi.ok(islandTag);
+        } else {
+            throw new BusinessException(BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getMessageCN(), BusinessErrorCodeEnum.PARAMETER_CHECK_ERROR.getCode());
         }
-        return ResponseApi.error();
     }
 
     @Override
@@ -89,5 +107,15 @@ public class IslandTagServiceImpl implements IslandTagService {
         // 删除关联表
         islandTagRelationMapper.deleteBatchByTagIndexCode(tagIndexCodeList);
         return ResponseApi.ok(i);
+    }
+
+    @Override
+    public void loadAllTagName() {
+        List<IslandTag> islandTagList = islandTagMapper.selectList(null);
+        if (CollectionUtils.isNotEmpty(islandTagList)) {
+            islandTagList.forEach(islandTag -> {
+                LocalCache.putIslandTagName(islandTag.getTagIndexCode(), islandTag.getTagName());
+            });
+        }
     }
 }

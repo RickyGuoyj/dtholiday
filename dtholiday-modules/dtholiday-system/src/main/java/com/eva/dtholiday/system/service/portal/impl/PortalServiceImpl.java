@@ -129,9 +129,8 @@ public class PortalServiceImpl implements PortalService {
     @Override
     public ResponseApi getAllIslands(IslandQueryReq islandQueryReq) {
         // 这个是共性的必须要的
-        QueryWrapper<IslandTagRelation> allIslandTagRelationQueryWrapper = new QueryWrapper<>();
         List<IslandTagRelation> allIslandTagRelations =
-                islandTagRelationMapper.selectList(allIslandTagRelationQueryWrapper);
+                islandTagRelationMapper.selectList(null);
         // 默认查所有岛屿
         if (islandQueryReq.getTagIndexCode() == -1) {
             // 查询所有的岛屿信息
@@ -217,14 +216,14 @@ public class PortalServiceImpl implements PortalService {
     public ResponseApi getIslandQuotationList(IslandQuotationQueryListReq islandQuotationQueryListReq) {
         Page<IslandQuotation> entityPage = new Page<>(islandQuotationQueryListReq.getCurrent(), islandQuotationQueryListReq.getSize());
         QueryWrapper<IslandQuotation> queryWrapper = new QueryWrapper<>();
-        if (islandQuotationQueryListReq.getIslandIndexCode()!=null){
-            queryWrapper.eq(IslandQuotation.ISLAND_INDEX_CODE,islandQuotationQueryListReq.getIslandIndexCode());
+        if (islandQuotationQueryListReq.getIslandIndexCode() != null) {
+            queryWrapper.eq(IslandQuotation.ISLAND_INDEX_CODE, islandQuotationQueryListReq.getIslandIndexCode());
         }
-        if (org.springframework.util.StringUtils.hasText(islandQuotationQueryListReq.getQuotationName())){
-            queryWrapper.like(IslandQuotation.QUOTATION_NAME,islandQuotationQueryListReq.getQuotationName());
+        if (org.springframework.util.StringUtils.hasText(islandQuotationQueryListReq.getQuotationName())) {
+            queryWrapper.like(IslandQuotation.QUOTATION_NAME, islandQuotationQueryListReq.getQuotationName());
         }
         entityPage = islandQuotationMapper.selectPage(entityPage, queryWrapper);
-        if (Objects.isNull(entityPage)){
+        if (Objects.isNull(entityPage)) {
             return ResponseApi.ok(new Page<>(islandQuotationQueryListReq.getCurrent(), 0));
         }
         List<IslandManagementQuotation> respList = entityPage.getRecords().stream().map(entity -> {
@@ -247,7 +246,10 @@ public class PortalServiceImpl implements PortalService {
                 IslandListResp islandListResp = new IslandListResp();
                 islandListResp.setIsland_name(islandManagement.getIslandCnName());
                 islandListResp.setIsland_desc(islandManagement.getIslandDesc());
-                islandListResp.setIsland_image(islandManagement.getIslandImage());
+                FileInfo islandImage = JSONObject.parseObject(islandManagement.getIslandImage(), FileInfo.class);
+                if (islandImage != null){
+                    islandListResp.setIsland_image(islandImage.getFilePath());
+                }
                 islandListResp.setIsland_id(islandManagement.getIslandIndexCode());
                 islandListResp.setIsland_intro(islandManagement.getIslandIntro());
                 List<Integer> tagIndexCodeList = allIslandTagRelations.stream()

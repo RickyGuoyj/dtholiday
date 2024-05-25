@@ -40,8 +40,10 @@ public interface IslandTagService {
     /**
      * 删除
      *
-     * @param tagIndexCode
+     * @param
      * @return
      */
     ResponseApi islandTagDelete(List<Integer> tagIndexCodeList);
+
+    void loadAllTagName();
 }

@@ -73,6 +73,11 @@ public class PaymentResp {
     private String financialMan;
 
     /**
+     * 付款公司名称
+     */
+    private String companyName;
+
+    /**
      * 0-待审核 1-销售审核通过 2-销售审核失败 3-财务审核通过 4-财务审核失败
      */
     private int financialStatus;

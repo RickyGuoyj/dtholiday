@@ -44,4 +44,6 @@ public interface UserService {
     List<SimpleUserInfoResp> getUserListBySaleManRoleType(UserReq userReq);
 
     List<SimpleUserInfoResp> getUserListByFinancialManRoleType(UserReq userReq);
+
+    List<String> getAllCompanyName();
 }
