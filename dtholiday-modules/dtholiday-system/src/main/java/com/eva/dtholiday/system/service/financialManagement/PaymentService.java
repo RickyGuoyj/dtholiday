@@ -4,6 +4,7 @@ import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentCheckReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentDetailReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentPageReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentReq;
 import com.eva.dtholiday.commons.dao.resp.financialManagement.PaymentResp;
 
 /**
@@ -22,4 +23,6 @@ public interface PaymentService {
     ResponseApi updateFinancialStatusByFinancialMan(PaymentCheckReq req);
 
     PaymentResp queryPaymentDetail(PaymentDetailReq req);
+
+    ResponseApi agentPay(PaymentReq req);
 }

@@ -2,12 +2,10 @@ package com.eva.dtholiday.system.service.orderManagement.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.financialManagement.Payment;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.TotalPriceInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrderListInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
@@ -23,14 +21,15 @@ import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderQueryListReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentReq;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.MainOrderDetailResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.MainOrderQueryListResp;
-import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.enums.CancelStatusEnum;
 import com.eva.dtholiday.commons.enums.FinancialStatusEnum;
 import com.eva.dtholiday.system.constant.ErpConstant;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.MainOrderService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -140,11 +139,17 @@ public class MainOrderServiceImpl implements MainOrderService {
         map.put("to", req.getPageSize());
         List<MainOrderListInfo> mainOrderListInfos = mainOrderMapper.queryMainOrderList(map);
         if (Objects.nonNull(mainOrderListInfos)) {
+            List<MainOrderDetailResp> respList = mainOrderListInfos.stream().map(mainOrderListInfo -> {
+                MainOrderDetailResp resp = new MainOrderDetailResp();
+                BeanUtils.copyProperties(mainOrderListInfo, resp);
+                resp.setTotalPrice(JSONObject.parseObject(mainOrderListInfo.getTotalPrice(), TotalPriceInfo.class));
+                return resp;
+            }).collect(Collectors.toList());
             MainOrderQueryListResp mainOrderQueryListResp = new MainOrderQueryListResp();
             mainOrderQueryListResp.setTotal(count);
             mainOrderQueryListResp.setPage(req.getPage());
             mainOrderQueryListResp.setPageSize(req.getPageSize());
-            mainOrderQueryListResp.setMainOrderListInfoList(mainOrderListInfos);
+            mainOrderQueryListResp.setMainOrderDetailRespList(respList);
             return ResponseApi.ok(mainOrderQueryListResp);
         }
         return ResponseApi.ok();

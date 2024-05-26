@@ -19,6 +19,7 @@ import java.util.List;
  **/
 @Data
 public class PaymentReq {
+    private int paymentId;
 
     private int mainOrderId;
 

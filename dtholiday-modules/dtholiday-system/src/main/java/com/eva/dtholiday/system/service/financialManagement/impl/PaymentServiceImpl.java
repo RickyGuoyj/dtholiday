@@ -21,11 +21,13 @@ import com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentCheckReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentDetailReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentPageReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentReq;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.financialManagement.PaymentResp;
 import com.eva.dtholiday.commons.enums.BusinessErrorCodeEnum;
 import com.eva.dtholiday.commons.enums.FinancialStatusEnum;
 import com.eva.dtholiday.commons.exception.BusinessException;
+import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.financialManagement.PaymentService;
 import com.eva.dtholiday.system.service.orderManagement.MainOrderService;
 import org.springframework.beans.BeanUtils;
@@ -65,6 +67,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Resource
     private TransitionHotelOrderMapper transitionHotelOrderMapper;
+
+    @Resource
+    private UserService userService;
 
 
     @Override
@@ -155,5 +160,36 @@ public class PaymentServiceImpl implements PaymentService {
             return paymentResp;
         }
         return null;
+    }
+
+    @Override
+    public ResponseApi agentPay(PaymentReq req) {
+        UserResp currentUserDetail = userService.getCurrentUserDetail();
+
+        Payment payment = paymentMapper.selectById(req.getPaymentId());
+        payment.setMainOrderId(req.getMainOrderId());
+        payment.setCurrencyType(req.getCurrencyType());
+        payment.setPaymentAmountCny(req.getPaymentAmountCNY());
+        payment.setPaymentAmountUsd(req.getPaymentAmountUSD());
+        payment.setPaymentAmountUsdToCny(req.getPaymentAmountUSDToCNY());
+        payment.setPaymentDate(req.getPaymentDate());
+        payment.setPaymentRemarks(req.getPaymentRemarks());
+        payment.setPaymentType(req.getPaymentType());
+        payment.setExchangeRate(req.getExchangeRate());
+        payment.setPaymentTotal(req.getPaymentTotal());
+        payment.setPaymentPics(JSONArray.toJSONString(req.getPaymentPics()));
+        if (!Objects.isNull(currentUserDetail)) {
+            payment.setCompanyName(currentUserDetail.getBelongCompany());
+        }
+        MainOrder mainOrder = mainOrderMapper.selectById(req.getMainOrderId());
+        if (mainOrder.getFinancialStatus() == 0) {
+            payment.setFinancialStatus(FinancialStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+            payment.setFinancialMan(mainOrder.getFinancialMan());
+            payment.setSaleMan(mainOrder.getSaleMan());
+            mainOrder.setFinancialStatus(FinancialStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+            paymentMapper.updateById(payment);
+            mainOrderMapper.updateById(mainOrder);
+        }
+        return ResponseApi.ok();
     }
 }

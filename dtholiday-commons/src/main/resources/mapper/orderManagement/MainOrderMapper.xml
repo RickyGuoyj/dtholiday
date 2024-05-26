@@ -6,9 +6,11 @@
         select
         a.main_order_id,a.island_hotel_order_id,a.plane_ticket_order_id,a.transition_hotel_order_id,a.total_price,a.sale_man,a.create_time,
         a.update_time,a.order_status,a.financial_status,a.order_creator,a.payment_time,a.main_order_cancel_status,
-        b.total_price as island_total_price, b.currency_type as island_currency_type , d.total_price as plane_ticket_total_price,
-        d.currency_type as plane_ticket_currency_type,e.total_price as transition_hotel_total_price,e.currency_type as
-        transition_hotel_currency_type
+        b.total_price as island_total_price, b.currency_type as island_currency_type, b.discount_price as island_discount_price,
+        d.total_price as plane_ticket_total_price, d.discount_price as plane_ticket_discount_price,
+        d.currency_type as plane_ticket_currency_type,
+        e.total_price as transition_hotel_total_price,e.currency_type astransition_hotel_currency_type,
+        e.discount_price as transition_hotel_discount_price
         from dt_order_main a
         LEFT JOIN dt_order_island_hotel b on b.island_hotel_order_id = a.island_hotel_order_id
         left join dt_order_plane_ticket d on d.plane_ticket_order_id = a.plane_ticket_order_id

@@ -17,7 +17,7 @@ public class MainOrderQueryListResp {
      */
     private int pageSize;
 
-    private List<MainOrderListInfo> mainOrderListInfoList;
+    private List<MainOrderDetailResp> mainOrderDetailRespList;
 
     /**
      * 总数
