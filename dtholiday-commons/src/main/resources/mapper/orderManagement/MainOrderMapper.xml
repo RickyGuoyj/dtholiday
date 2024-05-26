@@ -15,22 +15,22 @@
         left join dt_order_transition_hotel e on e.transition_hotel_order_id = a.transition_hotel_order_id
         <where>
             <if test="mainOrderId != null  and mainOrderId>0">
-                and main_order_id = #{mainOrderId}
+                and a.main_order_id = #{mainOrderId}
             </if>
             <if test="orderCreator != null  and orderCreator != ''">
-                and order_creator = #{orderCreator}
+                and a.order_creator = #{orderCreator}
             </if>
             <if test="saleMan != null  and saleMan != ''">
-                and sale_man = #{saleMan}
+                and a.sale_man = #{saleMan}
             </if>
             <if test="islandHotelOrderId != null and islandHotelOrderId>0">
-                and island_hotel_order_id = #{islandHotelOrderId}
+                and a.island_hotel_order_id = #{islandHotelOrderId}
             </if>
             <if test="planeTicketOrderId != null  and planeTicketOrderId>0">
-                and plane_ticket_order_id = #{planeTicketOrderId}
+                and a.plane_ticket_order_id = #{planeTicketOrderId}
             </if>
             <if test="transitionHotelOrderId != null and transitionHotelOrderId>0 ">
-                and transition_hotel_order_id = #{transitionHotelOrderId}
+                and a.transition_hotel_order_id = #{transitionHotelOrderId}
             </if>
         </where>
         order by update_time desc
