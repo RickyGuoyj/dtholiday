@@ -18,6 +18,8 @@ import java.util.Date;
 @Data
 public class IslandHotelQueryInfo {
 
+    private Integer islandHotelId;
+
     private String hotelRoomType;
 
     private Integer trafficType;

@@ -66,6 +66,7 @@ public class IslandTagServiceImpl implements IslandTagService {
         }
         convertTagEntity(islandTagReq, islandTag);
         islandTagMapper.insert(islandTag);
+        LocalCache.putIslandTagName(islandTag.getTagIndexCode(), islandTag.getTagName());
         return islandTagQueryDetail(islandTag.getTagIndexCode());
     }
 

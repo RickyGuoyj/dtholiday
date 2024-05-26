@@ -194,4 +194,11 @@ public class IslandHotel extends Model<IslandHotel> {
     public static final String ISLAND_INDEX_CODE = "island_index_code";
 
     public static final String REMAIN_NUM = "remain_num";
+
+    public static final String ISLAND_HOTEL_ID = "island_hotel_id";
+
+    public static final String PRICE_TYPE = "price_type";
+    public static final String TRAFFIC_TYPE = "traffic_type";
+    public static final String MEAL_TYPE = "meal_type";
+    public static final String DELAY_HOTEL_ROOM_TYPE = "delay_hotel_room_type";
 }

@@ -171,6 +171,18 @@ public class IslandHotelServiceImpl implements IslandHotelService {
                 info.setIslandIndexCode(req.getIslandIndexCode());
                 info.setEffectiveDate(req.getEffectiveDate());
                 info.setExpiryDate(req.getExpiryDate());
+                // 根据岛屿编码、房型、餐型、交通类型、延住房型、开始结束时间查
+                QueryWrapper<IslandHotel> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq(IslandHotel.ISLAND_INDEX_CODE, info.getIslandIndexCode());
+                queryWrapper.ge(IslandHotel.EFFECTIVE_DATE, info.getEffectiveDate());
+                queryWrapper.le(IslandHotel.EXPIRY_DATE, info.getExpiryDate());
+                queryWrapper.eq(IslandHotel.HOTEL_ROOM_TYPE, info.getHotelRoomType());
+                queryWrapper.eq(IslandHotel.MEAL_TYPE, info.getMealType());
+                queryWrapper.eq(IslandHotel.TRAFFIC_TYPE, info.getTrafficType());
+                queryWrapper.eq(IslandHotel.DELAY_HOTEL_ROOM_TYPE, info.getDelayHotelRoomType());
+                queryWrapper.orderByAsc(IslandHotel.ISLAND_HOTEL_ID);
+                List<IslandHotel> islandHotels = islandHotelMapper.selectList(queryWrapper);
+                info.setIslandHotelId(islandHotels.get(0).getIslandHotelId());
             });
             return ResponseApi.ok(islandHotelQueryInfos);
         }

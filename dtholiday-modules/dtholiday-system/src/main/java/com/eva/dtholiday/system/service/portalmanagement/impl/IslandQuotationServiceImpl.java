@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,7 @@ public class IslandQuotationServiceImpl implements IslandQuotationService {
             if (count > 0) {
                 IslandQuotation islandQuotation = convertQuotationEntity(islandQuotationReq);
                 islandQuotation.setQuotationIndexCode(islandQuotationReq.getQuotationIndexCode());
+                islandQuotation.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 int i = islandQuotationMapper.updateById(islandQuotation);
                 return ResponseApi.ok(i);
             }
