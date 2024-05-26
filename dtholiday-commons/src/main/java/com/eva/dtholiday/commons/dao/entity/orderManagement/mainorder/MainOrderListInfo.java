@@ -42,4 +42,6 @@ public class MainOrderListInfo {
     private Integer financialStatus;
 
     private Timestamp paymentTime;
+
+    private Integer mainOrderCancelStatus;
 }

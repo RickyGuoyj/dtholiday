@@ -318,4 +318,49 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
             return ResponseApi.error("请选择审核状态");
         }
     }
+
+    @Override
+    public ResponseApi updateCheckInfo(CheckInfoReq req) {
+        if (req.getCheckStatus() != null) {
+            QueryWrapper<TransitionHotelOrder> queryWrapper = new QueryWrapper<>();
+            if (req.getTransitionHotelOrderId() == null) {
+                return ResponseApi.error("请选择过度酒店订单");
+            }
+            queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+            TransitionHotelOrder transitionHotelOrder = transitionHotelOrderMapper.selectOne(queryWrapper);
+            if (transitionHotelOrder == null) {
+                return ResponseApi.error("过度酒店订单不存在");
+            }
+            if (transitionHotelOrder.getOrderStatus() == OrderStatusEnum.WAIT_HOTEL_CONFIRM.getCode()) {
+                QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+                mainOrderQueryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+                MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+                if (req.getCheckStatus() == 1) {
+                    transitionHotelOrder.setOrderStatus(OrderStatusEnum.HOTEL_CONFIRM_SUCCESS.getCode());
+                } else {
+                    transitionHotelOrder.setOrderStatus(OrderStatusEnum.HOTEL_CONFIRM_FAIL.getCode());
+                    transitionHotelOrder.setRemarks(req.getCheckRemark());
+                }
+                if (mainOrder != null) {
+                    mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
+                    Integer orderStatus = mainOrder.getTransitionHotelOrderStatus();
+                    //计算三个值中最小的，需要判空
+                    if (mainOrder.getIslandHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getPlaneTicketOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
+                }
+                transitionHotelOrderMapper.updateById(transitionHotelOrder);
+                mainOrderMapper.updateById(mainOrder);
+                return ResponseApi.ok("流程结束");
+            } else {
+                return ResponseApi.error("未到该流程");
+            }
+        } else {
+            return ResponseApi.error("请选择确认状态");
+        }
+    }
 }

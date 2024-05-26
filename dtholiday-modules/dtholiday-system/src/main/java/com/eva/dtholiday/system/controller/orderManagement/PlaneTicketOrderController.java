@@ -56,4 +56,9 @@ public class PlaneTicketOrderController {
     public ResponseApi queryPlaneTicketOrderDetail(@RequestBody PlaneTicketOrderDetailReq req){
         return ResponseApi.ok(planeTicketOrderService.queryPlaneTicketOrderDetail(req));
     }
+
+    @PostMapping("/updateCheckInfo")
+    public ResponseApi updateCheckInfo(@RequestBody CheckInfoReq req){
+        return planeTicketOrderService.updateCheckInfo(req);
+    }
 }

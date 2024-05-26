@@ -44,4 +44,9 @@ public class IslandHotelOrderController {
     public ResponseApi updateIslandHotelOrderByFinancialMan(@RequestBody IslandHotelOrderFinancialManReq req){
         return islandHotelOrderService.updateIslandHotelOrderByFinancialMan(req);
     }
+
+    @PostMapping("/updateCheckInfo")
+    public ResponseApi updateCheckInfo(@RequestBody CheckInfoReq req){
+        return islandHotelOrderService.updateCheckInfo(req);
+    }
 }

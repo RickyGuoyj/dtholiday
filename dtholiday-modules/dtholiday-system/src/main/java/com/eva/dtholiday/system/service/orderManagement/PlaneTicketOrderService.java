@@ -28,4 +28,6 @@ public interface PlaneTicketOrderService {
     ResponseApi updatePlaneTicketOrderBySaleMan(PlaneTicketOrderSalesmanReq req);
 
     ResponseApi updatePlaneTicketOrderByAgent(PlaneTicketOrderReq req);
+
+    ResponseApi updateCheckInfo(CheckInfoReq req);
 }

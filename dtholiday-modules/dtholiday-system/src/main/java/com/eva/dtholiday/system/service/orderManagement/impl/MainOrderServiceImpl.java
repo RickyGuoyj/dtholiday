@@ -26,6 +26,7 @@ import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.MainOrderQueryListResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.enums.CancelStatusEnum;
+import com.eva.dtholiday.commons.enums.FinancialStatusEnum;
 import com.eva.dtholiday.system.constant.ErpConstant;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.convert.OrderConvert;
@@ -105,7 +106,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         mainOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
         mainOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
-        mainOrder.setFinancialStatus(0);
+        mainOrder.setFinancialStatus(FinancialStatusEnum.WAIT_AGENT_PAY.getCode());
         int insert = mainOrderMapper.insert(mainOrder);
         return ResponseApi.ok(insert);
     }
@@ -172,10 +173,10 @@ public class MainOrderServiceImpl implements MainOrderService {
         MainOrder mainOrder = mainOrderMapper.selectById(req.getMainOrderId());
         if (mainOrder != null) {
             if (mainOrder.getFinancialStatus() == 0) {
-                payment.setFinancialStatus(0);
+                payment.setFinancialStatus(FinancialStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
                 payment.setFinancialMan(mainOrder.getFinancialMan());
                 payment.setSaleMan(mainOrder.getSaleMan());
-                mainOrder.setFinancialStatus(0);
+                mainOrder.setFinancialStatus(FinancialStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
                 paymentMapper.insert(payment);
                 mainOrderMapper.updateById(mainOrder);
             }

@@ -347,8 +347,8 @@ CREATE TABLE IF NOT EXISTS  `dt_order_main` (
                                  `financial_man` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '财务',
                                  `remarks` VARCHAR(1024) COMMENT '备注',
                                  `payment_time` datetime DEFAULT NULL COMMENT '收款时间',
-                                `main_order_cancel_status` int DEFAULT NULL COMMENT '主订单取消状态',
-                                PRIMARY KEY (`main_order_id`) USING BTREE
+                                 `main_order_cancel_status` int DEFAULT 0 COMMENT '主订单取消状态',
+                                 PRIMARY KEY (`main_order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='主订单表';
 
 --  岛屿订单表
@@ -385,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `dt_order_island_hotel` (
                                    `hotel_room_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '房型',
                                    `delay_hotel_room_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '延住房型',
                                    `has_environment_tax` int DEFAULT NULL COMMENT '是否包含环境税',
-                                   PRIMARY KEY (`island_hotel_order_id`) USING BTREE
+                                    PRIMARY KEY (`island_hotel_order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岛屿酒店订单表';
 
 CREATE TABLE IF NOT EXISTS `dt_payment` (

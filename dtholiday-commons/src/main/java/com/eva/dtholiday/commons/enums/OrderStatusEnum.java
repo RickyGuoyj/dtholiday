@@ -22,8 +22,8 @@ public enum OrderStatusEnum {
     WAIT_FINANCIAL_CHECK(2, "销售已审核，待财务审核"),
     WAIT_AGENT_RESUBMIT2(3, "财务驳回，待代理重新提交"),
     WAIT_HOTEL_CONFIRM(4, "财务已审核，待酒店确认"),
-    HOTEL_CONFIRM_SUCCESS(5, "酒店确认成功"),
-    HOTEL_CONFIRM_FAIL(6, "酒店确认失败"),
+    HOTEL_CONFIRM_SUCCESS(5, "确认成功"),
+    HOTEL_CONFIRM_FAIL(6, "确认失败"),
     ;
 
     private final int code;

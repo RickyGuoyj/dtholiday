@@ -75,7 +75,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Override
     public ResponseApi queryIslandHotelOrderDetail(IslandHotelOrderQueryDetailReq req) {
         IslandHotelOrderInfo islandHotelOrderInfo =
-            islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
+                islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
         return ResponseApi.ok(islandHotelOrderInfo);
     }
 
@@ -90,7 +90,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         IslandHotelOrder islandHotelOrder =
-            OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
+                OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
         islandHotelOrder.setIslandHotelOrderId(req.getIslandHotelOrderId());
         islandHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
         islandHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -102,7 +102,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         queryWrapper.eq("island_hotel_order_id", req.getIslandHotelOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
         if (oldCurrencyType == 1) {
             mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
@@ -148,7 +148,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     islandHotelOrder
-                        .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
+                            .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -222,6 +222,51 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
             }
         } else {
             return ResponseApi.error("请选择审核状态");
+        }
+    }
+
+    @Override
+    public ResponseApi updateCheckInfo(CheckInfoReq req) {
+        if (req.getCheckStatus() != null) {
+            QueryWrapper<IslandHotelOrder> queryWrapper = new QueryWrapper<>();
+            if (req.getIslandHotelOrderId() == null) {
+                return ResponseApi.error("请选择岛屿酒店订单");
+            }
+            queryWrapper.eq("island_hotel_order_id", req.getIslandHotelOrderId());
+            IslandHotelOrder islandHotelOrder = islandHotelOrderMapper.selectOne(queryWrapper);
+            if (islandHotelOrder == null) {
+                return ResponseApi.error("岛屿酒店订单不存在");
+            }
+            if (islandHotelOrder.getOrderStatus() == OrderStatusEnum.WAIT_HOTEL_CONFIRM.getCode()) {
+                QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+                mainOrderQueryWrapper.eq("island_hotel_order_id", islandHotelOrder.getIslandHotelOrderId());
+                MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+                if (req.getCheckStatus() == 1) {
+                    islandHotelOrder.setOrderStatus(OrderStatusEnum.HOTEL_CONFIRM_SUCCESS.getCode());
+                } else {
+                    islandHotelOrder.setOrderStatus(OrderStatusEnum.HOTEL_CONFIRM_FAIL.getCode());
+                    islandHotelOrder.setRemarks(req.getCheckRemark());
+                }
+                if (mainOrder != null) {
+                    mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
+                    Integer orderStatus = mainOrder.getIslandHotelOrderStatus();
+                    // 计算三个值中最小的，需要判空
+                    if (mainOrder.getPlaneTicketOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getTransitionHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
+                }
+                islandHotelOrderMapper.updateById(islandHotelOrder);
+                mainOrderMapper.updateById(mainOrder);
+                return ResponseApi.ok("流程结束");
+            } else {
+                return ResponseApi.error("未到该流程");
+            }
+        } else {
+            return ResponseApi.error("请选择确认状态");
         }
     }
 }

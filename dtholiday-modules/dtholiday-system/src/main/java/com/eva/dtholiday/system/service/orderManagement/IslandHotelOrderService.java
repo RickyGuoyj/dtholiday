@@ -13,4 +13,6 @@ public interface IslandHotelOrderService {
     ResponseApi updateIslandHotelOrderBySaleMan(IslandHotelOrderSalesmanReq req);
 
     ResponseApi updateIslandHotelOrderByFinancialMan(IslandHotelOrderFinancialManReq req);
+
+    ResponseApi updateCheckInfo(CheckInfoReq req);
 }

@@ -55,4 +55,9 @@ public class TransitionHotelOrderController {
     public ResponseApi queryTransitionHotelOrderDetail(@RequestBody TransitionHotelOrderDetailReq req){
         return ResponseApi.ok(transitionHotelOrderService.queryTransitionHotelOrderDetail(req));
     }
+
+    @PostMapping("/updateCheckInfo")
+    public ResponseApi updateCheckInfo(@RequestBody CheckInfoReq req){
+        return transitionHotelOrderService.updateCheckInfo(req);
+    }
 }

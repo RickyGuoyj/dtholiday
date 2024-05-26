@@ -52,4 +52,6 @@ public class MainOrder extends Model<MainOrder> {
      */
     private String remarks;
 
+    private Integer mainOrderCancelStatus;
+
 }

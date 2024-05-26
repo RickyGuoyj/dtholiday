@@ -28,4 +28,6 @@ public interface TransitionHotelOrderService {
     ResponseApi updateTransitionHotelOrderBySaleMan(TransitionHotelOrderSalesmanReq req);
 
     ResponseApi updateTransitionHotelOrderByFinancialMan(TransitionHotelOrderFinancialManReq req);
+
+    ResponseApi updateCheckInfo(CheckInfoReq req);
 }

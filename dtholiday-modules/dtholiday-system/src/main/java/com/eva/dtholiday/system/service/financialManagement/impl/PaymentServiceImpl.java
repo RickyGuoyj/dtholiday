@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.dto.FileInfo;
@@ -73,10 +74,10 @@ public class PaymentServiceImpl implements PaymentService {
         if (CollectionUtils.isNotEmpty(req.getFinancialStatus())) {
             queryWrapper.in("financial_status", req.getFinancialStatus());
         }
-        if (req.getPaymentType() != null) {
+        if (StringUtils.isNotEmpty(req.getPaymentType())) {
             queryWrapper.eq("payment_type", req.getPaymentType());
         }
-        if (req.getSaleMan() != null) {
+        if (StringUtils.isNotEmpty(req.getSaleMan())) {
             queryWrapper.eq("sale_man", req.getSaleMan());
         }
         if (Objects.nonNull(req.getStartTime())) {
@@ -85,7 +86,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (Objects.nonNull(req.getEndTime())) {
             queryWrapper.le("payment_date", req.getEndTime());
         }
-        if (Objects.nonNull(req.getCompanyName())) {
+        if (StringUtils.isNotEmpty(req.getCompanyName())) {
             queryWrapper.eq("company_name", req.getCompanyName());
         }
         entityPage = paymentMapper.selectPage(entityPage, queryWrapper);

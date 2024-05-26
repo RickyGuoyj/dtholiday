@@ -17,9 +17,11 @@ import java.util.List;
  **/
 public enum FinancialStatusEnum {
 
-    WAIT_FINANCIAL_CHECK(0, "代理已提交，待财务审核"),
-    WAIT_AGENT_RESUBMIT(1, "财务驳回，待代理重新提交"),
-    FINANCIAL_CHECK_SUCCESS(2, "财务已审核，通过"),
+    WAIT_AGENT_PAY(0, "待付款"),
+
+    WAIT_FINANCIAL_CHECK(1, "代理已提交，待财务审核"),
+    WAIT_AGENT_RESUBMIT(2, "财务驳回，待代理重新提交"),
+    FINANCIAL_CHECK_SUCCESS(3, "财务已审核，通过"),
 
     ;
 

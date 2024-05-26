@@ -86,7 +86,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
     }
 
     private void setQueryWrapper(QueryWrapper<PlaneTicketOrder> queryWrapper, UserResp currentUserInfo,
-        PlaneTicketOrderPageReq req) {
+                                 PlaneTicketOrderPageReq req) {
         if (req.getPlaneTicketOrderId() != null) {
             queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
         }
@@ -127,7 +127,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
     }
 
     private void convertPlaneTicketOrderEntityToResp(PlaneTicketOrder order, PlaneTicketOrderResp planeTicketOrderResp,
-        String roleInfo) {
+                                                     String roleInfo) {
         BeanUtils.copyProperties(order, planeTicketOrderResp);
         CustomerInfo customerInfo = new CustomerInfo();
         customerInfo.setCustomerName(order.getCustomerName());
@@ -255,7 +255,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                     planeTicketOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     planeTicketOrder
-                        .setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
+                            .setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     planeTicketOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -295,7 +295,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         PlaneTicketOrder planeTicketOrder =
-            OrderConvert.convertPlaneTicketInfoToEntity(req, currentUserDetail.getUserName());
+                OrderConvert.convertPlaneTicketInfoToEntity(req, currentUserDetail.getUserName());
         planeTicketOrder.setPlaneTicketOrderId(req.getPlaneTicketOrderId());
         planeTicketOrder.setOrderStatus(oldEntity.getOrderStatus());
         planeTicketOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -307,7 +307,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
         if (oldCurrencyType == 1) {
             mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
@@ -327,5 +327,50 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
         mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);
+    }
+
+    @Override
+    public ResponseApi updateCheckInfo(CheckInfoReq req) {
+        if (req.getCheckStatus() != null) {
+            QueryWrapper<PlaneTicketOrder> queryWrapper = new QueryWrapper<>();
+            if (req.getPlaneTicketOrderId() == null) {
+                return ResponseApi.error("请选择机票订单");
+            }
+            queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
+            PlaneTicketOrder planeTicketOrder = planeTicketOrderMapper.selectOne(queryWrapper);
+            if (planeTicketOrder == null) {
+                return ResponseApi.error("机票订单不存在");
+            }
+            if (planeTicketOrder.getOrderStatus() == OrderStatusEnum.WAIT_HOTEL_CONFIRM.getCode()) {
+                QueryWrapper<MainOrder> mainOrderQueryWrapper = new QueryWrapper<>();
+                mainOrderQueryWrapper.eq("plane_ticket_order_id", planeTicketOrder.getPlaneTicketOrderId());
+                MainOrder mainOrder = mainOrderMapper.selectOne(mainOrderQueryWrapper);
+                if (req.getCheckStatus() == 1) {
+                    planeTicketOrder.setOrderStatus(OrderStatusEnum.HOTEL_CONFIRM_SUCCESS.getCode());
+                } else {
+                    planeTicketOrder.setOrderStatus(OrderStatusEnum.HOTEL_CONFIRM_FAIL.getCode());
+                    planeTicketOrder.setRemarks(req.getCheckRemark());
+                }
+                if (mainOrder != null) {
+                    mainOrder.setPlaneTicketOrderStatus(planeTicketOrder.getOrderStatus());
+                    Integer orderStatus = mainOrder.getPlaneTicketOrderStatus();
+                    // 计算三个值中最小的，需要判空
+                    if (mainOrder.getIslandHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getTransitionHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
+                }
+                planeTicketOrderMapper.updateById(planeTicketOrder);
+                mainOrderMapper.updateById(mainOrder);
+                return ResponseApi.ok("流程结束");
+            } else {
+                return ResponseApi.error("未到该流程");
+            }
+        } else {
+            return ResponseApi.error("请选择确认状态");
+        }
     }
 }
