@@ -404,6 +404,7 @@ CREATE TABLE IF NOT EXISTS `dt_payment` (
                            `financial_status` TINYINT NOT NULL, -- 财务状态（假设为整数编码）
                            `company_name` VARCHAR(255) NOT NULL, -- 公司名称`
                            `check_remark` VARCHAR(255) NOT NULL, -- 审核备注`
+                           `payment_pics` text not null, -- 支付图片
                            `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                            PRIMARY KEY (`payment_id`)

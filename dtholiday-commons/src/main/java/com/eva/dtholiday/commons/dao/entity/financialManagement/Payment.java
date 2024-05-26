@@ -101,6 +101,8 @@ public class Payment extends Model<Payment> {
      */
     private int financialStatus;
 
+    private String paymentPics;
+
     private Date createTime;
 
     private Date updateTime;

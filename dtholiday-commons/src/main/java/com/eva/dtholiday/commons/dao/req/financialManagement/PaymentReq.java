@@ -1,9 +1,11 @@
 package com.eva.dtholiday.commons.dao.req.financialManagement;
 
+import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @describtion
@@ -38,4 +40,6 @@ public class PaymentReq {
     private String paymentType;
 
     private String paymentRemarks;
+
+    private List<FileInfo> paymentPics;
 }

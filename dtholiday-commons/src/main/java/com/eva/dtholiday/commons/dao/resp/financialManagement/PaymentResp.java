@@ -1,8 +1,11 @@
 package com.eva.dtholiday.commons.dao.resp.financialManagement;
 
+import com.eva.dtholiday.commons.dao.dto.FileInfo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @describtion
@@ -26,6 +29,7 @@ public class PaymentResp {
     /**
      * 收款日期
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date paymentDate;
 
     /**
@@ -82,7 +86,11 @@ public class PaymentResp {
      */
     private int financialStatus;
 
+    private List<FileInfo> paymentPics;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 }

@@ -2,7 +2,9 @@ package com.eva.dtholiday.system.service.financialManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentCheckReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentDetailReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentPageReq;
+import com.eva.dtholiday.commons.dao.resp.financialManagement.PaymentResp;
 
 /**
  * @describtion
@@ -18,4 +20,6 @@ public interface PaymentService {
     ResponseApi queryPaymentList(PaymentPageReq req);
 
     ResponseApi updateFinancialStatusByFinancialMan(PaymentCheckReq req);
+
+    PaymentResp queryPaymentDetail(PaymentDetailReq req);
 }

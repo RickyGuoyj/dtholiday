@@ -2,6 +2,7 @@ package com.eva.dtholiday.system.controller.financialManagement;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentCheckReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentDetailReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentPageReq;
 import com.eva.dtholiday.system.service.financialManagement.PaymentService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,11 @@ public class PaymentController {
     @PostMapping("/queryList")
     public ResponseApi queryPaymentList(@RequestBody PaymentPageReq req) {
         return paymentService.queryPaymentList(req);
+    }
+
+    @PostMapping("/queryDetail")
+    public ResponseApi queryDetail(@RequestBody PaymentDetailReq req) {
+        return ResponseApi.ok(paymentService.queryPaymentDetail(req));
     }
 
     @PostMapping("/updateFinancialStatus")

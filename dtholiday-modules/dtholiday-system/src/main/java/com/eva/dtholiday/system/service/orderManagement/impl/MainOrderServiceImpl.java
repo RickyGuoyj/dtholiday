@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -152,6 +153,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         payment.setPaymentType(req.getPaymentType());
         payment.setExchangeRate(req.getExchangeRate());
         payment.setPaymentTotal(req.getPaymentTotal());
+        payment.setPaymentPics(JSONArray.toJSONString(req.getPaymentPics()));
         if (!Objects.isNull(currentUserDetail)) {
             payment.setCompanyName(currentUserDetail.getBelongCompany());
         }

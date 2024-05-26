@@ -1,11 +1,13 @@
 package com.eva.dtholiday.system.service.financialManagement.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.dto.FileInfo;
 import com.eva.dtholiday.commons.dao.entity.financialManagement.Payment;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
@@ -16,6 +18,7 @@ import com.eva.dtholiday.commons.dao.mapper.orderManagement.PlaneTicketOrderMapp
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.TransitionHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentCheckReq;
+import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentDetailReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentPageReq;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.financialManagement.PaymentResp;
@@ -92,6 +95,7 @@ public class PaymentServiceImpl implements PaymentService {
         List<PaymentResp> paymentRespList = entityPage.getRecords().stream().map(payment -> {
             PaymentResp paymentResp = new PaymentResp();
             BeanUtils.copyProperties(payment, paymentResp);
+            paymentResp.setPaymentPics(JSONArray.parseArray(payment.getPaymentPics(), FileInfo.class));
             return paymentResp;
         }).collect(Collectors.toList());
         IPage<PaymentResp> respPage = new Page<>(req.getCurrent(), req.getSize());
@@ -138,5 +142,17 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
         return ResponseApi.ok();
+    }
+
+    @Override
+    public PaymentResp queryPaymentDetail(PaymentDetailReq req) {
+        Payment payment = paymentMapper.selectById(req.getPaymentId());
+        if (Objects.nonNull(payment)) {
+            PaymentResp paymentResp = new PaymentResp();
+            BeanUtils.copyProperties(payment, paymentResp);
+            paymentResp.setPaymentPics(JSONArray.parseArray(payment.getPaymentPics(), FileInfo.class));
+            return paymentResp;
+        }
+        return null;
     }
 }
