@@ -44,7 +44,7 @@ public class ExtraChildExcelStrategyImpl implements EasyExcelStrategy {
             List<ExtraChildExpense> extraChildExpenses = extraChildExpenseMapper.selectList(null);
             extraChildExpenses.stream().forEach(extraChildExpense -> {
                 ExtraChildExpenseReq extraChildExpenseReq = new ExtraChildExpenseReq();
-                BeanUtils.copyProperties(extraChildExpenseReq, extraChildExpenseReq);
+                BeanUtils.copyProperties(extraChildExpense, extraChildExpenseReq);
                 extraChildExpenseReqList.add(extraChildExpenseReq);
             });
             EasyExcel.write(response.getOutputStream()).head(ExtraChildExpenseReq.class).autoCloseStream(Boolean.FALSE)
