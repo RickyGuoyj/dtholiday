@@ -2,17 +2,14 @@ package com.eva.dtholiday.system.service.convert;
 
 import java.sql.Timestamp;
 
-import com.alibaba.fastjson.JSONObject;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrder;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
 import com.eva.dtholiday.commons.dao.req.orderManagement.IslandHotelOrderReq;
-import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
 import com.eva.dtholiday.commons.utils.LocalCache;
@@ -42,7 +39,7 @@ public class OrderConvert {
         islandHotelOrder.setEffectiveDate(hotelInfo.getEffectiveDate());
         islandHotelOrder.setExpiryDate(hotelInfo.getExpiryDate());
         islandHotelOrder.setTotalPrice(req.getTotalPrice());
-        islandHotelOrder.setCurrencyType(req.getCurrencyType());
+        islandHotelOrder.setCurrencyType(2);
         islandHotelOrder.setSaleMan(req.getSaleMan());
         islandHotelOrder.setOrderCreator(userName);
         islandHotelOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
@@ -76,7 +73,7 @@ public class OrderConvert {
         planeTicketOrder.setArrivalPlace(planeTicketInfo.getArrivalPlace());
         planeTicketOrder.setPrice(planeTicketInfo.getPrice());
         planeTicketOrder.setTotalPrice(req.getTotalPrice());
-        planeTicketOrder.setCurrencyType(req.getCurrencyType());
+        planeTicketOrder.setCurrencyType(1);
         planeTicketOrder.setOrderType(req.getOrderType());
         planeTicketOrder.setSaleMan(req.getSaleMan());
         planeTicketOrder.setOrderCreator(userName);
@@ -86,7 +83,7 @@ public class OrderConvert {
     }
 
     public static TransitionHotelOrder convertTransitionHotelInfoToEntity(TransitionHotelOrderReq req,
-                                                                          String userName) {
+        String userName) {
         TransitionHotelOrder transitionHotelOrder = new TransitionHotelOrder();
         CustomerInfo customerInfo = req.getCustomerInfo();
         transitionHotelOrder.setCustomerName(customerInfo.getCustomerName());
@@ -102,7 +99,7 @@ public class OrderConvert {
         transitionHotelOrder.setEffectiveDate(transitionHotelInfo.getEffectiveDate());
         transitionHotelOrder.setExpiryDate(transitionHotelInfo.getExpiryDate());
         transitionHotelOrder.setTotalPrice(req.getTotalPrice());
-        transitionHotelOrder.setCurrencyType(req.getCurrencyType());
+        transitionHotelOrder.setCurrencyType(2);
         transitionHotelOrder.setOrderType(req.getOrderType());
         transitionHotelOrder.setSaleMan(req.getSaleMan());
         transitionHotelOrder.setOrderCreator(userName);
