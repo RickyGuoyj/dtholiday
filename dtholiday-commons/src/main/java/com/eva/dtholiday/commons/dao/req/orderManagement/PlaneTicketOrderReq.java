@@ -16,7 +16,7 @@ import lombok.Data;
  **/
 @Data
 public class PlaneTicketOrderReq {
-
+    private int planeTicketOrderId;
     private int orderType;
     private CustomerInfo customerInfo;
     private PlaneTicketInfo planeTicketInfo;

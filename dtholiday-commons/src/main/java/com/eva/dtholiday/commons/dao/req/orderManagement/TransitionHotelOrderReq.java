@@ -17,6 +17,8 @@ import lombok.Data;
 @Data
 public class TransitionHotelOrderReq {
 
+    private int transitionHotelOrderId;
+
     private int orderType;
 
     private CustomerInfo customerInfo;

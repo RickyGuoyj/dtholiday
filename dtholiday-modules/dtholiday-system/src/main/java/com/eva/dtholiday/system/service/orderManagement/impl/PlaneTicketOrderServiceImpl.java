@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.TotalPriceInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
@@ -26,6 +29,7 @@ import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
+import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.PlaneTicketOrderService;
 
 /**
@@ -81,7 +85,8 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         return ResponseApi.ok(respPage);
     }
 
-    private void setQueryWrapper(QueryWrapper<PlaneTicketOrder> queryWrapper, UserResp currentUserInfo, PlaneTicketOrderPageReq req) {
+    private void setQueryWrapper(QueryWrapper<PlaneTicketOrder> queryWrapper, UserResp currentUserInfo,
+        PlaneTicketOrderPageReq req) {
         if (req.getPlaneTicketOrderId() != null) {
             queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
         }
@@ -104,7 +109,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
             queryWrapper.like("customer_name", req.getCustomerName());
         }
 
-        //根据角色特殊化处理
+        // 根据角色特殊化处理
         String roleInfo = currentUserInfo.getRoleInfo().getName();
         if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
             queryWrapper.eq("order_creator", currentUserInfo.getUserName());
@@ -121,7 +126,8 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
 
     }
 
-    private void convertPlaneTicketOrderEntityToResp(PlaneTicketOrder order, PlaneTicketOrderResp planeTicketOrderResp, String roleInfo) {
+    private void convertPlaneTicketOrderEntityToResp(PlaneTicketOrder order, PlaneTicketOrderResp planeTicketOrderResp,
+        String roleInfo) {
         BeanUtils.copyProperties(order, planeTicketOrderResp);
         CustomerInfo customerInfo = new CustomerInfo();
         customerInfo.setCustomerName(order.getCustomerName());
@@ -204,7 +210,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 if (mainOrder != null) {
                     mainOrder.setPlaneTicketOrderStatus(planeTicketOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getPlaneTicketOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getIslandHotelOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
                     }
@@ -248,7 +254,8 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                     planeTicketOrder.setTicketNumber(req.getTicketNumber());
                     planeTicketOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
-                    planeTicketOrder.setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
+                    planeTicketOrder
+                        .setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     planeTicketOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -257,7 +264,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 if (mainOrder != null) {
                     mainOrder.setPlaneTicketOrderStatus(planeTicketOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getPlaneTicketOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getIslandHotelOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
                     }
@@ -280,6 +287,45 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
 
     @Override
     public ResponseApi updatePlaneTicketOrderByAgent(PlaneTicketOrderReq req) {
-        return null;
+        // 查询历史数据
+        PlaneTicketOrder oldEntity = planeTicketOrderMapper.selectById(req.getPlaneTicketOrderId());
+        Double oldTotalPrice = oldEntity.getTotalPrice();
+        Integer oldCurrencyType = oldEntity.getCurrencyType();
+
+        // 更新子订单数据
+        UserResp currentUserDetail = userService.getCurrentUserDetail();
+        PlaneTicketOrder planeTicketOrder =
+            OrderConvert.convertPlaneTicketInfoToEntity(req, currentUserDetail.getUserName());
+        planeTicketOrder.setPlaneTicketOrderId(req.getPlaneTicketOrderId());
+        planeTicketOrder.setOrderStatus(oldEntity.getOrderStatus());
+        planeTicketOrder.setFinancialStatus(oldEntity.getFinancialStatus());
+        planeTicketOrder.setSaleMan(oldEntity.getSaleMan());
+        int count = planeTicketOrderMapper.updateById(planeTicketOrder);
+
+        // 更新主订单的总价
+        QueryWrapper<MainOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
+        MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
+        TotalPriceInfo mainOrderTotalPriceInfo =
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+        // 减掉旧的
+        if (oldCurrencyType == 1) {
+            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
+        } else {
+            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
+        }
+        // 加上修改后的
+        Double reqTotalPrice = req.getTotalPrice();
+        Integer reqCurrencyType = req.getCurrencyType();
+        if (reqCurrencyType == 1) {
+            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
+        } else {
+            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
+        }
+        String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
+        UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
+        mainOrderMapper.update(null, updateWrapper);
+        return ResponseApi.ok(count);
     }
 }

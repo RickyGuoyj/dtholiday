@@ -1,36 +1,35 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
-import ch.qos.logback.core.hook.DelayingShutdownHook;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.CustomerInfo;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.TotalPriceInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketInfo;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.transitionHotel.TransitionHotelOrder;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.TransitionHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
-import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.TransitionHotelOrderResp;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
+import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.TransitionHotelOrderService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @describtion
@@ -85,7 +84,8 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         return ResponseApi.ok(respPage);
     }
 
-    private void setQueryWrapper(QueryWrapper<TransitionHotelOrder> queryWrapper, UserResp currentUserInfo, TransitionHotelOrderPageReq req) {
+    private void setQueryWrapper(QueryWrapper<TransitionHotelOrder> queryWrapper, UserResp currentUserInfo,
+        TransitionHotelOrderPageReq req) {
         if (req.getTransitionHotelOrderId() != null) {
             queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
         }
@@ -108,7 +108,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
             queryWrapper.like("customer_name", req.getCustomerName());
         }
 
-        //根据角色特殊化处理
+        // 根据角色特殊化处理
         String roleInfo = currentUserInfo.getRoleInfo().getName();
         if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
             queryWrapper.eq("order_creator", currentUserInfo.getUserName());
@@ -125,7 +125,8 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
 
     }
 
-    private void convertTransitionHotelOrderEntityToResp(TransitionHotelOrder order, TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
+    private void convertTransitionHotelOrderEntityToResp(TransitionHotelOrder order,
+        TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
         BeanUtils.copyProperties(order, transitionHotelOrderResp);
         CustomerInfo customerInfo = new CustomerInfo();
         customerInfo.setCustomerName(order.getCustomerName());
@@ -177,7 +178,46 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
 
     @Override
     public ResponseApi updateTransitionHotelOrderByAgent(TransitionHotelOrderReq req) {
-        return null;
+        // 查询历史数据
+        TransitionHotelOrder oldEntity = transitionHotelOrderMapper.selectById(req.getTransitionHotelOrderId());
+        Double oldTotalPrice = oldEntity.getTotalPrice();
+        Integer oldCurrencyType = oldEntity.getCurrencyType();
+
+        // 更新子订单数据
+        UserResp currentUserDetail = userService.getCurrentUserDetail();
+        TransitionHotelOrder transitionHotelOrder =
+            OrderConvert.convertTransitionHotelInfoToEntity(req, currentUserDetail.getUserName());
+        transitionHotelOrder.setTransitionHotelOrderId(req.getTransitionHotelOrderId());
+        transitionHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
+        transitionHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
+        transitionHotelOrder.setSaleMan(oldEntity.getSaleMan());
+        int count = transitionHotelOrderMapper.updateById(transitionHotelOrder);
+
+        // 更新主订单的总价
+        QueryWrapper<MainOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
+        MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
+        TotalPriceInfo mainOrderTotalPriceInfo =
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+        // 减掉旧的
+        if (oldCurrencyType == 1) {
+            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
+        } else {
+            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
+        }
+        // 加上修改后的
+        Double reqTotalPrice = req.getTotalPrice();
+        Integer reqCurrencyType = req.getCurrencyType();
+        if (reqCurrencyType == 1) {
+            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
+        } else {
+            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
+        }
+        String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
+        UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
+        mainOrderMapper.update(null, updateWrapper);
+        return ResponseApi.ok(count);
     }
 
     @Override
@@ -203,7 +243,8 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                     transitionHotelOrder.setBookingCode(req.getBookingCode());
                     transitionHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
-                    transitionHotelOrder.setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
+                    transitionHotelOrder
+                        .setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -212,7 +253,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 if (mainOrder != null) {
                     mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getTransitionHotelOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getIslandHotelOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
                     }
@@ -257,8 +298,10 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 }
                 if (mainOrder != null) {
                     mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
-                    //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), transitionHotelOrder.getOrderStatus()));
+                    // 计算三个值中最小的
+                    mainOrder.setOrderStatus(Math.min(
+                        Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()),
+                        transitionHotelOrder.getOrderStatus()));
                 }
                 transitionHotelOrderMapper.updateById(transitionHotelOrder);
                 mainOrderMapper.updateById(mainOrder);

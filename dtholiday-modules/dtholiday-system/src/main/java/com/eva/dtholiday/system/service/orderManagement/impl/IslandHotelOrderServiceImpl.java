@@ -5,27 +5,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.TotalPriceInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrder;
+import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
+import com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapper;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.*;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.IslandHotelOrderQueryListResp;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.eva.dtholiday.commons.api.ResponseApi;
-import com.eva.dtholiday.commons.dao.entity.orderManagement.islandhotelorder.IslandHotelOrderInfo;
-import com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapper;
-import com.eva.dtholiday.commons.dao.resp.orderManagement.IslandHotelOrderQueryListResp;
+import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.IslandHotelOrderService;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
 
 @Service
 public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
@@ -47,9 +48,9 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         map.put("financialStatus", req.getFinancialStatus());
         map.put("islandHotelOrderId", req.getIslandHotelOrderId());
         UserResp currentUserInfo = userService.getCurrentUserDetail();
-        //特殊化处理
-//        map.put("orderCreator", req.getOrderCreator());
-//        map.put("saleMan", req.getSaleMan());
+        // 特殊化处理
+        // map.put("orderCreator", req.getOrderCreator());
+        // map.put("saleMan", req.getSaleMan());
         String roleInfo = currentUserInfo.getRoleInfo().getName();
         if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
             map.put("orderCreator", currentUserInfo.getUserName());
@@ -74,13 +75,53 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Override
     public ResponseApi queryIslandHotelOrderDetail(IslandHotelOrderQueryDetailReq req) {
         IslandHotelOrderInfo islandHotelOrderInfo =
-                islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
+            islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
         return ResponseApi.ok(islandHotelOrderInfo);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseApi updateIslandHotelOrderByAgent(IslandHotelOrderReq req) {
-        return null;
+        // 查询历史数据
+        IslandHotelOrder oldEntity = islandHotelOrderMapper.selectById(req.getIslandHotelOrderId());
+        Double oldTotalPrice = oldEntity.getTotalPrice();
+        Integer oldCurrencyType = oldEntity.getCurrencyType();
+
+        // 更新子订单数据
+        UserResp currentUserDetail = userService.getCurrentUserDetail();
+        IslandHotelOrder islandHotelOrder =
+            OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
+        islandHotelOrder.setIslandHotelOrderId(req.getIslandHotelOrderId());
+        islandHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
+        islandHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
+        islandHotelOrder.setSaleMan(oldEntity.getSaleMan());
+        int count = islandHotelOrderMapper.updateById(islandHotelOrder);
+
+        // 更新主订单的总价
+        QueryWrapper<MainOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("island_hotel_order_id", req.getIslandHotelOrderId());
+        MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
+        TotalPriceInfo mainOrderTotalPriceInfo =
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+        // 减掉旧的
+        if (oldCurrencyType == 1) {
+            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
+        } else {
+            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
+        }
+        // 加上修改后的
+        Double reqTotalPrice = req.getTotalPrice();
+        Integer reqCurrencyType = req.getCurrencyType();
+        if (reqCurrencyType == 1) {
+            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
+        } else {
+            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
+        }
+        String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
+        UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
+        mainOrderMapper.update(null, updateWrapper);
+        return ResponseApi.ok(count);
     }
 
     @Override
@@ -106,7 +147,8 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setBookingCode(req.getBookingCode());
                     islandHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
-                    islandHotelOrder.setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
+                    islandHotelOrder
+                        .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -115,7 +157,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                 if (mainOrder != null) {
                     mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getIslandHotelOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getPlaneTicketOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
                     }
@@ -163,7 +205,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                 if (mainOrder != null) {
                     mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getIslandHotelOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getPlaneTicketOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
                     }
