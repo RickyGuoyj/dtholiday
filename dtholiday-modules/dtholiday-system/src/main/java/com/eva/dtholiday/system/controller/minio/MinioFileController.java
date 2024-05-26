@@ -16,7 +16,7 @@ public class MinioFileController {
     private MinioService minioService;
 
     @PostMapping("/upload")
-    public ResponseApi uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseApi uploadFile(@RequestPart("file") MultipartFile file) {
         return minioService.uploadFile(file, file.getOriginalFilename());
     }
 
