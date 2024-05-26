@@ -1,6 +1,7 @@
 package com.eva.dtholiday.system.controller;
 
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.enums.CancelStatusEnum;
 import com.eva.dtholiday.commons.enums.FinancialStatusEnum;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,5 +33,10 @@ public class CommonController {
     @GetMapping("/getAllFinancialStatus")
     public ResponseApi getAllFinancialStatus(){
         return ResponseApi.ok(FinancialStatusEnum.getAllFinancialStatus());
+    }
+
+    @GetMapping("/getAllCancelStatus")
+    public ResponseApi getAllCancelStatus(){
+        return ResponseApi.ok(CancelStatusEnum.getAllCancelStatus());
     }
 }

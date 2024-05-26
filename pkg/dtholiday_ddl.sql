@@ -347,7 +347,8 @@ CREATE TABLE IF NOT EXISTS  `dt_order_main` (
                                  `financial_man` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '财务',
                                  `remarks` VARCHAR(1024) COMMENT '备注',
                                  `payment_time` datetime DEFAULT NULL COMMENT '收款时间',
-                                 PRIMARY KEY (`main_order_id`) USING BTREE
+                                `main_order_cancel_status` int DEFAULT NULL COMMENT '主订单取消状态',
+                                PRIMARY KEY (`main_order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='主订单表';
 
 --  岛屿订单表
