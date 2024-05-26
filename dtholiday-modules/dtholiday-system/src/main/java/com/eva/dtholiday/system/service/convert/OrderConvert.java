@@ -16,6 +16,7 @@ import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.PlaneTicketOrderReq;
 import com.eva.dtholiday.commons.dao.req.orderManagement.TransitionHotelOrderReq;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
+import com.eva.dtholiday.commons.utils.LocalCache;
 
 /**
  * 订单转换类
@@ -34,7 +35,7 @@ public class OrderConvert {
         islandHotelOrder.setFirstChildAge(customerInfo.getFirstChildAge());
         IslandHotelInfo hotelInfo = req.getHotelInfo();
         islandHotelOrder.setIslandIndexCode(hotelInfo.getIslandIndexCode());
-        islandHotelOrder.setIslandCnName(hotelInfo.getIslandCnName());
+        islandHotelOrder.setIslandCnName(LocalCache.getIslandName(hotelInfo.getIslandIndexCode()));
         islandHotelOrder.setTrafficType(hotelInfo.getTrafficType());
         islandHotelOrder.setMealType(hotelInfo.getMealType());
         islandHotelOrder.setHotelRoomType(hotelInfo.getHotelRoomType());
