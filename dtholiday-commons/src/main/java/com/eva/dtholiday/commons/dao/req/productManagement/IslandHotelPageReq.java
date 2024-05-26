@@ -20,9 +20,9 @@ import java.util.Date;
 public class IslandHotelPageReq extends BasePage {
 
     /**
-     * 岛屿名称
+     * 岛屿产品名称
      */
-    private String islandCnName;
+    private String islandHotelName;
 
     /**
      * 上岛工具类型

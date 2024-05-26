@@ -29,7 +29,7 @@ public class IslandHotelResp {
     /**
      * 岛屿中文名称
      */
-    private String islandCnName;
+    private String islandHotelName;
 
     /**
      * 价格类型：1-打包价，2-合同价

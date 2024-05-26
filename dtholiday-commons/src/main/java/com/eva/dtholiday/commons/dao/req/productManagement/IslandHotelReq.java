@@ -34,7 +34,7 @@ public class IslandHotelReq {
      * 岛屿中文名称
      */
     @ExcelProperty(value = "岛屿产品名称")
-    private String islandCnName;
+    private String islandHotelName;
 
     /**
      * 价格类型：1-打包价，2-合同价
