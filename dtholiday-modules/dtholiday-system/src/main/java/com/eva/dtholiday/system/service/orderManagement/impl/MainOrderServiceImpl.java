@@ -1,6 +1,7 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +61,10 @@ public class MainOrderServiceImpl implements MainOrderService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseApi addMainOrder(MainOrderReq req) {
         UserResp currentUserDetail = userService.getCurrentUserDetail();
-        IslandHotelOrder islandHotelOrder = new IslandHotelOrder();
-        PlaneTicketOrder planeTicketOrder = new PlaneTicketOrder();
-        TransitionHotelOrder transitionHotelOrder = new TransitionHotelOrder();
+        IslandHotelOrder islandHotelOrder;
+        PlaneTicketOrder planeTicketOrder;
+        TransitionHotelOrder transitionHotelOrder;
+        MainOrder mainOrder = new MainOrder();
         // 岛屿订单
         if (Objects.nonNull(req.getIslandHotelOrder()) && Objects.nonNull(req.getIslandHotelOrder().getHotelInfo())) {
             islandHotelOrder =
@@ -69,6 +72,8 @@ public class MainOrderServiceImpl implements MainOrderService {
             islandHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             islandHotelOrder.setFinancialStatus(0);
             islandHotelOrderMapper.insert(islandHotelOrder);
+            mainOrder.setIslandHotelOrderId(islandHotelOrder.getIslandHotelOrderId());
+            mainOrder.setIslandHotelOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
         }
         // 机票订单
         if (Objects.nonNull(req.getPlaneTicketOrder())
@@ -78,6 +83,8 @@ public class MainOrderServiceImpl implements MainOrderService {
             planeTicketOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             planeTicketOrder.setFinancialStatus(0);
             planeTicketOrderMapper.insert(planeTicketOrder);
+            mainOrder.setPlaneTicketOrderId(planeTicketOrder.getPlaneTicketOrderId());
+            mainOrder.setPlaneTicketOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
         }
         // 过度酒店订单
         if (Objects.nonNull(req.getTransitionHotelOrder())
@@ -87,11 +94,16 @@ public class MainOrderServiceImpl implements MainOrderService {
             transitionHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             transitionHotelOrder.setFinancialStatus(0);
             transitionHotelOrderMapper.insert(transitionHotelOrder);
+            mainOrder.setTransitionHotelOrderId(transitionHotelOrder.getTransitionHotelOrderId());
+            mainOrder.setTransitionHotelOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
         }
         // 写主表
-        MainOrder mainOrder = OrderConvert.convertMainOrderInfoToEntity(req, currentUserDetail.getUserName(),
-                islandHotelOrder.getIslandHotelOrderId(), planeTicketOrder.getPlaneTicketOrderId(),
-                transitionHotelOrder.getTransitionHotelOrderId());
+        mainOrder.setOrderCreator(currentUserDetail.getUserName());
+        mainOrder.setTotalPrice(JSONObject.toJSONString(req.getTotalPrice()));
+        mainOrder.setSaleMan(req.getSaleMan());
+        mainOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        mainOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+
         mainOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
         mainOrder.setFinancialStatus(0);
         int insert = mainOrderMapper.insert(mainOrder);

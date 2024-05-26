@@ -86,7 +86,7 @@ public class OrderConvert {
     }
 
     public static TransitionHotelOrder convertTransitionHotelInfoToEntity(TransitionHotelOrderReq req,
-        String userName) {
+                                                                          String userName) {
         TransitionHotelOrder transitionHotelOrder = new TransitionHotelOrder();
         CustomerInfo customerInfo = req.getCustomerInfo();
         transitionHotelOrder.setCustomerName(customerInfo.getCustomerName());
@@ -109,19 +109,5 @@ public class OrderConvert {
         transitionHotelOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
         transitionHotelOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         return transitionHotelOrder;
-    }
-
-    public static MainOrder convertMainOrderInfoToEntity(MainOrderReq req, String userName, Integer islandHotelOrderId,
-        Integer planeTicketOrderId, Integer transitionHotelOrderId) {
-        MainOrder mainOrder = new MainOrder();
-        mainOrder.setIslandHotelOrderId(islandHotelOrderId);
-        mainOrder.setPlaneTicketOrderId(planeTicketOrderId);
-        mainOrder.setTransitionHotelOrderId(transitionHotelOrderId);
-        mainOrder.setOrderCreator(userName);
-        mainOrder.setTotalPrice(JSONObject.toJSONString(req.getTotalPrice()));
-        mainOrder.setSaleMan(req.getSaleMan());
-        mainOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        mainOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        return mainOrder;
     }
 }
