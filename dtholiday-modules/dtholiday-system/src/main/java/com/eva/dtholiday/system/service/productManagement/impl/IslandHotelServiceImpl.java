@@ -134,6 +134,7 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         List<IslandHotelResp> respList = entityPage.getRecords().stream().map(entity -> {
             IslandHotelResp resp = new IslandHotelResp();
             BeanUtils.copyProperties(entity, resp);
+            resp.setIslandCnName(islandManagementService.getIslandName(entity.getIslandIndexCode()));
             return resp;
         }).collect(Collectors.toList());
         IPage<IslandHotelResp> respPage = new Page<>(req.getCurrent(), req.getSize());

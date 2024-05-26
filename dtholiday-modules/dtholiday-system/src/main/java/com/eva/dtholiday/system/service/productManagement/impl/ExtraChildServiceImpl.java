@@ -11,6 +11,7 @@ import com.eva.dtholiday.commons.dao.req.productManagement.ExtraChildExpenseQuer
 import com.eva.dtholiday.commons.dao.req.productManagement.ExtraChildExpenseReq;
 import com.eva.dtholiday.commons.dao.resp.productManagement.ExtraChildExpenseResp;
 import com.eva.dtholiday.commons.dao.resp.productManagement.TransitionHotelResp;
+import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 import com.eva.dtholiday.system.service.productManagement.ExtraChildService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,9 @@ public class ExtraChildServiceImpl implements ExtraChildService {
 
     @Resource
     private ExtraChildExpenseMapper extraChildExpenseMapper;
+
+    @Resource
+    private IslandManagementService islandManagementService;
 
     @Override
     public ResponseApi add(ExtraChildExpenseReq req) {
@@ -81,6 +85,7 @@ public class ExtraChildServiceImpl implements ExtraChildService {
         List<ExtraChildExpenseResp> respList = entityPage.getRecords().stream().map(entity -> {
             ExtraChildExpenseResp resp = new ExtraChildExpenseResp();
             BeanUtils.copyProperties(entity, resp);
+            resp.setIslandCnName(islandManagementService.getIslandName(entity.getIslandIndexCode()));
             return resp;
         }).collect(Collectors.toList());
         Page<ExtraChildExpenseResp> respPage = new Page<>(req.getCurrent(), req.getSize());
@@ -99,6 +104,7 @@ public class ExtraChildServiceImpl implements ExtraChildService {
         if (extraChildExpense != null) {
             ExtraChildExpenseResp resp = new ExtraChildExpenseResp();
             BeanUtils.copyProperties(extraChildExpense, resp);
+            resp.setIslandCnName(islandManagementService.getIslandName(extraChildExpense.getIslandIndexCode()));
             return ResponseApi.ok(resp);
         }
         return ResponseApi.error("no extraChildExpense found");
