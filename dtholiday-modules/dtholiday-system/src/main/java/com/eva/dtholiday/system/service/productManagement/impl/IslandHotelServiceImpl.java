@@ -115,8 +115,8 @@ public class IslandHotelServiceImpl implements IslandHotelService {
     public ResponseApi queryList(IslandHotelPageReq req) {
         IPage<IslandHotel> entityPage = new Page<>(req.getCurrent(), req.getSize());
         QueryWrapper<IslandHotel> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.hasText(req.getIslandCnName())) {
-            queryWrapper.like(IslandHotel.ISLAND_CN_NAME, req.getIslandCnName());
+        if (StringUtils.hasText(req.getIslandHotelName())) {
+            queryWrapper.like(IslandHotel.ISLAND_HOTEL_NAME, req.getIslandHotelName());
         }
         if (Objects.nonNull(req.getEffectiveDate())) {
             queryWrapper.ge(IslandHotel.EFFECTIVE_DATE, req.getEffectiveDate());
@@ -134,7 +134,6 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         List<IslandHotelResp> respList = entityPage.getRecords().stream().map(entity -> {
             IslandHotelResp resp = new IslandHotelResp();
             BeanUtils.copyProperties(entity, resp);
-            resp.setIslandCnName(islandManagementService.getIslandName(entity.getIslandIndexCode()));
             return resp;
         }).collect(Collectors.toList());
         IPage<IslandHotelResp> respPage = new Page<>(req.getCurrent(), req.getSize());
@@ -153,7 +152,6 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         if (islandHotel != null) {
             IslandHotelResp resp = new IslandHotelResp();
             BeanUtils.copyProperties(islandHotel, resp);
-            resp.setIslandCnName(islandManagementService.getIslandName(islandHotel.getIslandIndexCode()));
             return ResponseApi.ok(resp);
         }
         return ResponseApi.error("no islandHotel found");
