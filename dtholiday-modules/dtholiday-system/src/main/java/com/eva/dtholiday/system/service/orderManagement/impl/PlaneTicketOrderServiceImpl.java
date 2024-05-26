@@ -203,8 +203,15 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 }
                 if (mainOrder != null) {
                     mainOrder.setPlaneTicketOrderStatus(planeTicketOrder.getOrderStatus());
-                    //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), planeTicketOrder.getOrderStatus()));
+                    Integer orderStatus = mainOrder.getPlaneTicketOrderStatus();
+                    //计算三个值中最小的，需要判空
+                    if (mainOrder.getIslandHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getTransitionHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
                 mainOrderMapper.updateById(mainOrder);
@@ -249,8 +256,15 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 }
                 if (mainOrder != null) {
                     mainOrder.setPlaneTicketOrderStatus(planeTicketOrder.getOrderStatus());
-                    //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), planeTicketOrder.getOrderStatus()));
+                    Integer orderStatus = mainOrder.getPlaneTicketOrderStatus();
+                    //计算三个值中最小的，需要判空
+                    if (mainOrder.getIslandHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getTransitionHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
                 mainOrderMapper.updateById(mainOrder);
