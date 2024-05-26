@@ -33,10 +33,10 @@ public class IslandHotel extends Model<IslandHotel> {
      */
     private Integer islandIndexCode;
 
-    /**
-     * 岛屿中文名称
-     */
-    private String islandCnName;
+//    /**
+//     * 岛屿中文名称
+//     */
+//    private String islandCnName;
 
     /**
      * 价格类型：1-打包价，2-合同价
@@ -192,4 +192,6 @@ public class IslandHotel extends Model<IslandHotel> {
     public static final String HOTEL_ROOM_TYPE = "hotel_room_type";
 
     public static final String ISLAND_INDEX_CODE = "island_index_code";
+
+    public static final String REMAIN_NUM = "remain_num";
 }

@@ -1,7 +1,7 @@
 --默认密码：123456
-insert into sys_user(user_name,user_code,`PASSWORD`,nick_name)
+insert into sys_user(user_name,user_code,`PASSWORD`,nick_name,belong_company)
 VALUES
-    ('admin','ca5fd62f004d457d970e75f6ecb21688','$2a$10$3e8/OFsPwc2hLOtUuwhmEe6Hl41BwEkrYc2gupfzWLdJSCuNAY.JO','admin');
+    ('admin','ca5fd62f004d457d970e75f6ecb21688','$2a$10$3e8/OFsPwc2hLOtUuwhmEe6Hl41BwEkrYc2gupfzWLdJSCuNAY.JO','admin','dtholiday');
 
 
 insert into sys_role(role_name,role_code)

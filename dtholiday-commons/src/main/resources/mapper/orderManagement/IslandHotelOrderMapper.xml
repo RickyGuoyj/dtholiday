@@ -10,7 +10,7 @@
     <select id="countIslandHotelOrderList" resultType="java.lang.Integer">
         SELECT count(1)
         FROM
-        dt_order_island a
+        dt_order_island_hotel a
         left join dt_traffic_management c on a.traffic_type = c.traffic_index_code
         left join dt_meal_management d on a.meal_type = d.meal_index_code
         <where>
@@ -67,7 +67,7 @@
         a.create_time,
         a.update_time
         FROM
-        dt_order_island a
+        dt_order_island_hotel a
         left join dt_traffic_management c on a.traffic_type = c.traffic_index_code
         left join dt_meal_management d on a.meal_type = d.meal_index_code
         <where>
@@ -124,7 +124,7 @@
                a.financial_man,
                a.create_time,
                a.update_time
-        FROM dt_order_island a
+        FROM dt_order_island_hotel a
                  left join dt_traffic_management c on a.traffic_type = c.traffic_index_code
                  left join dt_meal_management d on a.meal_type = d.meal_index_code
         where island_hotel_order_id = #{islandHotelOrderId}

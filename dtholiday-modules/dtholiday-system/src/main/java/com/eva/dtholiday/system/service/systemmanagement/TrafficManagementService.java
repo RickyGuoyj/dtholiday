@@ -45,4 +45,6 @@ public interface TrafficManagementService {
      * @return 返回
      */
     ResponseApi<Traffic> queryTrafficDetail(TrafficReq req);
+
+    void loadAllTrafficName();
 }

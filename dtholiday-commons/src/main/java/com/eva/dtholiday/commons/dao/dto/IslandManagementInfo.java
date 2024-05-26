@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class IslandManagementInfo {
     /**
-     * 岛屿逐渐
+     * 岛屿主键
      */
     private Integer islandIndexCode;
     /**

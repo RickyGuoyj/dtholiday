@@ -25,11 +25,21 @@ public class LocalCache {
 
     private static Map<Integer, String> islandTagNameMap = new ConcurrentHashMap<>();
 
+    private static Map<Integer, String> mealNameMap = new ConcurrentHashMap<>();
+
+    private static Map<Integer, String> trafficNameMap = new ConcurrentHashMap<>();
+
     public static void putIslandName(Integer islandIndexCode, String islandCnName) {
+        if (islandIndexCode == null) {
+            return;
+        }
         islandNameMap.put(islandIndexCode, islandCnName);
     }
 
     public static String getIslandName(Integer islandIndexCode) {
+        if (islandIndexCode == null) {
+            return null;
+        }
         return islandNameMap.get(islandIndexCode);
     }
 
@@ -46,7 +56,38 @@ public class LocalCache {
     }
 
     public static void putIslandTagName(Integer tagIndexCode, String tagName) {
+        if (tagIndexCode == null) {
+            return;
+        }
         islandTagNameMap.put(tagIndexCode, tagName);
+    }
+
+    public static void putMealName(Integer mealIndexCode, String mealName) {
+        if (mealIndexCode == null) {
+            return;
+        }
+        mealNameMap.put(mealIndexCode, mealName);
+    }
+
+    public static void putTrafficName(Integer trafficIndexCode, String trafficName) {
+        if (trafficIndexCode == null) {
+            return;
+        }
+        trafficNameMap.put(trafficIndexCode, trafficName);
+    }
+
+    public static String getMealNameById(Integer mealType) {
+        if (mealType == null) {
+            return null;
+        }
+        return mealNameMap.get(mealType);
+    }
+
+    public static String getTrafficNameById(Integer trafficType) {
+        if (trafficType == null) {
+            return null;
+        }
+        return trafficNameMap.get(trafficType);
     }
 
     public List<String> getAllIslandNames() {

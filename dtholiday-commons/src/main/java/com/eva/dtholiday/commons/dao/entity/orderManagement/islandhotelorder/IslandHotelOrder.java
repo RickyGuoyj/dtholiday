@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("dt_order_island")
+@TableName("dt_order_island_hotel")
 public class IslandHotelOrder extends Model<IslandHotelOrder> {
     private static final long serialVersionUID = 1L;
 

@@ -228,7 +228,6 @@ CREATE TABLE IF NOT EXISTS  `dt_island_hotel`
 (
                                    `island_hotel_id` INT AUTO_INCREMENT COMMENT '岛屿酒店ID',
                                    `island_index_code` INT COMMENT '岛屿编码',
-                                   `island_cn_name` VARCHAR(255) COMMENT '岛屿中文名称',
                                    `price_type` INT COMMENT '价格类型：1-打包价，2-合同价',
                                    `traffic_type` INT COMMENT '上岛工具类型',
                                    `meal_type` INT COMMENT '餐型类型',

@@ -10,7 +10,7 @@
         d.currency_type as plane_ticket_currency_type,e.total_price as transition_hotel_total_price,e.currency_type as
         transition_hotel_currency_type
         from dt_order_main a
-        LEFT JOIN dt_order_island b on b.island_hotel_order_id = a.island_hotel_order_id
+        LEFT JOIN dt_order_island_hotel b on b.island_hotel_order_id = a.island_hotel_order_id
         left join dt_order_plane_ticket d on d.plane_ticket_order_id = a.plane_ticket_order_id
         left join dt_order_transition_hotel e on e.transition_hotel_order_id = a.transition_hotel_order_id
         <where>
@@ -40,7 +40,7 @@
     <select id="countMainOrderList" resultType="java.lang.Integer">
         select count(1)
         from dt_order_main a
-        LEFT JOIN dt_order_island b on b.island_hotel_order_id = a.island_hotel_order_id
+        LEFT JOIN dt_order_island_hotel b on b.island_hotel_order_id = a.island_hotel_order_id
         left join dt_order_plane_ticket d on d.plane_ticket_order_id = a.plane_ticket_order_id
         left join dt_order_transition_hotel e on e.transition_hotel_order_id = a.transition_hotel_order_id
         <where>

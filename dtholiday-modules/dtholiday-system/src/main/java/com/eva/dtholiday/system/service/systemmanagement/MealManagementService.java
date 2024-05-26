@@ -45,4 +45,6 @@ public interface MealManagementService {
      * @return 返回
      */
     ResponseApi<Meal> queryMealDetail(MealReq req);
+
+    void loadAllMealName();
 }

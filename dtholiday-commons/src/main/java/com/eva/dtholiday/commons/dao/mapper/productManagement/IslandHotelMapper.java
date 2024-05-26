@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.eva.dtholiday.commons.dao.dto.IslandHotelQueryInfo;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder;
+import com.eva.dtholiday.commons.dao.req.productManagement.IslandHotelQueryAllReq;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @describtion
@@ -18,5 +21,9 @@ import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrd
  * @modify by reason :{原因}
  **/
 public interface IslandHotelMapper extends BaseMapper<IslandHotel> {
-    List<IslandHotelMainOrder> queryAllHotelInfo(Map<String,Object> map);
+//    List<IslandHotelMainOrder> queryAllHotelInfo(Map<String,Object> map);
+
+    void batchInsert(@Param("islandHotelList") List<IslandHotel> islandHotelList);
+
+    List<IslandHotelQueryInfo> queryAllHotelInfo(@Param("req") IslandHotelQueryAllReq req);
 }

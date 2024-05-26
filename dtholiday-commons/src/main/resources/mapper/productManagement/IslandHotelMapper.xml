@@ -1,33 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper">
+    <insert id="batchInsert">
+        insert into dt_island_hotel
+        (island_index_code,price_type,traffic_type,meal_type,hotel_room_type,has_environment_tax,effective_date,expiry_date,total_num,remain_num,package_nights,
+        currency_type,package_price,traffic_price,meal_price,environment_tax,extra_expense,extra_adult_hotel_price,extra_adult_traffic_price,extra_adult_meal_price,
+        extra_adult_environment_tax,extra_adult_package_price,extra_adult_currency_type,delay_hotel_room_type,delay_hotel_room_price,delay_currency_type,
+        extra_adult_delay_hotel_room_price,extra_adult_delay_currency_type,special_price,remarks)
+        values
+        <foreach collection="islandHotelList" item="item" index="index" separator=",">
+            (
+                #{item.islandIndexCode},
+                #{item.priceType},
+                #{item.trafficType},
+                #{item.mealType},
+                #{item.hotelRoomType},
+                #{item.hasEnvironmentTax},
+                #{item.effectiveDate},
+                #{item.expiryDate},
+                #{item.totalNum},
+                #{item.remainNum},
+                #{item.packageNights},
+                #{item.currencyType},
+                #{item.packagePrice},
+                #{item.trafficPrice},
+                #{item.mealPrice},
+                #{item.environmentTax},
+                #{item.extraExpense},
+                #{item.extraAdultHotelPrice},
+                #{item.extraAdultTrafficPrice},
+                #{item.extraAdultMealPrice},
+                #{item.extraAdultEnvironmentTax},
+                #{item.extraAdultPackagePrice},
+                #{item.extraAdultCurrencyType},
+                #{item.delayHotelRoomType},
+                #{item.delayHotelRoomPrice},
+                #{item.delayCurrencyType},
+                #{item.extraAdultDelayHotelRoomPrice},
+                #{item.extraAdultDelayCurrencyType},
+                #{item.specialPrice},
+                #{item.remarks}
+            )
+        </foreach>
+    </insert>
 
-    <select id="queryAllHotelInfo"
-            resultType="com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder">
-        select a.island_hotel_id,
-               a.island_index_code,
-               a.island_cn_name,
-               a.hotel_room_type,
-               a.delay_hotel_room_type,
-               b.traffic_index_code,
-               b.traffic_name,
-               c.meal_index_code,
-               c.meal_name,
-               a.remarks
-        from dt_island_hotel a
-                 left join dt_traffic_management b on a.traffic_type = b.traffic_index_code
-                 LEFT JOIN dt_meal_management c on a.meal_type = c.meal_index_code
-        <where>
-            <if test="islandIndexCode != null and islandIndexCode >0">
-                and a.island_index_code = #{islandIndexCode}
-            </if>
-            <if test="effectiveDate != null ">
-                and a.effective_date <![CDATA[>=]]> #{effectiveDate}
-            </if>
-            <if test="expiryDate != null">
-                and a.expiry_date <![CDATA[<=]]> #{expiryDate}
-            </if>
-        order by a.effective_date
-        </where>
+    <!--    <select id="queryAllHotelInfo"-->
+    <!--            resultType="com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder">-->
+    <!--        select a.island_hotel_id,-->
+    <!--        a.island_index_code,-->
+    <!--        a.island_cn_name,-->
+    <!--        a.hotel_room_type,-->
+    <!--        a.delay_hotel_room_type,-->
+    <!--        b.traffic_index_code,-->
+    <!--        b.traffic_name,-->
+    <!--        c.meal_index_code,-->
+    <!--        c.meal_name,-->
+    <!--        a.remarks-->
+    <!--        from dt_island_hotel a-->
+    <!--        left join dt_traffic_management b on a.traffic_type = b.traffic_index_code-->
+    <!--        LEFT JOIN dt_meal_management c on a.meal_type = c.meal_index_code-->
+    <!--        <where>-->
+    <!--            <if test="islandIndexCode != null and islandIndexCode >0">-->
+    <!--                and a.island_index_code = #{islandIndexCode}-->
+    <!--            </if>-->
+    <!--            <if test="effectiveDate != null ">-->
+    <!--                and a.effective_date <![CDATA[>=]]> #{effectiveDate}-->
+    <!--            </if>-->
+    <!--            <if test="expiryDate != null">-->
+    <!--                and a.expiry_date <![CDATA[<=]]> #{expiryDate}-->
+    <!--            </if>-->
+    <!--            order by a.effective_date-->
+    <!--        </where>-->
+    <!--    </select>-->
+    <select id="queryAllHotelInfo" resultType="com.eva.dtholiday.commons.dao.dto.IslandHotelQueryInfo">
+        SELECT count(island_hotel_id) as remainingDays,
+               hotel_room_type        as hotelRoomType,
+               traffic_type           as trafficType,
+               meal_type              as mealType,
+               delay_hotel_room_type  as delayHotelRoomType
+        FROM `dt_island_hotel`
+        WHERE effective_date >= #{req.effectiveDate}
+          AND #{req.expiryDate} >= expiry_date
+          AND remain_num >= 1
+          AND island_index_code = #{req.islandIndexCode}
+        GROUP BY hotel_room_type,
+                 traffic_type,
+                 meal_type,
+                 delay_hotel_room_type
     </select>
 </mapper>
