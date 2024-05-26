@@ -11,7 +11,9 @@ import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrder;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.planeTicket.PlaneTicketOrder;
 import com.eva.dtholiday.commons.dao.mapper.orderManagement.MainOrderMapper;
 import com.eva.dtholiday.commons.dao.req.orderManagement.*;
+import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.enums.OrderStatusEnum;
+import com.eva.dtholiday.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import com.eva.dtholiday.commons.dao.mapper.orderManagement.IslandHotelOrderMapp
 import com.eva.dtholiday.commons.dao.resp.orderManagement.IslandHotelOrderQueryListResp;
 import com.eva.dtholiday.system.service.orderManagement.IslandHotelOrderService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
@@ -33,6 +36,9 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Resource
     private MainOrderMapper mainOrderMapper;
 
+    @Resource
+    private UserService userService;
+
     public ResponseApi queryIslandHotelOrderList(IslandHotelOrderQueryListReq req) {
         Map<String, Object> map = new HashMap<>();
         map.put("customerName", req.getCustomerName());
@@ -40,6 +46,16 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         map.put("orderStatus", req.getOrderStatus());
         map.put("financialStatus", req.getFinancialStatus());
         map.put("islandHotelOrderId", req.getIslandHotelOrderId());
+        UserResp currentUserInfo = userService.getCurrentUserDetail();
+        //特殊化处理
+//        map.put("orderCreator", req.getOrderCreator());
+//        map.put("saleMan", req.getSaleMan());
+        String roleInfo = currentUserInfo.getRoleInfo().getName();
+        if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
+            map.put("orderCreator", currentUserInfo.getUserName());
+        } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
+            map.put("saleMan", currentUserInfo.getUserName());
+        }
         int count = islandHotelOrderMapper.countIslandHotelOrderList(map);
         map.put("from", (req.getPage() - 1) * req.getPageSize());
         map.put("to", req.getPageSize());
@@ -98,8 +114,15 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                 }
                 if (mainOrder != null) {
                     mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
-                    //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
+                    Integer orderStatus = mainOrder.getIslandHotelOrderStatus();
+                    //计算三个值中最小的，需要判空
+                    if (mainOrder.getPlaneTicketOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getTransitionHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
                 mainOrderMapper.updateById(mainOrder);
@@ -139,8 +162,15 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                 }
                 if (mainOrder != null) {
                     mainOrder.setIslandHotelOrderStatus(islandHotelOrder.getOrderStatus());
-                    //计算三个值中最小的
-                    mainOrder.setOrderStatus(Math.min(Math.min(mainOrder.getIslandHotelOrderStatus(), mainOrder.getTransitionHotelOrderStatus()), islandHotelOrder.getOrderStatus()));
+                    Integer orderStatus = mainOrder.getIslandHotelOrderStatus();
+                    //计算三个值中最小的，需要判空
+                    if (mainOrder.getPlaneTicketOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
+                    }
+                    if (mainOrder.getTransitionHotelOrderId() != null) {
+                        orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
+                    }
+                    mainOrder.setOrderStatus(orderStatus);
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
                 mainOrderMapper.updateById(mainOrder);

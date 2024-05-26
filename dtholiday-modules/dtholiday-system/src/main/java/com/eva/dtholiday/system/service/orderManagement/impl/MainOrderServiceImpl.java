@@ -1,6 +1,9 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.entity.financialManagement.Payment;
 import com.eva.dtholiday.commons.dao.entity.orderManagement.mainorder.MainOrderListInfo;
@@ -19,6 +22,7 @@ import com.eva.dtholiday.commons.dao.req.orderManagement.MainOrderReq;
 import com.eva.dtholiday.commons.dao.req.financialManagement.PaymentReq;
 import com.eva.dtholiday.commons.dao.resp.UserResp;
 import com.eva.dtholiday.commons.dao.resp.orderManagement.MainOrderQueryListResp;
+import com.eva.dtholiday.commons.dao.resp.orderManagement.PlaneTicketOrderResp;
 import com.eva.dtholiday.commons.enums.CancelStatusEnum;
 import com.eva.dtholiday.system.constant.ErpConstant;
 import com.eva.dtholiday.system.service.UserService;
@@ -26,12 +30,14 @@ import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.MainOrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MainOrderServiceImpl implements MainOrderService {
@@ -58,33 +64,33 @@ public class MainOrderServiceImpl implements MainOrderService {
         // 岛屿订单
         if (Objects.nonNull(req.getIslandHotelOrder()) && Objects.nonNull(req.getIslandHotelOrder().getHotelInfo())) {
             islandHotelOrder =
-                OrderConvert.convertIslandHotelInfoToEntity(req.getIslandHotelOrder(), currentUserDetail.getUserName());
+                    OrderConvert.convertIslandHotelInfoToEntity(req.getIslandHotelOrder(), currentUserDetail.getUserName());
             islandHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             islandHotelOrder.setFinancialStatus(0);
             islandHotelOrderMapper.insert(islandHotelOrder);
         }
         // 机票订单
         if (Objects.nonNull(req.getPlaneTicketOrder())
-            && Objects.nonNull(req.getPlaneTicketOrder().getPlaneTicketInfo())) {
+                && Objects.nonNull(req.getPlaneTicketOrder().getPlaneTicketInfo())) {
             planeTicketOrder =
-                OrderConvert.convertPlaneTicketInfoToEntity(req.getPlaneTicketOrder(), currentUserDetail.getUserName());
+                    OrderConvert.convertPlaneTicketInfoToEntity(req.getPlaneTicketOrder(), currentUserDetail.getUserName());
             planeTicketOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             planeTicketOrder.setFinancialStatus(0);
             planeTicketOrderMapper.insert(planeTicketOrder);
         }
         // 过度酒店订单
         if (Objects.nonNull(req.getTransitionHotelOrder())
-            && Objects.nonNull(req.getTransitionHotelOrder().getTransitionHotelInfo())) {
+                && Objects.nonNull(req.getTransitionHotelOrder().getTransitionHotelInfo())) {
             transitionHotelOrder = OrderConvert.convertTransitionHotelInfoToEntity(req.getTransitionHotelOrder(),
-                currentUserDetail.getUserName());
+                    currentUserDetail.getUserName());
             transitionHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             transitionHotelOrder.setFinancialStatus(0);
             transitionHotelOrderMapper.insert(transitionHotelOrder);
         }
         // 写主表
         MainOrder mainOrder = OrderConvert.convertMainOrderInfoToEntity(req, currentUserDetail.getUserName(),
-            islandHotelOrder.getIslandHotelOrderId(), planeTicketOrder.getPlaneTicketOrderId(),
-            transitionHotelOrder.getTransitionHotelOrderId());
+                islandHotelOrder.getIslandHotelOrderId(), planeTicketOrder.getPlaneTicketOrderId(),
+                transitionHotelOrder.getTransitionHotelOrderId());
         mainOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
         mainOrder.setFinancialStatus(0);
         int insert = mainOrderMapper.insert(mainOrder);
@@ -93,13 +99,28 @@ public class MainOrderServiceImpl implements MainOrderService {
 
     @Override
     public ResponseApi<MainOrderQueryListResp> queryMainOrderList(MainOrderQueryListReq req) {
+        UserResp currentUserInfo = userService.getCurrentUserDetail();
         Map<String, Object> map = new HashMap<>();
         map.put("mainOrderId", req.getMainOrderId());
-        map.put("orderCreator", req.getOrderCreator());
-        map.put("saleMan", req.getSaleMan());
         map.put("islandHotelOrderId", req.getIslandHotelOrderId());
         map.put("planeTicketOrderId", req.getPlaneTicketOrderId());
         map.put("transitionHotelOrderId", req.getTransitionHotelOrderId());
+        //特殊化处理
+//        map.put("orderCreator", req.getOrderCreator());
+//        map.put("saleMan", req.getSaleMan());
+        String roleInfo = currentUserInfo.getRoleInfo().getName();
+        if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
+            map.put("orderCreator", currentUserInfo.getUserName());
+            if (StringUtils.hasText(req.getSaleMan())) {
+                map.put("saleMan", req.getSaleMan());
+            }
+        } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
+            map.put("saleMan", currentUserInfo.getUserName());
+        } else {
+            if (StringUtils.hasText(req.getSaleMan())) {
+                map.put("saleMan", req.getSaleMan());
+            }
+        }
         int count = mainOrderMapper.countMainOrderList(map);
         map.put("from", (req.getPage() - 1) * req.getPageSize());
         map.put("to", req.getPageSize());
@@ -154,7 +175,7 @@ public class MainOrderServiceImpl implements MainOrderService {
     public ResponseApi cancelMainOrderByAgent(MainOrderCancelReq req) {
         UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-            CancelStatusEnum.WAIT_SALE_CHECK.getCode());
+                CancelStatusEnum.WAIT_SALE_CHECK.getCode());
         int count = mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);
     }
@@ -165,10 +186,10 @@ public class MainOrderServiceImpl implements MainOrderService {
 
         if (req.getOperType() == 1) {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                CancelStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+                    CancelStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
         } else {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                CancelStatusEnum.SALE_NOT_PASS.getCode());
+                    CancelStatusEnum.SALE_NOT_PASS.getCode());
         }
         int count = mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);
@@ -180,10 +201,10 @@ public class MainOrderServiceImpl implements MainOrderService {
 
         if (req.getOperType() == 1) {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                CancelStatusEnum.FINANCIAL_PASS.getCode());
+                    CancelStatusEnum.FINANCIAL_PASS.getCode());
         } else {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                CancelStatusEnum.FINANCIAL_NOT_PASS.getCode());
+                    CancelStatusEnum.FINANCIAL_NOT_PASS.getCode());
         }
         int count = mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);
