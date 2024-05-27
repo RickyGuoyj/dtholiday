@@ -9,9 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.eva.dtholiday.commons.dao.dto.IslandHotelQueryInfo;
-import com.eva.dtholiday.commons.utils.DateUtils;
-import com.eva.dtholiday.commons.utils.LocalCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +18,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
+import com.eva.dtholiday.commons.dao.dto.IslandHotelQueryInfo;
 import com.eva.dtholiday.commons.dao.entity.productManagement.ExtraChildExpense;
 import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotel;
-import com.eva.dtholiday.commons.dao.entity.productManagement.IslandHotelMainOrder;
 import com.eva.dtholiday.commons.dao.mapper.productManagement.ExtraChildExpenseMapper;
 import com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper;
 import com.eva.dtholiday.commons.dao.req.productManagement.*;
-import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelMainOrderResp;
 import com.eva.dtholiday.commons.dao.resp.productManagement.IslandHotelResp;
+import com.eva.dtholiday.commons.utils.DateUtils;
+import com.eva.dtholiday.commons.utils.LocalCache;
 import com.eva.dtholiday.system.service.portalmanagement.IslandManagementService;
 import com.eva.dtholiday.system.service.productManagement.IslandHotelService;
 
@@ -164,7 +162,8 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         List<IslandHotelQueryInfo> islandHotelQueryInfos = islandHotelMapper.queryAllHotelInfo(req);
         Integer nights = DateUtils.getDateNum(req.getEffectiveDate(), req.getExpiryDate());
         if (islandHotelQueryInfos.size() > 0) {
-            islandHotelQueryInfos = islandHotelQueryInfos.stream().filter(info -> info.getRemainingDays() >= nights).collect(Collectors.toList());
+            islandHotelQueryInfos = islandHotelQueryInfos.stream().filter(info -> info.getRemainingDays() >= nights)
+                .collect(Collectors.toList());
             islandHotelQueryInfos.forEach(info -> {
                 info.setMealName(LocalCache.getMealNameById(info.getMealType()));
                 info.setTrafficName(LocalCache.getTrafficNameById(info.getTrafficType()));
@@ -187,31 +186,31 @@ public class IslandHotelServiceImpl implements IslandHotelService {
             return ResponseApi.ok(islandHotelQueryInfos);
         }
         return ResponseApi.ok(Collections.emptyList());
-//        Map<String, Object> queryMap = new HashMap<>();
-//        queryMap.put("islandIndexCode", req.getIslandIndexCode());
-//        queryMap.put("effectiveDate", req.getEffectiveDate());
-//        queryMap.put("expiryDate", req.getExpiryDate());
-//
-//        List<IslandHotelMainOrder> islandHotelMainOrders = islandHotelMapper.queryAllHotelInfo(queryMap);
-//        // 封装数据
-//        Map<Integer, Map<Date, IslandHotel>> map = new HashMap<>();
-//        List<IslandHotelMainOrderResp> collect = islandHotelMainOrders.stream().map(entity -> {
-//
-//            IslandHotelMainOrderResp resp = new IslandHotelMainOrderResp();
-//            resp.setHotelRomType(entity.getHotelRoomType());
-//            resp.setDelayHotelRoomType(entity.getDelayHotelRoomType());
-//            resp.setIslandIndexCode(entity.getIslandIndexCode());
-//            resp.setIslandHotelId(entity.getIslandHotelId());
-//            resp.setIslandCnName(entity.getIslandCnName());
-//            resp.setTrafficIndexCode(entity.getTrafficType());
-//            resp.setTrafficName(entity.getTrafficName());
-//            resp.setMealName(entity.getMealName());
-//            resp.setMealIndexCode(entity.getMealType());
-//            resp.setMealDesc(entity.getRemarks());
-//            resp.setHasEnvironmentTax(entity.getHasEnvironmentTax());
-//            return resp;
-//        }).collect(Collectors.toList());
-//        return ResponseApi.ok(collect);
+        // Map<String, Object> queryMap = new HashMap<>();
+        // queryMap.put("islandIndexCode", req.getIslandIndexCode());
+        // queryMap.put("effectiveDate", req.getEffectiveDate());
+        // queryMap.put("expiryDate", req.getExpiryDate());
+        //
+        // List<IslandHotelMainOrder> islandHotelMainOrders = islandHotelMapper.queryAllHotelInfo(queryMap);
+        // // 封装数据
+        // Map<Integer, Map<Date, IslandHotel>> map = new HashMap<>();
+        // List<IslandHotelMainOrderResp> collect = islandHotelMainOrders.stream().map(entity -> {
+        //
+        // IslandHotelMainOrderResp resp = new IslandHotelMainOrderResp();
+        // resp.setHotelRomType(entity.getHotelRoomType());
+        // resp.setDelayHotelRoomType(entity.getDelayHotelRoomType());
+        // resp.setIslandIndexCode(entity.getIslandIndexCode());
+        // resp.setIslandHotelId(entity.getIslandHotelId());
+        // resp.setIslandCnName(entity.getIslandCnName());
+        // resp.setTrafficIndexCode(entity.getTrafficType());
+        // resp.setTrafficName(entity.getTrafficName());
+        // resp.setMealName(entity.getMealName());
+        // resp.setMealIndexCode(entity.getMealType());
+        // resp.setMealDesc(entity.getRemarks());
+        // resp.setHasEnvironmentTax(entity.getHasEnvironmentTax());
+        // return resp;
+        // }).collect(Collectors.toList());
+        // return ResponseApi.ok(collect);
     }
 
     @Override
@@ -227,17 +226,17 @@ public class IslandHotelServiceImpl implements IslandHotelService {
         BigDecimal extraExpense = new BigDecimal(islandHotel.getExtraExpense());
         BigDecimal delayHotelRoomPrice = new BigDecimal(islandHotel.getDelayHotelRoomPrice());
         BigDecimal twoPersonPrice =
-                extraExpense.add(packagePrice).add(delayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights)));
+            extraExpense.add(packagePrice).add(delayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights)));
         // 多余人数价格
         BigDecimal morePersonPrice = new BigDecimal(0);
         if (req.getAdultNum() > 2) {
             int moreAdultNum = req.getAdultNum() - 2;
-            BigDecimal extraAdultHotelPrice = new BigDecimal(islandHotel.getExtraAdultHotelPrice());
-            BigDecimal multiply = extraAdultHotelPrice.multiply(BigDecimal.valueOf(moreAdultNum));
+            BigDecimal extraAdultPackagePrice = new BigDecimal(islandHotel.getExtraAdultPackagePrice());
+            BigDecimal multiply = extraAdultPackagePrice.multiply(BigDecimal.valueOf(moreAdultNum));
             BigDecimal extraAdultDelayHotelRoomPrice = new BigDecimal(islandHotel.getExtraAdultDelayHotelRoomPrice());
 
             BigDecimal multiply1 = extraAdultDelayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights));
-            morePersonPrice = extraAdultHotelPrice.add(multiply).add(multiply1);
+            morePersonPrice = extraExpense.add(multiply).add(multiply1);
         }
         // 儿童1价格
         BigDecimal firstChildPrice = new BigDecimal(0);
@@ -250,7 +249,8 @@ public class IslandHotelServiceImpl implements IslandHotelService {
                 BigDecimal extraChildCharge = new BigDecimal(extraChildExpense.getExtraChildCharge());
                 BigDecimal price = new BigDecimal(extraChildExpense.getPrice());
                 BigDecimal extraChildDelayHotelPrice = new BigDecimal(extraChildExpense.getExtraChildDelayHotelPrice());
-                firstChildPrice = extraChildCharge.add(price).add(extraChildDelayHotelPrice);
+                firstChildPrice =
+                    extraChildCharge.add(price).add(extraChildDelayHotelPrice.multiply(BigDecimal.valueOf(leftNights)));
             }
         }
         // 儿童2价格
@@ -265,11 +265,12 @@ public class IslandHotelServiceImpl implements IslandHotelService {
                 BigDecimal extraChildCharge = new BigDecimal(extraChildExpense.getExtraChildCharge());
                 BigDecimal price = new BigDecimal(extraChildExpense.getPrice());
                 BigDecimal extraChildDelayHotelPrice = new BigDecimal(extraChildExpense.getExtraChildDelayHotelPrice());
-                secondChildPrice = extraChildCharge.add(price).add(extraChildDelayHotelPrice);
+                secondChildPrice =
+                    extraChildCharge.add(price).add(extraChildDelayHotelPrice.multiply(BigDecimal.valueOf(leftNights)));
             }
         }
         BigDecimal total =
-                totalPrice.add(twoPersonPrice).add(morePersonPrice).add(firstChildPrice).add(secondChildPrice);
+            totalPrice.add(twoPersonPrice).add(morePersonPrice).add(firstChildPrice).add(secondChildPrice);
         return ResponseApi.ok(total);
     }
 
