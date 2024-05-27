@@ -44,7 +44,7 @@ CREATE TABLE `dt_island_quotation` (
                                        `quotation_index_code` int NOT NULL AUTO_INCREMENT,
                                        `island_index_code` int NOT NULL,
                                        `quotation_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                                       `quotation_type` int NOT NULL,
+                                       `quotation_type` int NULL,
                                        `quotation_file` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
                                        `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                        `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
