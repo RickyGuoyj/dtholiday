@@ -200,19 +200,14 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         TotalPriceInfo mainOrderTotalPriceInfo =
             JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
-        if (oldCurrencyType == 1) {
-            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
-        } else {
-            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
-        }
+
+        mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
+
         // 加上修改后的
         Double reqTotalPrice = req.getTotalPrice();
-        Integer reqCurrencyType = req.getCurrencyType();
-        if (reqCurrencyType == 1) {
-            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
-        } else {
-            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
-        }
+
+        mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
+
         String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
         UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
@@ -299,7 +294,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 if (mainOrder != null) {
                     mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getTransitionHotelOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getIslandHotelOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
                     }
@@ -344,7 +339,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 if (mainOrder != null) {
                     mainOrder.setTransitionHotelOrderStatus(transitionHotelOrder.getOrderStatus());
                     Integer orderStatus = mainOrder.getTransitionHotelOrderStatus();
-                    //计算三个值中最小的，需要判空
+                    // 计算三个值中最小的，需要判空
                     if (mainOrder.getIslandHotelOrderId() != null) {
                         orderStatus = Math.min(mainOrder.getIslandHotelOrderStatus(), orderStatus);
                     }

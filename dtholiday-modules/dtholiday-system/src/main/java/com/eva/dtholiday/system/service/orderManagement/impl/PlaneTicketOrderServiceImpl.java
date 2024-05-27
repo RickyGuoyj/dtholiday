@@ -309,19 +309,13 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         TotalPriceInfo mainOrderTotalPriceInfo =
                 JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
-        if (oldCurrencyType == 1) {
             mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
-        } else {
-            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
-        }
+
         // 加上修改后的
         Double reqTotalPrice = req.getTotalPrice();
         Integer reqCurrencyType = req.getCurrencyType();
-        if (reqCurrencyType == 1) {
             mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
-        } else {
-            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
-        }
+
         String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
         UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());

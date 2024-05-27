@@ -75,7 +75,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Override
     public ResponseApi queryIslandHotelOrderDetail(IslandHotelOrderQueryDetailReq req) {
         IslandHotelOrderInfo islandHotelOrderInfo =
-                islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
+            islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
         return ResponseApi.ok(islandHotelOrderInfo);
     }
 
@@ -90,7 +90,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         IslandHotelOrder islandHotelOrder =
-                OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
+            OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
         islandHotelOrder.setIslandHotelOrderId(req.getIslandHotelOrderId());
         islandHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
         islandHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -102,21 +102,12 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         queryWrapper.eq("island_hotel_order_id", req.getIslandHotelOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
-        if (oldCurrencyType == 1) {
-            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
-        } else {
-            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
-        }
+        mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
         // 加上修改后的
         Double reqTotalPrice = req.getTotalPrice();
-        Integer reqCurrencyType = req.getCurrencyType();
-        if (reqCurrencyType == 1) {
-            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
-        } else {
-            mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
-        }
+        mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() + reqTotalPrice);
         String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
         UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
@@ -148,7 +139,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     islandHotelOrder
-                            .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
+                        .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
