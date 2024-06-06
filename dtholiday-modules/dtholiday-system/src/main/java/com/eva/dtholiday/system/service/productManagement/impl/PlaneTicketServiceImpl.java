@@ -158,10 +158,10 @@ public class PlaneTicketServiceImpl implements PlaneTicketService {
             queryWrapper.eq(PlaneTicket.AIRLINE_COMPANY_NAME, req.getAirlineCompanyName());
         }
         if (Objects.nonNull(req.getDepartureDate())) {
-            queryWrapper.ge(PlaneTicket.DEPARTURE_DATE, req.getDepartureDate());
+            queryWrapper.eq(PlaneTicket.DEPARTURE_DATE, req.getDepartureDate());
         }
         if (Objects.nonNull(req.getReturnDate())) {
-            queryWrapper.le(PlaneTicket.RETURN_DATE, req.getReturnDate());
+            queryWrapper.eq(PlaneTicket.RETURN_DATE, req.getReturnDate());
         }
 //        if (StringUtils.hasText(req.getDeparturePlace())) {
 //            queryWrapper.like(PlaneTicket.DEPARTURE_PLACE, req.getDeparturePlace());

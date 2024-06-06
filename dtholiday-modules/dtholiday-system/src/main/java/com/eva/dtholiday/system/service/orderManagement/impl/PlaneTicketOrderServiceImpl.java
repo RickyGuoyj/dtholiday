@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -111,17 +112,34 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
 
         // 根据角色特殊化处理
         String roleInfo = currentUserInfo.getRoleInfo().getName();
-        if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
-            queryWrapper.eq("order_creator", currentUserInfo.getUserName());
-            if (StringUtils.hasText(req.getSaleMan())) {
-                queryWrapper.eq("sale_man", req.getSaleMan());
+        switch (roleInfo) {
+            case "代理":
+                queryWrapper.eq("order_creator", currentUserInfo.getUserName());
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    queryWrapper.eq("sale_man", req.getSaleMan());
+                }
+                break;
+            case "代理主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                queryWrapper.in("order_creator", userName);
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    queryWrapper.eq("sale_man", req.getSaleMan());
+                }
+                break;
             }
-        } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
-            queryWrapper.eq("sale_man", currentUserInfo.getUserName());
-        } else {
-            if (StringUtils.hasText(req.getSaleMan())) {
-                queryWrapper.eq("sale_man", req.getSaleMan());
+            case "销售":
+                queryWrapper.eq("sale_man", currentUserInfo.getUserName());
+                break;
+            case "销售主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                queryWrapper.in("sale_man", userName);
+                break;
             }
+            default:
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    queryWrapper.eq("sale_man", req.getSaleMan());
+                }
+                break;
         }
 
     }
@@ -218,9 +236,9 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                         orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("审核成功");
             } else {
                 return ResponseApi.error("未到你的流程");
@@ -272,9 +290,10 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                         orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrder.setFinancialMan(req.getFinancialMan());
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("审核成功");
             } else {
                 return ResponseApi.error("未到你的流程");
@@ -309,12 +328,12 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         TotalPriceInfo mainOrderTotalPriceInfo =
                 JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
-            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
+        mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
 
         // 加上修改后的
         Double reqTotalPrice = req.getTotalPrice();
         Integer reqCurrencyType = req.getCurrencyType();
-            mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
+        mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() + reqTotalPrice);
 
         String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
         UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
@@ -356,9 +375,9 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                         orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 planeTicketOrderMapper.updateById(planeTicketOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("流程结束");
             } else {
                 return ResponseApi.error("未到该流程");

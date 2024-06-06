@@ -19,9 +19,12 @@ public enum FinancialStatusEnum {
 
     WAIT_AGENT_PAY(0, "待付款"),
 
-    WAIT_FINANCIAL_CHECK(1, "代理已提交，待财务审核"),
-    WAIT_AGENT_RESUBMIT(2, "财务驳回，待代理重新提交"),
-    FINANCIAL_CHECK_SUCCESS(3, "财务已审核，通过"),
+    //代理已提交，待财务审核
+    WAIT_FINANCIAL_CHECK(1, "待审核"),
+    //财务驳回，待代理重新提交
+    WAIT_AGENT_RESUBMIT(2, "驳回，重新提交"),
+    //财务已审核，通过
+    FINANCIAL_CHECK_SUCCESS(3, "已审核，通过"),
 
     ;
 

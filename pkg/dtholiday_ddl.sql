@@ -46,8 +46,8 @@ CREATE TABLE `dt_island_quotation` (
                                        `quotation_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                                        `quotation_type` int NULL,
                                        `quotation_file` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-                                       `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-                                       `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                       `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                       `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                        PRIMARY KEY (`quotation_index_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -404,8 +404,9 @@ CREATE TABLE IF NOT EXISTS `dt_payment` (
                            `financial_man` VARCHAR(50) , -- 财务人员
                            `financial_status` TINYINT NOT NULL, -- 财务状态（假设为整数编码）
                            `company_name` VARCHAR(255) NOT NULL, -- 公司名称`
-                           `check_remark` VARCHAR(255) NOT NULL, -- 审核备注`
+                           `check_remark` VARCHAR(255) , -- 审核备注`
                            `payment_pics` text not null, -- 支付图片
+                           `order_creator` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '订单创建人',
                            `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                            PRIMARY KEY (`payment_id`)

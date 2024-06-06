@@ -86,6 +86,7 @@ public class Payment extends Model<Payment> {
 
     private String financialMan;
 
+    private String orderCreator;
     /**
      * 付款公司
      */

@@ -109,4 +109,6 @@ public class User extends Model<User> {
     public static final String BELONG_COMPANY = "belong_company";
 
     public static final String STATUS = "status";
+
+    public static final String DEPT_LEADER_NAME = "dept_leader_name";
 }

@@ -3,6 +3,8 @@ package com.eva.dtholiday.commons.dao.mapper.productManagement;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eva.dtholiday.commons.dao.entity.productManagement.TransitionHotel;
 
+import java.util.List;
+
 /**
  * @describtion
  * @copyright Copyright: 2015-2025
@@ -14,4 +16,5 @@ import com.eva.dtholiday.commons.dao.entity.productManagement.TransitionHotel;
  * @modify by reason :{原因}
  **/
 public interface TransitionHotelMapper extends BaseMapper<TransitionHotel> {
+    void batchInsert(List<TransitionHotel> transitionHotelList);
 }

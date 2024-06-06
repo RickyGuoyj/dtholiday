@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -85,7 +86,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
     }
 
     private void setQueryWrapper(QueryWrapper<TransitionHotelOrder> queryWrapper, UserResp currentUserInfo,
-        TransitionHotelOrderPageReq req) {
+                                 TransitionHotelOrderPageReq req) {
         if (req.getTransitionHotelOrderId() != null) {
             queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
         }
@@ -110,23 +111,41 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
 
         // 根据角色特殊化处理
         String roleInfo = currentUserInfo.getRoleInfo().getName();
-        if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
-            queryWrapper.eq("order_creator", currentUserInfo.getUserName());
-            if (StringUtils.hasText(req.getSaleMan())) {
-                queryWrapper.eq("sale_man", req.getSaleMan());
+        switch (roleInfo) {
+            case "代理":
+                queryWrapper.eq("order_creator", currentUserInfo.getUserName());
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    queryWrapper.eq("sale_man", req.getSaleMan());
+                }
+                break;
+            case "代理主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                queryWrapper.in("order_creator", userName);
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    queryWrapper.eq("sale_man", req.getSaleMan());
+                }
+                break;
             }
-        } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
-            queryWrapper.eq("sale_man", currentUserInfo.getUserName());
-        } else {
-            if (StringUtils.hasText(req.getSaleMan())) {
-                queryWrapper.eq("sale_man", req.getSaleMan());
+            case "销售":
+                queryWrapper.eq("sale_man", currentUserInfo.getUserName());
+                break;
+            case "销售主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                queryWrapper.in("sale_man", userName);
+                break;
             }
+            default:
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    queryWrapper.eq("sale_man", req.getSaleMan());
+                }
+                break;
         }
+
 
     }
 
     private void convertTransitionHotelOrderEntityToResp(TransitionHotelOrder order,
-        TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
+                                                         TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
         BeanUtils.copyProperties(order, transitionHotelOrderResp);
         CustomerInfo customerInfo = new CustomerInfo();
         customerInfo.setCustomerName(order.getCustomerName());
@@ -186,7 +205,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         TransitionHotelOrder transitionHotelOrder =
-            OrderConvert.convertTransitionHotelInfoToEntity(req, currentUserDetail.getUserName());
+                OrderConvert.convertTransitionHotelInfoToEntity(req, currentUserDetail.getUserName());
         transitionHotelOrder.setTransitionHotelOrderId(req.getTransitionHotelOrderId());
         transitionHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
         transitionHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -198,7 +217,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
 
         mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
@@ -239,7 +258,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                     transitionHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     transitionHotelOrder
-                        .setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
+                            .setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -256,9 +275,10 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                         orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrder.setFinancialMan(req.getFinancialMan());
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 transitionHotelOrderMapper.updateById(transitionHotelOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("审核成功");
             } else {
                 return ResponseApi.error("未到你的流程");
@@ -302,9 +322,9 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                         orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 transitionHotelOrderMapper.updateById(transitionHotelOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("审核成功");
             } else {
                 return ResponseApi.error("未到你的流程");
@@ -347,9 +367,9 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                         orderStatus = Math.min(mainOrder.getPlaneTicketOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 transitionHotelOrderMapper.updateById(transitionHotelOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("流程结束");
             } else {
                 return ResponseApi.error("未到该流程");

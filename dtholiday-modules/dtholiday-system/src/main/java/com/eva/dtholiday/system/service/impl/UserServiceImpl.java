@@ -386,4 +386,19 @@ public class UserServiceImpl implements UserService {
             return userList.stream().distinct().map(User::getBelongCompany).distinct().collect(Collectors.toList());
         }
     }
+
+    @Override
+    public List<String> getUserNameByParentUserName(String userName) {
+        if (StringUtils.hasText(userName)) {
+            List<User> userList = userMapper.selectList(new QueryWrapper<User>().eq(User.DEPT_LEADER_NAME, userName));
+            if (!CollectionUtils.isEmpty(userList)) {
+                List<String> usernameList =  userList.stream().map(User::getUserName).collect(Collectors.toList());
+                usernameList.add(userName);
+                return usernameList;
+            }else {
+                return Collections.singletonList(userName);
+            }
+        }
+        return Collections.singletonList(userName);
+    }
 }

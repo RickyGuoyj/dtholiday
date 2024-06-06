@@ -29,6 +29,18 @@
             <if test="islandHotelOrderId != null and islandHotelOrderId > 0">
                 and a.island_hotel_order_id = #{islandHotelOrderId}
             </if>
+            <if test="orderCreator != null and orderCreator.size() >0 ">
+                and a.order_creator in
+                <foreach collection="orderCreator" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="saleMan != null and saleMan.size() >0 ">
+                and a.sale_man in
+                <foreach collection="saleMan" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
     </select>
 
@@ -85,6 +97,18 @@
             </if>
             <if test="islandHotelOrderId != null and islandHotelOrderId >0 ">
                 and a.island_hotel_order_id = #{islandHotelOrderId}
+            </if>
+            <if test="orderCreator != null and orderCreator.size() >0 ">
+                and a.order_creator in
+                <foreach collection="orderCreator" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="saleMan != null and saleMan.size() >0 ">
+                and a.sale_man in
+                <foreach collection="saleMan" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
             </if>
         </where>
         order by update_time desc

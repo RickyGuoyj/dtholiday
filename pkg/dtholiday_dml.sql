@@ -1,4 +1,4 @@
---默认密码：123456
+-- 默认密码：123456
 insert into sys_user(user_name,user_code,`PASSWORD`,nick_name,belong_company)
 VALUES
     ('admin','ca5fd62f004d457d970e75f6ecb21688','$2a$10$3e8/OFsPwc2hLOtUuwhmEe6Hl41BwEkrYc2gupfzWLdJSCuNAY.JO','admin','dtholiday');
@@ -139,5 +139,9 @@ VALUES
     ('935a4c4b0cf641018404fd128276f53f','301000'),
     ('935a4c4b0cf641018404fd128276f53f','302000'),
     ('935a4c4b0cf641018404fd128276f53f','303000'),
-    ('935a4c4b0cf641018404fd128276f53f','304000')
+    ('935a4c4b0cf641018404fd128276f53f','304000'),
+    ('927486beb0b44974ac0e1dd4f4b5c124','600000'),
+    ('927486beb0b44974ac0e1dd4f4b5c124','601000'),
+    ('268b666c634b43f2879d869ea559fdbc','600000'),
+    ('268b666c634b43f2879d869ea559fdbc','601000')
 ;

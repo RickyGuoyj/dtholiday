@@ -11,7 +11,6 @@ import com.eva.dtholiday.commons.dao.resp.UserResp;
 import java.util.List;
 
 /**
- *
  * @describtion
  * @copyright Copyright: 2015-2025
  * @creator guoyongjie
@@ -46,4 +45,6 @@ public interface UserService {
     List<SimpleUserInfoResp> getUserListByFinancialManRoleType(UserReq userReq);
 
     List<String> getAllCompanyName();
+
+    List<String> getUserNameByParentUserName(String userName);
 }

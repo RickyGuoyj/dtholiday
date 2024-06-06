@@ -1,5 +1,6 @@
 package com.eva.dtholiday.system.service.portalmanagement.impl;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -104,6 +105,8 @@ public class IslandManagementServiceImpl implements IslandManagementService {
             islandQuotation.setIslandIndexCode(islandIndexCode);
             islandQuotation.setQuotationFile(item.getQuotationFile());
             islandQuotation.setQuotationName(item.getQuotationName());
+            islandQuotation.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            islandQuotation.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             list.add(islandQuotation);
         });
         return list;

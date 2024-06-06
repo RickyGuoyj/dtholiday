@@ -36,10 +36,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,17 +119,34 @@ public class MainOrderServiceImpl implements MainOrderService {
 //        map.put("orderCreator", req.getOrderCreator());
 //        map.put("saleMan", req.getSaleMan());
         String roleInfo = currentUserInfo.getRoleInfo().getName();
-        if (roleInfo.equals("代理") || roleInfo.equals("代理主管")) {
-            map.put("orderCreator", currentUserInfo.getUserName());
-            if (StringUtils.hasText(req.getSaleMan())) {
-                map.put("saleMan", req.getSaleMan());
+        switch (roleInfo) {
+            case "代理":
+                map.put("orderCreator", Collections.singletonList(currentUserInfo.getUserName()));
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    map.put("saleMan", Collections.singletonList(req.getSaleMan()));
+                }
+                break;
+            case "代理主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                map.put("orderCreator", userName);
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    map.put("saleMan", Collections.singletonList(req.getSaleMan()));
+                }
+                break;
             }
-        } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
-            map.put("saleMan", currentUserInfo.getUserName());
-        } else {
-            if (StringUtils.hasText(req.getSaleMan())) {
-                map.put("saleMan", req.getSaleMan());
+            case "销售":
+                map.put("saleMan", Collections.singletonList(currentUserInfo.getUserName()));
+                break;
+            case "销售主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                map.put("saleMan", userName);
+                break;
             }
+            default:
+                if (StringUtils.hasText(req.getSaleMan())) {
+                    map.put("saleMan", Collections.singletonList(req.getSaleMan()));
+                }
+                break;
         }
         int count = mainOrderMapper.countMainOrderList(map);
         map.put("from", (req.getPage() - 1) * req.getPageSize());
@@ -173,6 +187,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         payment.setPaymentTotal(req.getPaymentTotal());
         payment.setPaymentPics(JSONArray.toJSONString(req.getPaymentPics()));
         if (!Objects.isNull(currentUserDetail)) {
+            payment.setOrderCreator(currentUserDetail.getUserName());
             payment.setCompanyName(currentUserDetail.getBelongCompany());
         }
         MainOrder mainOrder = mainOrderMapper.selectById(req.getMainOrderId());

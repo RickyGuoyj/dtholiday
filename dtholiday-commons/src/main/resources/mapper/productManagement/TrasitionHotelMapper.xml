@@ -2,4 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.productManagement.TransitionHotelMapper">
 
+    <insert id="batchInsert">
+        insert into dt_transition_hotel
+        (transition_hotel_name,transition_hotel_type, effective_date, expiry_date, total_num, remain_num,
+        remark, create_time,update_time )
+        values
+        <foreach collection="transitionHotelList" item="item" index="index" separator=",">
+            (
+            #{item.transitionHotelName},
+            #{item.transitionHotelType},
+            #{item.effectiveDate},
+            #{item.expiryDate},
+            #{item.totalNum},
+            #{item.remainNum},
+            #{item.remark},
+            #{item.createTime},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
 </mapper>

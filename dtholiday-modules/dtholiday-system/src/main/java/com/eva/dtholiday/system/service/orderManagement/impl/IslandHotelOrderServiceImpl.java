@@ -1,9 +1,6 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -27,6 +24,7 @@ import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.IslandHotelOrderService;
+import org.springframework.util.StringUtils;
 
 @Service
 public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
@@ -57,6 +55,27 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         } else if (roleInfo.equals("销售") || roleInfo.equals("销售主管")) {
             map.put("saleMan", currentUserInfo.getUserName());
         }
+        switch (roleInfo) {
+            case "代理":
+                map.put("orderCreator", Collections.singletonList(currentUserInfo.getUserName()));
+                break;
+            case "代理主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                map.put("orderCreator", userName);
+                break;
+            }
+            case "销售":
+                map.put("saleMan", Collections.singletonList(currentUserInfo.getUserName()));
+                break;
+            case "销售主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                map.put("saleMan", userName);
+                break;
+            }
+            default:
+                break;
+        }
+
         int count = islandHotelOrderMapper.countIslandHotelOrderList(map);
         map.put("from", (req.getPage() - 1) * req.getPageSize());
         map.put("to", req.getPageSize());
@@ -75,7 +94,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Override
     public ResponseApi queryIslandHotelOrderDetail(IslandHotelOrderQueryDetailReq req) {
         IslandHotelOrderInfo islandHotelOrderInfo =
-            islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
+                islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
         return ResponseApi.ok(islandHotelOrderInfo);
     }
 
@@ -90,7 +109,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         IslandHotelOrder islandHotelOrder =
-            OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
+                OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
         islandHotelOrder.setIslandHotelOrderId(req.getIslandHotelOrderId());
         islandHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
         islandHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -102,7 +121,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         queryWrapper.eq("island_hotel_order_id", req.getIslandHotelOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
         mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
         // 加上修改后的
@@ -139,7 +158,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     islandHotelOrder
-                        .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
+                            .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
                 } else {
                     islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
@@ -156,9 +175,10 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                         orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrder.setFinancialMan(req.getFinancialMan());
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("审核成功");
             } else {
                 return ResponseApi.error("未到你的流程");
@@ -204,9 +224,9 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                         orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("审核成功");
             } else {
                 return ResponseApi.error("未到你的流程");
@@ -249,9 +269,9 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                         orderStatus = Math.min(mainOrder.getTransitionHotelOrderStatus(), orderStatus);
                     }
                     mainOrder.setOrderStatus(orderStatus);
+                    mainOrderMapper.updateById(mainOrder);
                 }
                 islandHotelOrderMapper.updateById(islandHotelOrder);
-                mainOrderMapper.updateById(mainOrder);
                 return ResponseApi.ok("流程结束");
             } else {
                 return ResponseApi.error("未到该流程");

@@ -94,6 +94,20 @@ public class PaymentServiceImpl implements PaymentService {
         if (StringUtils.isNotEmpty(req.getCompanyName())) {
             queryWrapper.eq("company_name", req.getCompanyName());
         }
+        UserResp currentUserInfo = userService.getCurrentUserDetail();
+        String roleInfo = currentUserInfo.getRoleInfo().getName();
+        switch (roleInfo) {
+            case "代理":
+                queryWrapper.eq("order_creator", currentUserInfo.getUserName());
+                break;
+            case "代理主管": {
+                List<String> userName = userService.getUserNameByParentUserName(currentUserInfo.getUserName());
+                queryWrapper.in("order_creator", userName);
+                break;
+            }
+            default:
+                break;
+        }
         entityPage = paymentMapper.selectPage(entityPage, queryWrapper);
         if (Objects.isNull(entityPage)) {
             return ResponseApi.ok(new Page<>(req.getCurrent(), 0));
@@ -101,6 +115,9 @@ public class PaymentServiceImpl implements PaymentService {
         List<PaymentResp> paymentRespList = entityPage.getRecords().stream().map(payment -> {
             PaymentResp paymentResp = new PaymentResp();
             BeanUtils.copyProperties(payment, paymentResp);
+            paymentResp.setPaymentAmountUSD(payment.getPaymentAmountUsd());
+            paymentResp.setPaymentAmountCNY(payment.getPaymentAmountCny());
+            paymentResp.setPaymentAmountUSDToCNY(payment.getPaymentAmountUsdToCny());
             paymentResp.setPaymentPics(JSONArray.parseArray(payment.getPaymentPics(), FileInfo.class));
             return paymentResp;
         }).collect(Collectors.toList());
@@ -179,6 +196,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentTotal(req.getPaymentTotal());
         payment.setPaymentPics(JSONArray.toJSONString(req.getPaymentPics()));
         if (!Objects.isNull(currentUserDetail)) {
+            payment.setOrderCreator(currentUserDetail.getUserName());
             payment.setCompanyName(currentUserDetail.getBelongCompany());
         }
         MainOrder mainOrder = mainOrderMapper.selectById(req.getMainOrderId());
