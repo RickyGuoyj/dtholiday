@@ -392,11 +392,11 @@ CREATE TABLE IF NOT EXISTS `dt_payment` (
                            `payment_id` INT NOT NULL AUTO_INCREMENT, -- 支付ID
                            `main_order_id` INT NOT NULL, -- 主订单ID
                            `payment_date` DATE NOT NULL, -- 支付日期
-                           `payment_amount_usd` DECIMAL(10, 2) NOT NULL, -- USD支付金额
-                           `exchange_rate` DECIMAL(5, 4) NOT NULL, -- 汇率
-                           `payment_amount_usd_to_cny` DECIMAL(10, 2) NOT NULL, -- USD转换为CNY的金额
-                           `payment_amount_cny` DECIMAL(10, 2) NOT NULL, -- CNY支付金额
-                           `payment_total` DECIMAL(10, 2) NOT NULL, -- 总支付金额
+                           `payment_amount_usd` DECIMAL(40, 2) NOT NULL, -- USD支付金额
+                           `exchange_rate` DECIMAL(40, 4) NOT NULL, -- 汇率
+                           `payment_amount_usd_to_cny` DECIMAL(40, 2) NOT NULL, -- USD转换为CNY的金额
+                           `payment_amount_cny` DECIMAL(40, 2) NOT NULL, -- CNY支付金额
+                           `payment_total` DECIMAL(40, 2) NOT NULL, -- 总支付金额
                            `currency_type` TINYINT NOT NULL, -- 货币类型（假设为整数编码）
                            `payment_type` VARCHAR(255) NOT NULL, -- 支付方式
                            `payment_remarks` VARCHAR(255), -- 支付备注

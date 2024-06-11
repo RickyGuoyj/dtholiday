@@ -140,7 +140,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                 }
                 break;
         }
-
+        queryWrapper.orderByDesc("transition_hotel_order_id");
 
     }
 

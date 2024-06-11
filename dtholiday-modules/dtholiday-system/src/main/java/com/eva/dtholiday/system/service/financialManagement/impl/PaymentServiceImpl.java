@@ -108,6 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
             default:
                 break;
         }
+        queryWrapper.orderByDesc("payment_id");
         entityPage = paymentMapper.selectPage(entityPage, queryWrapper);
         if (Objects.isNull(entityPage)) {
             return ResponseApi.ok(new Page<>(req.getCurrent(), 0));

@@ -141,6 +141,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                 }
                 break;
         }
+        queryWrapper.orderByDesc("plane_ticket_order_id");
 
     }
 
