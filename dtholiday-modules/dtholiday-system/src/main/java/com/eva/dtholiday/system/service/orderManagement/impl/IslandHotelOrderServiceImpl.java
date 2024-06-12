@@ -24,7 +24,6 @@ import com.eva.dtholiday.commons.enums.OrderStatusEnum;
 import com.eva.dtholiday.system.service.UserService;
 import com.eva.dtholiday.system.service.convert.OrderConvert;
 import com.eva.dtholiday.system.service.orderManagement.IslandHotelOrderService;
-import org.springframework.util.StringUtils;
 
 @Service
 public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
@@ -94,7 +93,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
     @Override
     public ResponseApi queryIslandHotelOrderDetail(IslandHotelOrderQueryDetailReq req) {
         IslandHotelOrderInfo islandHotelOrderInfo =
-                islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
+            islandHotelOrderMapper.queryIslandHotelOrderById(req.getIslandHotelOrderId());
         return ResponseApi.ok(islandHotelOrderInfo);
     }
 
@@ -109,7 +108,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         IslandHotelOrder islandHotelOrder =
-                OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
+            OrderConvert.convertIslandHotelInfoToEntity(req, currentUserDetail.getUserName());
         islandHotelOrder.setIslandHotelOrderId(req.getIslandHotelOrderId());
         islandHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
         islandHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -121,7 +120,7 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
         queryWrapper.eq("island_hotel_order_id", req.getIslandHotelOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
         mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
         // 加上修改后的
@@ -158,8 +157,17 @@ public class IslandHotelOrderServiceImpl implements IslandHotelOrderService {
                     islandHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     islandHotelOrder
-                            .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
+                        .setDiscountPrice(islandHotelOrder.getTotalPrice() - islandHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
+                    TotalPriceInfo mainOrderTotalPriceInfo =
+                        JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                    mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - islandHotelOrder.getTotalPrice()
+                        + islandHotelOrder.getDiscountPrice());
+                    String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
+                    mainOrder.setTotalPrice(totalPriceInfo);
+                    UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
+                    updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
+                    mainOrderMapper.update(null, updateWrapper);
                 } else {
                     islandHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
                     islandHotelOrder.setRemarks(req.getCheckRemark());

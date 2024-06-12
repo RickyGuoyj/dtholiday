@@ -65,7 +65,7 @@ public class MainOrderServiceImpl implements MainOrderService {
         // 岛屿订单
         if (Objects.nonNull(req.getIslandHotelOrder()) && Objects.nonNull(req.getIslandHotelOrder().getHotelInfo())) {
             islandHotelOrder =
-                    OrderConvert.convertIslandHotelInfoToEntity(req.getIslandHotelOrder(), currentUserDetail.getUserName());
+                OrderConvert.convertIslandHotelInfoToEntity(req.getIslandHotelOrder(), currentUserDetail.getUserName());
             islandHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             islandHotelOrder.setFinancialStatus(0);
             islandHotelOrderMapper.insert(islandHotelOrder);
@@ -74,9 +74,9 @@ public class MainOrderServiceImpl implements MainOrderService {
         }
         // 机票订单
         if (Objects.nonNull(req.getPlaneTicketOrder())
-                && Objects.nonNull(req.getPlaneTicketOrder().getPlaneTicketInfo())) {
+            && Objects.nonNull(req.getPlaneTicketOrder().getPlaneTicketInfo())) {
             planeTicketOrder =
-                    OrderConvert.convertPlaneTicketInfoToEntity(req.getPlaneTicketOrder(), currentUserDetail.getUserName());
+                OrderConvert.convertPlaneTicketInfoToEntity(req.getPlaneTicketOrder(), currentUserDetail.getUserName());
             planeTicketOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             planeTicketOrder.setFinancialStatus(0);
             planeTicketOrderMapper.insert(planeTicketOrder);
@@ -85,9 +85,9 @@ public class MainOrderServiceImpl implements MainOrderService {
         }
         // 过度酒店订单
         if (Objects.nonNull(req.getTransitionHotelOrder())
-                && Objects.nonNull(req.getTransitionHotelOrder().getTransitionHotelInfo())) {
+            && Objects.nonNull(req.getTransitionHotelOrder().getTransitionHotelInfo())) {
             transitionHotelOrder = OrderConvert.convertTransitionHotelInfoToEntity(req.getTransitionHotelOrder(),
-                    currentUserDetail.getUserName());
+                currentUserDetail.getUserName());
             transitionHotelOrder.setOrderStatus(ErpConstant.ORDER_STATUS.WAIT_SALE_REVIEW);
             transitionHotelOrder.setFinancialStatus(0);
             transitionHotelOrderMapper.insert(transitionHotelOrder);
@@ -115,9 +115,9 @@ public class MainOrderServiceImpl implements MainOrderService {
         map.put("islandHotelOrderId", req.getIslandHotelOrderId());
         map.put("planeTicketOrderId", req.getPlaneTicketOrderId());
         map.put("transitionHotelOrderId", req.getTransitionHotelOrderId());
-        //特殊化处理
-//        map.put("orderCreator", req.getOrderCreator());
-//        map.put("saleMan", req.getSaleMan());
+        // 特殊化处理
+        // map.put("orderCreator", req.getOrderCreator());
+        // map.put("saleMan", req.getSaleMan());
         String roleInfo = currentUserInfo.getRoleInfo().getName();
         switch (roleInfo) {
             case "代理":
@@ -210,7 +210,7 @@ public class MainOrderServiceImpl implements MainOrderService {
     public ResponseApi cancelMainOrderByAgent(MainOrderCancelReq req) {
         UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                CancelStatusEnum.WAIT_SALE_CHECK.getCode());
+            CancelStatusEnum.WAIT_SALE_CHECK.getCode());
         int count = mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);
     }
@@ -221,10 +221,10 @@ public class MainOrderServiceImpl implements MainOrderService {
 
         if (req.getOperType() == 1) {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                    CancelStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
+                CancelStatusEnum.WAIT_FINANCIAL_CHECK.getCode());
         } else {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                    CancelStatusEnum.SALE_NOT_PASS.getCode());
+                CancelStatusEnum.SALE_NOT_PASS.getCode());
         }
         int count = mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);
@@ -236,10 +236,10 @@ public class MainOrderServiceImpl implements MainOrderService {
 
         if (req.getOperType() == 1) {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                    CancelStatusEnum.FINANCIAL_PASS.getCode());
+                CancelStatusEnum.FINANCIAL_PASS.getCode());
         } else {
             updateWrapper.eq("main_order_id", req.getMainOrderId()).set("main_order_cancel_status",
-                    CancelStatusEnum.FINANCIAL_NOT_PASS.getCode());
+                CancelStatusEnum.FINANCIAL_NOT_PASS.getCode());
         }
         int count = mainOrderMapper.update(null, updateWrapper);
         return ResponseApi.ok(count);

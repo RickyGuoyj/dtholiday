@@ -1,6 +1,5 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -86,7 +85,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
     }
 
     private void setQueryWrapper(QueryWrapper<TransitionHotelOrder> queryWrapper, UserResp currentUserInfo,
-                                 TransitionHotelOrderPageReq req) {
+        TransitionHotelOrderPageReq req) {
         if (req.getTransitionHotelOrderId() != null) {
             queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
         }
@@ -145,7 +144,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
     }
 
     private void convertTransitionHotelOrderEntityToResp(TransitionHotelOrder order,
-                                                         TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
+        TransitionHotelOrderResp transitionHotelOrderResp, String roleInfo) {
         BeanUtils.copyProperties(order, transitionHotelOrderResp);
         CustomerInfo customerInfo = new CustomerInfo();
         customerInfo.setCustomerName(order.getCustomerName());
@@ -205,7 +204,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         TransitionHotelOrder transitionHotelOrder =
-                OrderConvert.convertTransitionHotelInfoToEntity(req, currentUserDetail.getUserName());
+            OrderConvert.convertTransitionHotelInfoToEntity(req, currentUserDetail.getUserName());
         transitionHotelOrder.setTransitionHotelOrderId(req.getTransitionHotelOrderId());
         transitionHotelOrder.setOrderStatus(oldEntity.getOrderStatus());
         transitionHotelOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -217,7 +216,7 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
         queryWrapper.eq("transition_hotel_order_id", req.getTransitionHotelOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
 
         mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd() - oldTotalPrice);
@@ -258,8 +257,17 @@ public class TransitionHotelOrderServiceImpl implements TransitionHotelOrderServ
                     transitionHotelOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     transitionHotelOrder
-                            .setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
+                        .setDiscountPrice(transitionHotelOrder.getTotalPrice() - transitionHotelOrder.getDiscount());
                     // todo 主订单金额重新计算
+                    TotalPriceInfo mainOrderTotalPriceInfo =
+                        JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                    mainOrderTotalPriceInfo.setUsd(mainOrderTotalPriceInfo.getUsd()
+                        - transitionHotelOrder.getTotalPrice() + transitionHotelOrder.getDiscountPrice());
+                    String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
+                    mainOrder.setTotalPrice(totalPriceInfo);
+                    UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
+                    updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
+                    mainOrderMapper.update(null, updateWrapper);
                 } else {
                     transitionHotelOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
                     transitionHotelOrder.setRemarks(req.getCheckRemark());

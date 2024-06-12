@@ -3,7 +3,7 @@
 <mapper namespace="com.eva.dtholiday.commons.dao.mapper.productManagement.IslandHotelMapper">
     <insert id="batchInsert">
         insert into dt_island_hotel
-        (island_index_code,island_index_name,price_type,traffic_type,meal_type,hotel_room_type,has_environment_tax,effective_date,expiry_date,total_num,remain_num,package_nights,
+        (island_index_code,island_hotel_name,price_type,traffic_type,meal_type,hotel_room_type,has_environment_tax,effective_date,expiry_date,total_num,remain_num,package_nights,
         currency_type,package_price,traffic_price,meal_price,environment_tax,extra_expense,extra_adult_hotel_price,extra_adult_traffic_price,extra_adult_meal_price,
         extra_adult_environment_tax,extra_adult_package_price,extra_adult_currency_type,delay_hotel_room_type,delay_hotel_room_price,delay_currency_type,
         extra_adult_delay_hotel_room_price,extra_adult_delay_currency_type,special_price,remarks)
@@ -11,7 +11,7 @@
         <foreach collection="islandHotelList" item="item" index="index" separator=",">
             (
             #{item.islandIndexCode},
-            #{item.islandIndexName},
+            #{item.islandHotelName},
             #{item.priceType},
             #{item.trafficType},
             #{item.mealType},

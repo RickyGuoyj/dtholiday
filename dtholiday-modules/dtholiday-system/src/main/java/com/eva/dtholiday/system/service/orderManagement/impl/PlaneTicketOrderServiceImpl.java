@@ -1,6 +1,5 @@
 package com.eva.dtholiday.system.service.orderManagement.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -87,7 +86,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
     }
 
     private void setQueryWrapper(QueryWrapper<PlaneTicketOrder> queryWrapper, UserResp currentUserInfo,
-                                 PlaneTicketOrderPageReq req) {
+        PlaneTicketOrderPageReq req) {
         if (req.getPlaneTicketOrderId() != null) {
             queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
         }
@@ -146,7 +145,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
     }
 
     private void convertPlaneTicketOrderEntityToResp(PlaneTicketOrder order, PlaneTicketOrderResp planeTicketOrderResp,
-                                                     String roleInfo) {
+        String roleInfo) {
         BeanUtils.copyProperties(order, planeTicketOrderResp);
         CustomerInfo customerInfo = new CustomerInfo();
         customerInfo.setCustomerName(order.getCustomerName());
@@ -274,8 +273,17 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
                     planeTicketOrder.setFinancialMan(req.getFinancialMan());
                     // 计算金额
                     planeTicketOrder
-                            .setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
+                        .setDiscountPrice(planeTicketOrder.getTotalPrice() - planeTicketOrder.getDiscount());
                     // todo 主订单金额重新计算
+                    TotalPriceInfo mainOrderTotalPriceInfo =
+                        JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+                    mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - planeTicketOrder.getTotalPrice()
+                        + planeTicketOrder.getDiscountPrice());
+                    String totalPriceInfo = JSONObject.toJSONString(mainOrderTotalPriceInfo);
+                    mainOrder.setTotalPrice(totalPriceInfo);
+                    UpdateWrapper<MainOrder> updateWrapper = new UpdateWrapper<>();
+                    updateWrapper.set("total_price", totalPriceInfo).eq("main_order_id", mainOrder.getMainOrderId());
+                    mainOrderMapper.update(null, updateWrapper);
                 } else {
                     planeTicketOrder.setOrderStatus(OrderStatusEnum.WAIT_AGENT_RESUBMIT.getCode());
                     planeTicketOrder.setRemarks(req.getCheckRemark());
@@ -315,7 +323,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         // 更新子订单数据
         UserResp currentUserDetail = userService.getCurrentUserDetail();
         PlaneTicketOrder planeTicketOrder =
-                OrderConvert.convertPlaneTicketInfoToEntity(req, currentUserDetail.getUserName());
+            OrderConvert.convertPlaneTicketInfoToEntity(req, currentUserDetail.getUserName());
         planeTicketOrder.setPlaneTicketOrderId(req.getPlaneTicketOrderId());
         planeTicketOrder.setOrderStatus(oldEntity.getOrderStatus());
         planeTicketOrder.setFinancialStatus(oldEntity.getFinancialStatus());
@@ -327,7 +335,7 @@ public class PlaneTicketOrderServiceImpl implements PlaneTicketOrderService {
         queryWrapper.eq("plane_ticket_order_id", req.getPlaneTicketOrderId());
         MainOrder mainOrder = mainOrderMapper.selectOne(queryWrapper);
         TotalPriceInfo mainOrderTotalPriceInfo =
-                JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
+            JSONObject.parseObject(mainOrder.getTotalPrice(), TotalPriceInfo.class);
         // 减掉旧的
         mainOrderTotalPriceInfo.setCny(mainOrderTotalPriceInfo.getCny() - oldTotalPrice);
 

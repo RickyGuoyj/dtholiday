@@ -236,7 +236,10 @@ public class IslandHotelServiceImpl implements IslandHotelService {
             BigDecimal extraAdultDelayHotelRoomPrice = new BigDecimal(islandHotel.getExtraAdultDelayHotelRoomPrice());
 
             BigDecimal multiply1 = extraAdultDelayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights));
-            morePersonPrice = extraExpense.multiply(morePersonPrice).add(multiply).add(multiply1);
+
+            BigDecimal specialPrice = new BigDecimal(islandHotel.getSpecialPrice())
+                .multiply(BigDecimal.valueOf(moreAdultNum)).multiply(BigDecimal.valueOf(leftNights));
+            morePersonPrice = extraExpense.multiply(morePersonPrice).add(multiply).add(multiply1).add(specialPrice);
         }
         // 儿童1价格
         BigDecimal firstChildPrice = new BigDecimal(0);
