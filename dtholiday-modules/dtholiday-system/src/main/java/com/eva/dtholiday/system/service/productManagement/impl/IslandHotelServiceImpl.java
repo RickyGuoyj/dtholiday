@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.eva.dtholiday.commons.api.ResponseApi;
 import com.eva.dtholiday.commons.dao.dto.IslandHotelQueryInfo;
@@ -237,9 +238,18 @@ public class IslandHotelServiceImpl implements IslandHotelService {
 
             BigDecimal multiply1 = extraAdultDelayHotelRoomPrice.multiply(BigDecimal.valueOf(leftNights));
 
-            BigDecimal specialPrice = new BigDecimal(islandHotel.getSpecialPrice())
-                .multiply(BigDecimal.valueOf(moreAdultNum)).multiply(BigDecimal.valueOf(leftNights));
-            morePersonPrice = extraExpense.multiply(morePersonPrice).add(multiply).add(multiply1).add(specialPrice);
+            // 根据第一条获取其余的额外的成人费用
+            QueryWrapper<IslandHotel> queryWrapper = new QueryWrapper();
+            queryWrapper.eq(IslandHotel.ISLAND_INDEX_CODE, islandHotel.getIslandIndexCode());
+            queryWrapper.ge(IslandHotel.EFFECTIVE_DATE, req.getEffectiveDate());
+            queryWrapper.le(IslandHotel.EXPIRY_DATE, req.getExpiryDate());
+            List<IslandHotel> islandHotels = islandHotelMapper.selectList(queryWrapper);
+            double specialPrice = 0;
+            if (CollectionUtils.isNotEmpty(islandHotels)) {
+                specialPrice = islandHotels.stream().filter(entity -> entity.getSpecialPrice() > 0)
+                    .mapToDouble(IslandHotel::getSpecialPrice).sum();
+            }
+            morePersonPrice = multiply.add(multiply1).add(new BigDecimal(specialPrice));
         }
         // 儿童1价格
         BigDecimal firstChildPrice = new BigDecimal(0);
